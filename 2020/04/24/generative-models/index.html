@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="machine learning,algorithm,GDA," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="The differences of generative models and discriminative models. How are they related.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generative Models -- Gaussian Discriminant Analysis">
+<meta property="og:url" content="http://yoursite.com/2020/04/24/generative-models/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="The differences of generative models and discriminative models. How are they related.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.stack.imgur.com/Xrmqg.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/24/generative-models/post_images/lda_dimension.png">
+<meta property="og:image" content="http://yoursite.com/post_images/gda_visual.png">
+<meta property="article:published_time" content="2020-04-24T22:08:22.000Z">
+<meta property="article:modified_time" content="2020-04-28T04:44:43.716Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="machine learning">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="GDA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.stack.imgur.com/Xrmqg.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/24/generative-models/"/>
+
+
+
+
+
+  <title>Generative Models -- Gaussian Discriminant Analysis | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/24/generative-models/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Generative Models -- Gaussian Discriminant Analysis</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-24T15:08:22-07:00">
+                2020-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/24/generative-models/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/24/generative-models/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/04/24/generative-models/" class="leancloud_visitors" data-flag-title="Generative Models -- Gaussian Discriminant Analysis">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  The differences of generative models and discriminative models. How are they related.
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Brief-Introduction-to-Generative-Models"><a href="#Brief-Introduction-to-Generative-Models" class="headerlink" title="Brief Introduction to Generative Models"></a>Brief Introduction to Generative Models</h2><p>To talk about generative models (v.s. discriminative models), we can first learn from this story:</p>
+<blockquote>
+<p>A father has two kids, Kid A and Kid B. Kid A has a special character whereas he can learn everything in depth. Kid B have a special character whereas he can only learn the differences between what he saw.</p>
+<p>One fine day, The father takes two of his kids (Kid A and Kid B) to a zoo. This zoo is a very small one and has only two kinds of animals say a lion and an elephant. After they came out of the zoo, the father showed them an animal and asked both of them “<strong>is this animal a lion or an elephant</strong>?”</p>
+<p>The Kid A, the kid suddenly draw the image of lion and elephant in a piece of paper based on what he saw inside the zoo. He compared both the images with the animal standing before and answered based on the <strong>closest match</strong> of image &amp; animal, he answered: “The animal is Lion”.</p>
+<p>The Kid B knows only the differences, based on <strong>different properties learned</strong>, he answered: “The animal is a Lion”.</p>
+</blockquote>
+<p>– <a href="https://medium.com/@mlengineer/generative-and-discriminative-models-af5637a66a3" target="_blank" rel="noopener">Generative VS Discriminative Models, Mediun</a></p>
+<h4 id="In-Math"><a href="#In-Math" class="headerlink" title="In Math"></a>In Math</h4><ul>
+<li><p>Discriminative model</p>
+<ul>
+<li>Learn $p(y|x)$; </li>
+<li>or learn $h_\theta(x) = ?$ directly</li>
+<li>at prediction time, $\hat y = arg \max\limits_y p(y|x)$</li>
+</ul>
+</li>
+<li><p>Generative model</p>
+<ul>
+<li>Learn $p(x, y)$</li>
+<li>by learning $p(x|y)$ and $p(y)$ and use Bayes rule to flip the probability</li>
+<li>at prediction time, $\hat y = arg \max\limits_y p(x, y) = arg \max\limits_y \frac{p(x|y)p(y)}{p(x)} = arg \max\limits_y p(x|y)p(y)$</li>
+</ul>
+</li>
+</ul>
+<h4 id="A-Small-Graph-Illustration-of-These-Two-Kinds-of-Algorithms"><a href="#A-Small-Graph-Illustration-of-These-Two-Kinds-of-Algorithms" class="headerlink" title="A Small Graph Illustration of These Two Kinds of Algorithms"></a>A Small Graph Illustration of These Two Kinds of Algorithms</h4><p><img src="https://i.stack.imgur.com/Xrmqg.png" alt="two kinds"></p>
+<p>– from <a href="https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-supervised-learning" target="_blank" rel="noopener">Shervine Amidi</a></p>
+<h2 id="Gaussian-Discriminant-Analysis-GDA"><a href="#Gaussian-Discriminant-Analysis-GDA" class="headerlink" title="Gaussian Discriminant Analysis (GDA)"></a>Gaussian Discriminant Analysis (GDA)</h2><p><a href="http://cs229.stanford.edu/notes/cs229-notes2.pdf" target="_blank" rel="noopener">GDA</a> is a commonly used classification method for continuous feature space. Here we introduce the essence of GDA in two different approaches, hopefully it provides some deeper understanding of GDA. </p>
+<h4 id="Approach-1"><a href="#Approach-1" class="headerlink" title="Approach 1"></a>Approach 1</h4><h5 id="Considerations"><a href="#Considerations" class="headerlink" title="Considerations"></a>Considerations</h5><p>Suppose now we have a classification problem (to simplify, suppose it is a binary classification) to deal with, now we want to come up with a model. From the idea of generative models, the idea is to fit the probability distribution of the two classes. Thus, we want to make some assumptions about which family and what parameters are we going to estimate for $X$ and $Y$‘s’ distributions.</p>
+<h5 id="Assumptions"><a href="#Assumptions" class="headerlink" title="Assumptions"></a>Assumptions</h5><p>$X$: Suppose $X \in \mathbb{R}^d$ and $X \sim N(\mathbf{\mu}, \Sigma)$. Where $\mu \in \mathbb{R}^d$ is the mean vector and $\Sigma \in \mathbb{R}^{(d \times d)}$ is the covariance matrix. And $X$ follows a <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution" target="_blank" rel="noopener">multivariate Gaussian distribution</a>. </p>
+<p>$Y$: Suppose that $Y \sim \text{Bernoulli}(\phi)$, thus $Y \in {0,1}$.</p>
+<p>And GDA assume that the probability of $X$ given $Y$ looks like the following:<br>$$<br>p(x|y=0) = \frac{1}{(2\pi^{\frac{d}{2}})|\Sigma|\frac{1}{2}}\exp(\frac{1}{2}(x - \mu_0)^T\Sigma^{-1}(x - \mu_0))<br>$$</p>
+<p>$$<br>p(x|y=1) = \frac{1}{(2\pi^{\frac{d}{2}})|\Sigma|\frac{1}{2}}\exp(\frac{1}{2}(x - \mu_1)^T\Sigma^{-1}(x - \mu_1))<br>$$</p>
+<p>Note that GDA[^1] assume that <strong>for each class, the covariance matrix is the same</strong>. This makes the distribution of each class, though <strong>might center at different positions (decided by $\mu$), has the same “<u>shape</u>”</strong>. So imaginably, This model will have a <u><strong>linear decision boundary</strong></u> because of this fact.</p>
+<h5 id="Model-Fit"><a href="#Model-Fit" class="headerlink" title="Model Fit"></a>Model Fit</h5><p>Fitting the model is equivalent to finding parameters of distributions that we assumed that best fit the data. The parameters that we need to optimize are<br>$$<br>\mu_0, \mu_1, \Sigma, \phi<br>$$</p>
+<p>By computing the MLE estimation of these parameters, we get<br>$$<br>\require{amsmath}<br>\begin{align}<br>    \mu_0 &amp;= \frac{\sum_{i=1}^{n}\mathbb{1} \{y^{(i)}=0 \} x^{(i)}}{\sum_{i=1}^{n}\mathbb{1} { y^{(i)}=0 } } \\<br>    \mu_1 &amp;= \frac{\sum_{i=1}^{n}\mathbb{1}\{y^{(i)}=1\}x^{(i)}}{\sum_{i=1}^{n}\mathbb{1}\{y^{(i)}=1\}} \\<br>    \Sigma &amp;= \frac{1}{n} \sum_{i=1}^{n}(x^{(i)} - \mu_{y^{(i)}})^T(x^{(i)} - \mu_{y^{(i)}}) \\<br>    \phi &amp;= \frac{1}{n} \sum_{i=1}^{n} \mathbb{1}\{y^{(i)}=1\}<br>\end{align}<br>$$</p>
+<h5 id="Prediction"><a href="#Prediction" class="headerlink" title="Prediction"></a>Prediction</h5><p>As mentioned before, we don’t need to compute $y(x)$ to get the class of $y$ with largest probability of $y(x, y)$, and that is the class that the model predicts.<br>$$<br>arg\max\limits_y p(y|x) = arg\max\limits_y p(x|y)p(y)<br>$$</p>
+<h5 id="Decision-Boundary"><a href="#Decision-Boundary" class="headerlink" title="Decision Boundary"></a>Decision Boundary</h5><p>All the way to here, we can see the decision boundaries of GDA is given when $p(x, y=0) = p(x, y=1)$, and in two classes case, they all equal to 0.5. Below, we briefly write out the decision boundaries in a more general form which is the decision boundary between class $j$ and class $k$[^2].</p>
+<ul>
+<li><p>Suppose $p(Y = k) = \pi_k$, and there are $C$ classes in total.</p>
+</li>
+<li><p>We have $p(x|y=k) = \frac{1}{(2\pi^{\frac{d}{2}})|\Sigma|\frac{1}{2}}\exp(\frac{1}{2}(x - \mu_k)^T\Sigma^{-1}(x - \mu_k))$</p>
+</li>
+<li><p>Decision boundary of class $j$ and class $k$ is defined as $p(x, y=j) = p(x, y=k)$.</p>
+</li>
+<li><p>Same as $\log p(y=j|x) = \log p(y=k|x)$</p>
+</li>
+<li><p>We got the decision boundary between class $k$ and $j$ can be express as $\delta_k(x) = \delta_j(x)$, where<br>$$<br>\delta_k(x) = \log \pi_k - \frac{1}{2} \mu_k^T\Sigma^{-1}\mu_k + x^T\Sigma^{-1}\mu_k<br>$$</p>
+</li>
+</ul>
+<p>We can see that this <strong>boundary is linear to $x$</strong>, and we make the prediction of $y$ in class $k$ if $\delta_k(x) &gt; \delta_i(x)$ for $\forall i \in C$. That is $x^T\Sigma^{-1}(\mu_k - \mu_i) &gt; c_i$, for a constant $c_i$ for class $i$. Note that this $c_i$ can be calculated using other terms in $\delta(x)$. </p>
+<p>In fact, for two classes cases, the probability $p(x, y=1)$ is <strong>measured by a logistic function that is very similar to logistic regression</strong>. If we let<br>$$<br>\Sigma^{-1}(\mu_0 - \mu_1) = \theta_1<br>$$<br>and an intercept that can be calculated using $\delta_1(x), \delta_0(x)$ to be $\theta_0$, we got:<br>$$<br>p(x, y=1) = h_{\theta}(x) = g(\theta_1^Tx + \theta_0)<br>$$<br>where $g(z)$ is the sigmoid function.</p>
+<h5 id="Sum-Up"><a href="#Sum-Up" class="headerlink" title="Sum Up"></a>Sum Up</h5><ol>
+<li>Assume $X$ is multivariate Gaussian distributed with common covariance matrix across different classes, $Y$ follows a Bernoulli distribution.</li>
+<li>Write out the MLE estimate of models we assumed based on the data. We can construct the model by computing MLEs.</li>
+<li>With estimated model parameters, we make predictions based on the class of $Y$ that has the largest probability $p(x, y)$.</li>
+</ol>
+<h4 id="Approach-2-LDA"><a href="#Approach-2-LDA" class="headerlink" title="Approach 2 (LDA)"></a>Approach 2 (LDA)</h4><p>Though approach 1 seems to be very intuitive, there is another approach of interpreting this model. What surprised me is that this different approach seems to be quite unrelated, yet them come to the same model. I will try my best to compare these two approaches.</p>
+<h5 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h5><p>Instead of thinking of LDA as a classification algorithm, see it as a dimensionality reduction algorithm just like PCA. However, it takes not only information of $X$ but also their relationship with the response $Y$, which is different from PCA.</p>
+<h5 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h5><p>The main goal of this dimensionality reduction algorithm is to reduce the dimensions by projecting the feature space $X$ into a sub-space, such that in this sub-space, $X’$ has the largest “separability” for different classes of $Y$. To show what it means, here is a image illustration.</p>
+<img src="post_images\lda_dimension.png" alt="gda" title="Illustration of LDA Dimensionality Reduction Method" style="zoom:50%;" />
+
+<p>In this example, $X$ was in 2-D space and was projected onto a 1-D line space. Note that in the figure below, once we found the optimal projection line, two classes are quite separated in the sub-space.</p>
+<p>Mathematically, </p>
+<ul>
+<li>Suppose $X \in \mathbb{R}^{n \times d}$ and $Y \in {0,1,\dots, C}$ is categorical data;</li>
+<li>Let $W \in \mathbb{R}^{d \times \tilde d}$ to be the projection matrix, and the linear transformation $W^T \cdot X = \tilde X \in \mathbb{R}^{n \times \tilde d}$ to be the projection operation;</li>
+<li>For “separability”, we define that if features of two classes $j$ and $k$ are <strong>more separate</strong> if the <strong>distance of $X_i$ within each class is smaller</strong> and the <strong>distances of $X_i$ between two classes is larger</strong>; We define a objective function $J(W)$ that denotes “separability”, the model is to find $W$ such that it maximize the objective function</li>
+</ul>
+<h5 id="Construct-the-Model"><a href="#Construct-the-Model" class="headerlink" title="Construct the Model"></a>Construct the Model</h5><h6 id="Define-Objective-Function"><a href="#Define-Objective-Function" class="headerlink" title="Define Objective Function"></a>Define Objective Function</h6><p>Let’s start with a 2-class problem that $Y \in {0,1}$. Suppose after projection, the new feature space $\tilde X \in \mathbb{R}^{n \times \tilde d}$ of each class has mean $\tilde \mu_0, \tilde \mu_1$ and covariance matrix $\tilde S_0, \tilde S_1$. We define<br>$$<br>J(W) = \frac{\text{seperability between 2 classes}}{\text{seperability within each classes}}=\frac{|(\tilde \mu_0 - \tilde \mu_1)(\tilde \mu_0 - \tilde \mu_1)^T|}{|\tilde S_0 + \tilde S_1|}<br>$$<br>To write $J(W)$ in terms of $W$. The denominator:<br>$$<br>\begin{align}<br>    \tilde S_i &amp;= \sum_{\tilde x \in i}(\tilde x -\tilde \mu_i)(\tilde x -\tilde \mu_i)^T \\<br>    &amp;= \sum_{x \in i}(W^T x -W^T \mu_i)(W^T x -W^T \mu_i)^T \\<br>    &amp;= \sum_{x \in i}W^T(x -\mu_i)(x -\mu_i)^TW \\<br>    &amp;= \sum_{x \in i}W^TS_iW<br>\end{align}<br>$$<br>Where $S_i$ is the covariance matrix of original feature space $X$ that are labeled by the $i_{th}$ class. Define $S_w$ to be the <strong><u>within-class scatter matrix</u></strong><br>$$<br>S_W = \sum_{i \in C} S_i<br>$$</p>
+<p>$$<br>\tilde S_W = W^TS_WW<br>$$</p>
+<p>And the numerator:<br>$$<br>\begin{align}\<br>    (\tilde \mu_0 - \tilde \mu_1)(\tilde \mu_0 - \tilde \mu_1)^T &amp;= (W^T\mu_0 - W^T\mu_1)(W^T\mu_0 - W^T\mu_1)^T \\<br>    &amp;= W^T(\mu_0 - \mu_1)(\mu_0 - \mu_1)^TW<br>\end{align}<br>$$<br>Define $S_B$ to be <strong><u>between-class scatter matrix</u></strong>,<br>$$<br>S_B = \sum_{i \in C}(\mu_i - \mu)(\mu_i - \mu)^T<br>$$<br>Thus,<br>$$<br>\tilde S_B = W^TS_BW<br>$$<br>We can write $J(W)$[^3] as the following form:<br>$$<br>J(W) = \frac{|\tilde S_B|}{|\tilde S_W|} = \frac{|W^TS_BW|}{|W^TS_WW|}<br>$$</p>
+<blockquote>
+<p>The objective function $J$ is a measure of the difference between class means (encoded in the between-class scatter matrix) normalized by a measure of the within-class scatter matrix.</p>
+</blockquote>
+<p>– <a href="http://www.sci.utah.edu/~shireen/pdfs/tutorials/Elhabian_LDA09.pdf" target="_blank" rel="noopener">A Tutorial on Data Reduction</a>, Shireen Elhabian and Aly A. Farag</p>
+<p>Note that our objective function has been extended to multi-classes situations.</p>
+<h6 id="Solution-of-Objective-Function"><a href="#Solution-of-Objective-Function" class="headerlink" title="Solution of Objective Function"></a>Solution of Objective Function</h6><p>Either by matrix calculus or by optimization method, the question of maximizing $J(W)$ is transformed to solving an equation:<br>$$<br>S_Bw = \lambda S_Ww<br>$$<br>Or<br>$$<br>S_W^{-1}S_Bw = \lambda w<br>$$<br>Notice that this is a linear system where $\lambda = J(W)$ is a scaler and represents the eigenvalues, and $W = [w_1 w_2 \dots w_{C-1}]$ is the eigen-vector matrix where each column contains an eigen-vector. When there are only two classes, $C = 2$, $W = w \in \mathbb{R}^{d \times 1}$, recall $S_B = (\mu_0 - \mu_1)(\mu_0 - \mu_1)^T$, Thus $S_Bw$‘s direction is fixed at $\mu_0 - \mu_1$, only the length will change. Without losing anything, we assume that<br>$$<br>S_Bw = \beta \lambda (\mu_0 - \mu_1)<br>$$<br>So the equation becomes:<br>$$<br>S_W^{-1}(\mu_0 - \mu_1) = w<br>$$<br>To maximize $J$ means $w$ should be the eigenvector that corresponds to the <strong>largest</strong> eigenvalue $\lambda$.</p>
+<h4 id="Some-Observations"><a href="#Some-Observations" class="headerlink" title="Some Observations"></a>Some Observations</h4><ol>
+<li><p>Notice that for two-classes case, the $\theta_1$ for approach 1 is  the $w$ in approach 2, means that graphically, the classifier looks for a optimal subspace that separates the classes the best, and calculate sigmoid of that to be the predictions.</p>
+</li>
+<li><p>For dimensionality reduction purpose, in a $C$ classes problem, LDA or GDA can reduce feature space $X$ into sub-space of dimension ${1, 2, \dots, C-1}$. e.g. for 2-classes problem, the reduced dimension has to be 1.</p>
+<ul>
+<li>Explanation: notice in $S_W^{-1}S_Bw = \lambda w$, $S_B = \sum_{i \in C}(\mu_i - \mu)(\mu_i - \mu)^T$, so $rank(S_B) \leq C - 1$, there are at most $C-1$ eigenvectors in the linear system for $W$.</li>
+</ul>
+</li>
+<li><p>Though from approach 2, we can “separate” the samples, without further calculation of $\theta_0$ (as we seen in approach 1), the decision boundary cannot be deduced.</p>
+</li>
+</ol>
+<h2 id="Visualization-of-Two-Approaches"><a href="#Visualization-of-Two-Approaches" class="headerlink" title="Visualization of Two Approaches"></a>Visualization of Two Approaches</h2><img src="\post_images\gda_visual.png" alt="gda_visual" style="zoom:100%;" />
+
+<h6 id="Code-for-the-Graph"><a href="#Code-for-the-Graph" class="headerlink" title="Code for the Graph"></a>Code for the Graph</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.discriminant_analysis <span class="keyword">import</span> LinearDiscriminantAnalysis</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Import some data to play with</span></span><br><span class="line">iris = datasets.load_iris()</span><br><span class="line"><span class="comment"># For simplicity, we only take the two classes and first two features.</span></span><br><span class="line">ylabels = iris.target</span><br><span class="line">y = ylabels[ylabels!=<span class="number">2</span>]</span><br><span class="line">X = iris.data[:, :<span class="number">2</span>][ylabels!=<span class="number">2</span>] <span class="comment"># we only take the first two features.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Fit an lda model</span></span><br><span class="line">lda = LinearDiscriminantAnalysis(n_components=<span class="number">1</span> ,solver=<span class="string">'eigen'</span>)</span><br><span class="line">lda.fit(X, y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the training points</span></span><br><span class="line">plt.clf()</span><br><span class="line">ax = plt.gca()</span><br><span class="line">ax.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, cmap=plt.cm.Set1, edgecolor=<span class="string">'k'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set style</span></span><br><span class="line">ax.set_xlim([<span class="number">4</span>, <span class="number">7.5</span>])</span><br><span class="line">ax.set_ylim([<span class="number">1.5</span>, <span class="number">5.0</span>])</span><br><span class="line">ax.set_aspect(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the projection direction</span></span><br><span class="line">x_vals = np.array(ax.get_xlim())</span><br><span class="line">y_vals = lda.coef_[<span class="number">0</span>,<span class="number">1</span>] * x_vals / lda.coef_[<span class="number">0</span>,<span class="number">0</span>] + <span class="number">12</span></span><br><span class="line">ax.plot(x_vals, y_vals, color=<span class="string">'blue'</span>, linestyle=<span class="string">'dashed'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the decision boundary</span></span><br><span class="line">nx, ny = <span class="number">200</span>, <span class="number">100</span></span><br><span class="line">x_min, x_max = ax.get_xlim()</span><br><span class="line">y_min, y_max = ax.get_ylim()</span><br><span class="line">xx, yy = np.meshgrid(np.linspace(x_min, x_max, nx), np.linspace(y_min, y_max, ny))</span><br><span class="line">Z = lda.predict_proba(np.c_[xx.ravel(), yy.ravel()])</span><br><span class="line">Z = Z[:, <span class="number">1</span>].reshape(xx.shape)</span><br><span class="line">plt.contour(xx, yy, Z, [<span class="number">0.5</span>], colors=<span class="string">'green'</span>,linestyles=<span class="string">'dotted'</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="Comment-about-the-graph-and-questions-remained"><a href="#Comment-about-the-graph-and-questions-remained" class="headerlink" title="Comment about the graph and questions remained:"></a>Comment about the graph and questions remained:</h4><ul>
+<li>We used LDA on a data set with 2 dimension,  LDA both reduced the dimension to 1-D and provide classification of two classes.</li>
+<li>the projection direction and the decision boundary is <strong>perpendicular</strong> to each other, why? Is it still true for higher dimensionalities?</li>
+</ul>
+<p>[^1]: Note that in some materials, like <a href="https://www.cs.uwyo.edu/~clan/teach/ml19/08_gdanb.pdf" target="_blank" rel="noopener">here</a>, GDA is thought to be a generalized version of LDA and QDA, which only assumes normal distribution and LDA assumes same covariance. And in other materials, the short GDA may stands for generalized discriminant analysis, which is a part of generalized linear model, which can be interpreted as kernel LDA. Here, GDA means that we assume $X$ to be multivariate Gaussian with same covariance matrix for all classes.</p>
+<p>[^2]: For detailed mathematical deduction, refer to <a href="https://web.stanford.edu/class/stats202/content/lec9.pdf" target="_blank" rel="noopener">here</a>.<br>[^3]: About the form of $J(W)$, in certain other material, it uses the trace instead of determinant in the numerator and denominator. However, they seems to end up solving the same equation.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+            <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          
+            <a href="/tags/GDA/" rel="tag"># GDA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/20/logsiticRegression/" rel="next" title="Logistic Regression Updated with Newton's Method">
+                <i class="fa fa-chevron-left"></i> Logistic Regression Updated with Newton's Method
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Brief-Introduction-to-Generative-Models"><span class="nav-number">1.</span> <span class="nav-text">Brief Introduction to Generative Models</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#In-Math"><span class="nav-number">1.0.1.</span> <span class="nav-text">In Math</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A-Small-Graph-Illustration-of-These-Two-Kinds-of-Algorithms"><span class="nav-number">1.0.2.</span> <span class="nav-text">A Small Graph Illustration of These Two Kinds of Algorithms</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gaussian-Discriminant-Analysis-GDA"><span class="nav-number">2.</span> <span class="nav-text">Gaussian Discriminant Analysis (GDA)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Approach-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">Approach 1</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Considerations"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">Considerations</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Assumptions"><span class="nav-number">2.0.1.2.</span> <span class="nav-text">Assumptions</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Fit"><span class="nav-number">2.0.1.3.</span> <span class="nav-text">Model Fit</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Prediction"><span class="nav-number">2.0.1.4.</span> <span class="nav-text">Prediction</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Decision-Boundary"><span class="nav-number">2.0.1.5.</span> <span class="nav-text">Decision Boundary</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Sum-Up"><span class="nav-number">2.0.1.6.</span> <span class="nav-text">Sum Up</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Approach-2-LDA"><span class="nav-number">2.0.2.</span> <span class="nav-text">Approach 2 (LDA)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Intuition"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">Intuition</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Objective"><span class="nav-number">2.0.2.2.</span> <span class="nav-text">Objective</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Construct-the-Model"><span class="nav-number">2.0.2.3.</span> <span class="nav-text">Construct the Model</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Define-Objective-Function"><span class="nav-number">2.0.2.3.1.</span> <span class="nav-text">Define Objective Function</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Solution-of-Objective-Function"><span class="nav-number">2.0.2.3.2.</span> <span class="nav-text">Solution of Objective Function</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Some-Observations"><span class="nav-number">2.0.3.</span> <span class="nav-text">Some Observations</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Visualization-of-Two-Approaches"><span class="nav-number">3.</span> <span class="nav-text">Visualization of Two Approaches</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Code-for-the-Graph"><span class="nav-number">3.0.0.0.1.</span> <span class="nav-text">Code for the Graph</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Comment-about-the-graph-and-questions-remained"><span class="nav-number">3.0.1.</span> <span class="nav-text">Comment about the graph and questions remained:</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("nA0z6t6V440lRv0XQbFpR129-MdYXbMMI", "4YKR5znQYtCiWJjA47hoohhE");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
