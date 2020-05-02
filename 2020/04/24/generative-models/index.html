@@ -87,10 +87,10 @@
 <meta property="og:description" content="The differences of generative models and discriminative models. How are they related.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.stack.imgur.com/Xrmqg.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/24/generative-models/post_images/lda_dimension.png">
-<meta property="og:image" content="http://yoursite.com/post_images/gda_visual.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/24/generative-models/lda_dimension.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/24/generative-models/gda_visual.png">
 <meta property="article:published_time" content="2020-04-24T22:08:22.000Z">
-<meta property="article:modified_time" content="2020-04-28T04:44:43.716Z">
+<meta property="article:modified_time" content="2020-05-02T22:55:14.756Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
 <meta property="article:tag" content="algorithm">
@@ -334,20 +334,19 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/24/generative-models/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/24/generative-models/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
-          
-             <span id="/2020/04/24/generative-models/" class="leancloud_visitors" data-flag-title="Generative Models -- Gaussian Discriminant Analysis">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">Visitors&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
           
 
           
@@ -432,7 +431,7 @@
 <h4 id="Approach-2-LDA"><a href="#Approach-2-LDA" class="headerlink" title="Approach 2 (LDA)"></a>Approach 2 (LDA)</h4><p>Though approach 1 seems to be very intuitive, there is another approach of interpreting this model. What surprised me is that this different approach seems to be quite unrelated, yet them come to the same model. I will try my best to compare these two approaches.</p>
 <h5 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h5><p>Instead of thinking of LDA as a classification algorithm, see it as a dimensionality reduction algorithm just like PCA. However, it takes not only information of $X$ but also their relationship with the response $Y$, which is different from PCA.</p>
 <h5 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h5><p>The main goal of this dimensionality reduction algorithm is to reduce the dimensions by projecting the feature space $X$ into a sub-space, such that in this sub-space, $X’$ has the largest “separability” for different classes of $Y$. To show what it means, here is a image illustration.</p>
-<img src="post_images\lda_dimension.png" alt="gda" title="Illustration of LDA Dimensionality Reduction Method" style="zoom:50%;" />
+<img src="lda_dimension.png" alt="gda" title="Illustration of LDA Dimensionality Reduction Method" style="zoom:50%;" />
 
 <p>In this example, $X$ was in 2-D space and was projected onto a 1-D line space. Note that in the figure below, once we found the optimal projection line, two classes are quite separated in the sub-space.</p>
 <p>Mathematically, </p>
@@ -461,7 +460,7 @@
 <li><p>Though from approach 2, we can “separate” the samples, without further calculation of $\theta_0$ (as we seen in approach 1), the decision boundary cannot be deduced.</p>
 </li>
 </ol>
-<h2 id="Visualization-of-Two-Approaches"><a href="#Visualization-of-Two-Approaches" class="headerlink" title="Visualization of Two Approaches"></a>Visualization of Two Approaches</h2><img src="\post_images\gda_visual.png" alt="gda_visual" style="zoom:100%;" />
+<h2 id="Visualization-of-Two-Approaches"><a href="#Visualization-of-Two-Approaches" class="headerlink" title="Visualization of Two Approaches"></a>Visualization of Two Approaches</h2><img src="gda_visual.png" alt="gda_visual" style="zoom:100%;" />
 
 <h6 id="Code-for-the-Graph"><a href="#Code-for-the-Graph" class="headerlink" title="Code for the Graph"></a>Code for the Graph</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.discriminant_analysis <span class="keyword">import</span> LinearDiscriminantAnalysis</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Import some data to play with</span></span><br><span class="line">iris = datasets.load_iris()</span><br><span class="line"><span class="comment"># For simplicity, we only take the two classes and first two features.</span></span><br><span class="line">ylabels = iris.target</span><br><span class="line">y = ylabels[ylabels!=<span class="number">2</span>]</span><br><span class="line">X = iris.data[:, :<span class="number">2</span>][ylabels!=<span class="number">2</span>] <span class="comment"># we only take the first two features.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Fit an lda model</span></span><br><span class="line">lda = LinearDiscriminantAnalysis(n_components=<span class="number">1</span> ,solver=<span class="string">'eigen'</span>)</span><br><span class="line">lda.fit(X, y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the training points</span></span><br><span class="line">plt.clf()</span><br><span class="line">ax = plt.gca()</span><br><span class="line">ax.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, cmap=plt.cm.Set1, edgecolor=<span class="string">'k'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set style</span></span><br><span class="line">ax.set_xlim([<span class="number">4</span>, <span class="number">7.5</span>])</span><br><span class="line">ax.set_ylim([<span class="number">1.5</span>, <span class="number">5.0</span>])</span><br><span class="line">ax.set_aspect(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the projection direction</span></span><br><span class="line">x_vals = np.array(ax.get_xlim())</span><br><span class="line">y_vals = lda.coef_[<span class="number">0</span>,<span class="number">1</span>] * x_vals / lda.coef_[<span class="number">0</span>,<span class="number">0</span>] + <span class="number">12</span></span><br><span class="line">ax.plot(x_vals, y_vals, color=<span class="string">'blue'</span>, linestyle=<span class="string">'dashed'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the decision boundary</span></span><br><span class="line">nx, ny = <span class="number">200</span>, <span class="number">100</span></span><br><span class="line">x_min, x_max = ax.get_xlim()</span><br><span class="line">y_min, y_max = ax.get_ylim()</span><br><span class="line">xx, yy = np.meshgrid(np.linspace(x_min, x_max, nx), np.linspace(y_min, y_max, ny))</span><br><span class="line">Z = lda.predict_proba(np.c_[xx.ravel(), yy.ravel()])</span><br><span class="line">Z = Z[:, <span class="number">1</span>].reshape(xx.shape)</span><br><span class="line">plt.contour(xx, yy, Z, [<span class="number">0.5</span>], colors=<span class="string">'green'</span>,linestyles=<span class="string">'dotted'</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
 
@@ -856,124 +855,138 @@
 
 
 
-
-
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
   
-
-
-
-
-
-  
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("nA0z6t6V440lRv0XQbFpR129-MdYXbMMI", "4YKR5znQYtCiWJjA47hoohhE");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
     });
   </script>
 
 
 
   
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Generative Models -- Gaussian Discriminant Analysis'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Generative Models -- Gaussian Discriminant Analysis'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
 
   
 
