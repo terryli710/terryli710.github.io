@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="machine learning,algorithm,kernel," />
+  <meta name="keywords" content="machine learning,algorithm,em,gmm," />
 
 
 
@@ -79,23 +79,24 @@
 
 
 
-<meta name="description" content="Note down some facts about kernel method.">
+<meta name="description" content="Notes of GMM, and it&#39;s generalized form EM algorithm">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kernel Method Note">
-<meta property="og:url" content="http://yoursite.com/2020/05/12/kernel-method/index.html">
+<meta property="og:title" content="EM Algorithm Notes">
+<meta property="og:url" content="http://yoursite.com/2020/06/01/em-algorithm/index.html">
 <meta property="og:site_name" content="TERRY&#39;S BLOG">
-<meta property="og:description" content="Note down some facts about kernel method.">
+<meta property="og:description" content="Notes of GMM, and it&#39;s generalized form EM algorithm">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png">
-<meta property="og:image" content="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png">
-<meta property="article:published_time" content="2020-05-12T18:48:35.000Z">
-<meta property="article:modified_time" content="2020-05-13T04:36:40.086Z">
+<meta property="og:image" content="https://www.mathworks.com/help/examples/stats/win64/ClusterDataUsingAGaussianMixtureModelExample_01.png">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/e/ea/K-means_convergence.gif">
+<meta property="article:published_time" content="2020-06-01T16:44:06.000Z">
+<meta property="article:modified_time" content="2020-06-03T17:37:34.300Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
 <meta property="article:tag" content="algorithm">
-<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="em">
+<meta property="article:tag" content="gmm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png">
+<meta name="twitter:image" content="https://www.mathworks.com/help/examples/stats/win64/ClusterDataUsingAGaussianMixtureModelExample_01.png">
 
 
 
@@ -125,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/05/12/kernel-method/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/06/01/em-algorithm/"/>
 
 
 
 
 
-  <title>Kernel Method Note | TERRY'S BLOG</title>
+  <title>EM Algorithm Notes | TERRY'S BLOG</title>
   
 
 
@@ -268,7 +269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/12/kernel-method/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/01/em-algorithm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yiheng 'Terry' Li">
@@ -285,7 +286,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kernel Method Note</h1>
+          <h1 class="post-title" itemprop="name headline">EM Algorithm Notes</h1>
         
 
         <div class="post-meta">
@@ -297,8 +298,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-12T11:48:35-07:00">
-                2020-05-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-01T09:44:06-07:00">
+                2020-06-01
               </time>
             
 
@@ -338,8 +339,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/05/12/kernel-method/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2020/05/12/kernel-method/" itemprop="commentCount"></span>
+                <a href="/2020/06/01/em-algorithm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/06/01/em-algorithm/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -354,7 +355,7 @@
 
           
               <div class="post-description">
-                  Note down some facts about kernel method.
+                  Notes of GMM, and it's generalized form EM algorithm
               </div>
           
 
@@ -371,52 +372,99 @@
       
 
       
-        <h2 id="Motivation-of-Kernel-Method"><a href="#Motivation-of-Kernel-Method" class="headerlink" title="Motivation of Kernel Method"></a>Motivation of Kernel Method</h2><p>In classifications, it is often the case that we want to obtain a non-linear decision boundary. </p>
-<img title="figure 1: non-linear boundary" src="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png" alt="non-linear boundary" style="zoom:50%;" />
-
-<p>For example, for this problem (figure 2), we want a desicion boundary that is somewhat like a circle, however, our model only yields linear boundaries. In order to let our model to have more flexibility without changing the basic algorithms, we can apply a transformation onto the feature space $X$. like the figure on the right. In higher dimensionality, we can see that a linear seperation hyperplane serves as a non-linear decision boundary in original feature space. In this case, we performed a transfor somewhat like $(x-\mu)^2$ to make the center $X$ to be smaller while the further away from the center $\mu$, the larger the values are.</p>
-<img title="figure 2: Kernel example" src="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png" alt="kernel visualize" style="zoom:80%;" />
-
-<p>This idea is called feature map.</p>
-<h4 id="Feature-Map"><a href="#Feature-Map" class="headerlink" title="Feature Map"></a>Feature Map</h4><p>Consider a function $\phi(X): \mathbb{R}^d \to \mathbb{R}^p$ that transforms (or, projects) the features $X \in \mathbb{R}^d$ to a new feature space $X’ \in \mathbb{R}^p$. We call<br>$$<br>\begin{align}<br>    \text{the function } \phi &amp;\text{: feature map} \\<br>    X’ &amp;\text{: (new) features} \\<br>    X &amp;\text{: attributes}<br>\end{align}<br>$$<br>e.g. for instance, the attributes contain 2 variables, $X = \{x_1, x_2\}$, the feature map wants to create a new feature space that includes <strong>any conbination of attributes within degree of 3</strong>. Thus<br>$$<br>\phi(X) = [1, x_1, x_2, x_1^2, x_2^2, x_1x_2, x_1^3, x_2^3, x_1^2x_2, x_1x_2^2]<br>$$</p>
-<p>Now $\phi(X)$ has 10 terms. However, this number could go up very rapidly as the <strong>number of attributes</strong> and the number of polynomials that we want to express goes up, which makes feature map a problem in computing. That is, <strong><u>after feature map, the feature space could have a tremendously large (or infinate) dimensionality, which causes problem for computing</u></strong>. That is where we introduce the kernel method.</p>
-<h2 id="Kernel-Method"><a href="#Kernel-Method" class="headerlink" title="Kernel Method"></a>Kernel Method</h2><h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>Given a feature map function $\phi$, we define the kernel that corresponds to this feature mapping is as follows<br>$$<br>K(x, z) = &lt;\phi(x), \phi(z)&gt;<br>$$<br>where $&lt;a, b&gt; = a^Tb$, denotes dot product of two vectors. And $K: \mathbb{R}^{p} \times \mathbb{R}^{p} \to \mathbb{R}$</p>
-<p>The trick is: </p>
+        <h2 id="EM-And-GMM"><a href="#EM-And-GMM" class="headerlink" title="EM And GMM"></a>EM And GMM</h2><p><a href="https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm" target="_blank" rel="noopener">Expectation-maximization</a>(EM) algorithm, provides a way to do <strong>MLE</strong> or <strong>MAE</strong> when there is incomplete data or <strong>unobserved latent variables</strong>.</p>
+<p><strong>NOTE</strong>: <em>EM is general way of getting MLE or MAE estimations, not necessarily for clustering.</em></p>
+<p><a href="https://en.wikipedia.org/wiki/Mixture_model" target="_blank" rel="noopener">Gaussian mixture model</a>(GMM) is a statistical model that can serve as a clustering algorithm. It assumes the data points to be from several gaussian distributions and uses EM algorithm to obtain the MLE estimations of those gaussians.(See plot)</p>
+<p><img src="https://www.mathworks.com/help/examples/stats/win64/ClusterDataUsingAGaussianMixtureModelExample_01.png" alt="fitting gmm"></p>
+<p>Started from GMM algorithm.</p>
+<h2 id="GMM-Algorithm"><a href="#GMM-Algorithm" class="headerlink" title="GMM Algorithm"></a>GMM Algorithm</h2><h4 id="Description-of-the-Model"><a href="#Description-of-the-Model" class="headerlink" title="Description of the Model"></a>Description of the Model</h4><p>Remember in K-means algorithm, which is also a cluster algorithm, it assigned each data point to a cluster by calculating the distance between the point and the cluster centroids and assigned to the closest one (See gif). Fitting a K-means algorithm consists of iteratively :</p>
 <ol>
-<li>We can design a kernel function instead of a feature transformation function, since feature map functions maybe hard to image in higher dimensionalities, knowing that a valid kernel maps to a feature map;</li>
-<li>Using kernel, we can avoid computational problem with feature map;</li>
+<li>Assign each point to a cluster;</li>
+<li>Update the centroid of each cluster.</li>
 </ol>
-<p>Why these are true? Let’s take a closer look at each of them.</p>
-<h4 id="1-What-is-a-Valid-Kernel"><a href="#1-What-is-a-Valid-Kernel" class="headerlink" title="1. What is a Valid Kernel"></a>1. What is a Valid Kernel</h4><p>For functions $K$ from $\mathbb{R}^{p} \times \mathbb{R}^{p}$ to $\mathbb{R}$, valid kernel functions will be able to be “decomposed” into feature map’s dot product like above. However, it is not always convenient to check the feature map function since it could be very complex. The save way that we can design a kernel function knowing it is valid or not is by looking at the kernel matrix.</p>
-<h6 id="Kernel-Matrix"><a href="#Kernel-Matrix" class="headerlink" title="Kernel Matrix"></a>Kernel Matrix</h6><p>Suppose there are $n$ samples $X = x^{(1)},\dots, x^{(n)} $, the <strong>kernel matrix</strong> of a kernel function $K(x, z)$ on this data set $X$ is defined as $K \in \mathbb{R}^{n \times n}$, where<br>$$<br>K_{ij} = K(x^{(i)}, x^{(j)}) = \phi(x^{(i)})^T\phi(x^{(j)})<br>$$<br>the element in position $(i,j)$ is the kernel function’s result of $x^{(i)}$ and $x^{(j)}$. </p>
-<p>​    Observations:</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/K-means_convergence.gif" alt="k-means" style="zoom:50%;" />
+
+<p>Image GMM algorithm is trying to do a similar thing, with some modifications:</p>
 <ol>
-<li><p>The kernel matrix is symmetric, $K_{ij}= \phi(x^{(i)})^T\phi(x^{(j)}) = \phi(x^{(j)})^T\phi(x^{(i)}) = K_{ji}$;</p>
+<li>Assume each cluster is sampled from a <strong>gaussian distribution</strong>;</li>
+<li>And there is a probability for a data point to be sampled from certain cluster;</li>
+</ol>
+<p>So, it is almost like a parametric method of K-means algorithm. And fitting a <a name="1">GMM</a> consists of (very roughly):</p>
+<ol>
+<li>Estimate the probabilities of each point being in each cluster (gaussian);</li>
+<li>Update the parameters of each cluster (mean and variance of gaussian).</li>
+</ol>
+<h3 id="Mathematical-Definition"><a href="#Mathematical-Definition" class="headerlink" title="Mathematical Definition"></a>Mathematical Definition</h3><h5 id="Model-Setting"><a href="#Model-Setting" class="headerlink" title="Model Setting"></a>Model Setting</h5><p><strong>NOTE</strong>: <em>$x^{(i)}$: data points ;$K$: number of clusters (pre-determined just like k-means); $z^{(i)}=j$: latent variable, means “Data point $x^{(i)}$ comes from cluster $j$”;</em></p>
+<p><strong>Given</strong>: $x^{(1)}, x^{(2)}, \dots, x^{(n)} \in \mathbb{R}^d$ and $K \in \{1,2,3,\dots\}$.</p>
+<p><strong>Do</strong>: find $z^{(i)}=j$’s probability $p(z^{(i)}=j)$: the probability that a point $x^{(i)}$ is sampled from cluster $j$.</p>
+<p><strong>Model</strong>:<br>$$<br>p(x^{(i)}, z^{(i)}=j) = p(x^{(i)}| z^{(i)=j})p(z^{(i)}=j) \\<br>z^{(i)} \sim \text{Multinomial}(\phi) \\<br>x^{(i)}| z^{(i)}=j \sim N(\mu_j, \sigma^2_j)<br>$$<br>By words, the model assumes:</p>
+<ol>
+<li>The probability of  $z^{(i)}|x^{(i)}$ can be obtained by joint distribution of $x^{(i)}, z^{(i)}$, which is given by two “simpler” form of distributions that we can estimate;</li>
+<li>Latent variable $z^{(i)}$ is Multinomial;</li>
+<li>$x^{(i)}$ given $z^{(i)}$ is Gaussian.</li>
+</ol>
+<h5 id="Model-Fit"><a href="#Model-Fit" class="headerlink" title="Model Fit"></a>Model Fit</h5><p>Fitting the model requires the EM algorithm.</p>
+<h2 id="The-EM-Algorithm"><a href="#The-EM-Algorithm" class="headerlink" title="The EM Algorithm"></a>The EM Algorithm</h2><p>The EM algorithm consists of <a href="#1"><strong>iterating two steps</strong></a>, which very much resemble the two steps in k-means algorithm. The differences between EM and directly MLE is that EM algorithm, which is dealing with missing data or latent variables, adds a step (E-step) to estimate them, and uses its estimation to do MLE (M-step).</p>
+<h5 id="Description-of-the-Idea"><a href="#Description-of-the-Idea" class="headerlink" title="Description of the Idea"></a>Description of the Idea</h5><p>Assume that the distributions of $z^{(i)}$ and $x^{(i)}|z^{(i)}$ are parametrized by $\theta$. Then, ultimately, we want to find $\theta$ such that:<br>$$<br>\begin{align}<br>    \theta_{MLE} &amp;= arg\max_{\theta}l(\theta) \\<br>    &amp;= arg\max_{\theta}\sum_{i=1}^{n}\log p(x^{(i)};\theta)<br>\end{align}<br>$$<br>But we cannot optimize that directly. Here are some <strong>observations</strong>:</p>
+<ol>
+<li>Most obviously, we do not know the pdf of $x$.</li>
+<li>We can write $p(x^{(i)};\theta) = \sum_{j=1}^{K} p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta)$, which we made assumptions on, can we estimate using these?  While for Gaussian distribution, we can estimate its parameters using MLE by calculating the gradients, it is not feasible to directly done here as the gradient depends on $p(z^{(i)}=j;\theta)$, which were not observed, and also requires estimation;</li>
+<li>On the other hand, the gradients regarding the Multinomial distributions depends on Gaussians;</li>
+<li>So, a simple way of optimizing the log-likelihood other than directly calculating gradient is needed.</li>
+</ol>
+<p>The main idea, which was hinted in the observations, is that we have an annoying structure that makes the calculation to be very complicated<br>$$<br>\log \sum_{j=1}^K(p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta))<br>$$<br>So directly maximizing $l(\theta)$ is not a good idea.</p>
+<p><strong>THOUGHT 1 (goal)</strong>: Find a function $f(\theta)$, such that<br>$$<br>arg\max_{\theta}l(\theta) = arg\max_{\theta}\sum_{i=1}^{n}f_{x^{(i)}}(\theta)<br>$$<br>and $f(\theta)$ has a nicer form to estimate by taking gradients.</p>
+<p><strong>THOUGHT 2 (failed try)</strong>: Recall Jensen’s inequality, we have<br>$$<br>\begin{align}<br>    \log &amp;\sum_{j=1}^K(p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta)) \\<br>    &amp;=  \log \sum_{j=1}^Kp(x^{(i)}, z^{(i)};\theta)\\<br>    &amp;\geq \sum_{j=1}^K\log(p(x^{(i)}, z^{(i)};\theta))<br>\end{align}<br>$$</p>
+<p>If $f_{x^{(i)}}(\theta) = \sum_{j=1}^K\log(p(x^{(i)}, z^{(i)};\theta))$, the summation is out of the way, and $p(x^{(i)}, z^{(i)})$ can be easily expressed by the model. </p>
+<p><em>NOT WORKING!</em>: Though $p(x,z)$ has a nice form, maximizing the latter does not guarantee maximizing the previous!.</p>
+<p><strong>THOUGHT 3 (brilliant)</strong>: Let $f(\theta)$ to be<br>$$<br>f_{x^{(i)}}(\theta) = \sum_{j=1}^{K}Q_j\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q_j}<br>$$<br>where for $\forall j \in {1,\dots, K}, Q_j &gt; 0$ and $\sum_j Q_j = 1 $. Some observations:</p>
+<ol>
+<li>Easy to see, we are also using $p(x, z)$ here, so <strong>easily estimated</strong> checked;</li>
+<li>“Mysterious” variable $Q_j$s are introduced, which satisfies some conditions. Those conditions make $Q_j$ to be able to serves as the <strong>pdf function of a discrete R.V.</strong>;</li>
+<li>Most importantly, we can show: maximizing $f$ is related to maximizing $l$: </li>
+</ol>
+<p>$$<br>\text{Suppose } \theta_M = arg\max_{\theta}f(\theta) \\<br>\begin{align}<br>    f(\theta_M) - f(\theta) &amp;= \log(p(x^{(i)};\theta_M)) - \log(p(x^{(i)};\theta)) - \sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} \\<br>    \log(p(x^{(i)};\theta_M)) - \log(p(x^{(i)};\theta)) &amp;= f(\theta_M) - f(\theta) + \sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)}<br>\end{align}<br>$$</p>
+<p>​            These means: </p>
+<ul>
+<li>We maximized $f(\theta)$ by taking $\theta_M$;</li>
+<li>log-likelihood $l(\theta)$ will be increasing (at least not decreasing) if $\sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} &gt; 0$</li>
+</ul>
+<ol start="4">
+<li>$\sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} &gt; 0$ is obtained if we let </li>
+</ol>
+<p>$$<br>Q_j = p(z^{(i)}|x^{(i)};\theta)<br>$$</p>
+<h5 id="Wrap-up-the-Idea"><a href="#Wrap-up-the-Idea" class="headerlink" title="Wrap up the Idea"></a>Wrap up the Idea</h5><ol>
+<li>Do not try to obtained $\theta_{MLE}$ by maximizing</li>
+</ol>
+<p>$$<br>l(\theta) = \sum_{i=1}^{n}\log p(x^{(i)};\theta)<br>$$</p>
 <ol start="2">
-<li>For any vector $z$, we have $z^TKz = \sum_k (\sum_iz_i \phi(x^{(i)}))^2 \geq 0$.</li>
+<li>Introducing $Q(z^{(i)}) = p(z^{(i)}|x^{(i)};\theta)$, and maximizing $f(\theta)$</li>
 </ol>
-</li>
+<p>$$<br>f(\theta) = \sum_{j=1}^{K} Q(z^{(i)})\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q(z^{(i)})}<br>$$</p>
+<p><strong>NOTE</strong>: <em>$f(\theta)$ is actually an expectation $f(\theta) = E(log\frac{p(x^{(i)}, z^{(i)}; \theta)}{Q(z^{(i)})} | x^{(i)}; \theta)$</em></p>
+<p>Naturally, we can see how this idea works: <strong>First, re-estimate $Q(z^{(i)})$ according to new $\theta$. Then, update $\theta$ with renewed $Q(z^{(i)})$.</strong> Let’s properly write down this idea.</p>
+<p>##Formalizing the Algorithm</p>
+<ol>
+<li><strong>E-STEP</strong>: <em>GIVEN</em> = {$X$, $\theta$}; <em>DO</em> = calculate </li>
 </ol>
-<p>These lead to our theorem to judge whether a kernel is valid.</p>
-<p><strong>Mercer’s Theorem</strong>: Let $K:\mathbb{R}^{p} \times \mathbb{R}^{p} \to \mathbb{R}$ be given, Then for $k$ to be a valid (Mercer) kernel, iff for any $\{x^{(1)}, \dots, x^{(n)}\}, (m &lt; \infty)$, the corresponding kernel matrix is <strong>symmetric positiev semi-definite</strong>.</p>
-<h4 id="2-How-to-Avoid-phi-in-Calculation"><a href="#2-How-to-Avoid-phi-in-Calculation" class="headerlink" title="2. How to Avoid $\phi$ in Calculation"></a>2. How to Avoid $\phi$ in Calculation</h4><p>That is the topic of implementing kernel method in a algorithm.</p>
-<h2 id="Implementation-of-Kernel-Method"><a href="#Implementation-of-Kernel-Method" class="headerlink" title="Implementation of Kernel Method"></a>Implementation of Kernel Method</h2><h4 id="Version-1-With-the-Example-of-Least-Mean-Squares"><a href="#Version-1-With-the-Example-of-Least-Mean-Squares" class="headerlink" title="Version 1: With the Example of Least Mean Squares"></a>Version 1: With the Example of Least Mean Squares</h4><p>For example whe implementing linear regression, where our model is<br>$$<br>y = \theta^Tx + \epsilon<br>$$<br>Now we want to tranform our feauture $x$ to let the model has the ability to capture more trends. Now new features become $\phi(x)$. The model’s prediction is now<br>$$<br>\hat y = h_\theta(\phi(x)) = \theta^T\phi(x)<br>$$</p>
-<h6 id="Update-Rule"><a href="#Update-Rule" class="headerlink" title="Update Rule"></a>Update Rule</h6><p>If we are using gradient descent to update this model, the update rule is<br>$$<br>\theta := \theta + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)})<br>$$<br><strong>Claim</strong>: (proof is omitted here) we can find a set of parameters $\beta_i$ where $i = 1,2,\dots,n$, such that<br>$$<br>\theta = \sum_{i=1}^n \beta_i\phi(x^{(i)})<br>$$<br>then the update rule can be expressed as<br>$$<br>\begin{align}<br>    \theta &amp;:= \sum_{i=1}^n \beta_i \phi(x^{(i)}) + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)}) \\<br>    &amp;= \sum_{i=1}^n ( \beta_i + \alpha \frac{1}{n} \sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)})))\phi(x^{(i)}) \\<br>    &amp;= \sum_{i=1}^n \beta_{i(new)}\phi (x^{(i)})<br>\end{align}<br>$$<br>If we let every $\beta_i$ to be updated <strong>just like</strong> $\theta$ in the following way:<br>$$<br>\begin{align}<br>    \beta_i &amp;:= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \theta^T\phi(x^{(i)})) \\<br>    &amp;= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \sum_{j=1}^n \beta_j\phi(x^{(j)})^T\phi(x^{(i)})) \\<br>    &amp;= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \sum_{j=1}^n \beta_jK(x^{(j)}, x^{(i)}))<br>\end{align}<br>$$<br>where $\theta = \sum_{j=1}^n \beta_j\phi(x^{(j)})$ by our assumption; $K(x, z)$ is the kernel function for $\phi$; $i = 1, 2, \dots, n$. we can see that $\theta$ is completly replaced by calculation of kernel function $K$ in this case. </p>
-<p><strong>NOTE</strong>: The updates of $\theta$ and $\beta$ are “synchronized”. Each iteration of $\theta$ updated is equivalent to $\beta$ updated once. This is more clear if we write the update rule of $\beta$ in vecotrized way.</p>
-<p>Given $\beta \in \mathbb{R}^n$, $K^{(i)} = [K(x^{(i)}, x^{(1)}), K(x^{(i)}, x^{(2)}), \dots, K(x^{(i)}, x^{(n)})]^T$, so that $K = [K^{(1)}, K^{(1)}, \dots, K^{(n)}]$, we have<br>$$<br>\beta := \alpha \frac{1}{n}(y - \beta^TK)<br>$$<br>is equivalent to<br>$$<br>\theta := \theta + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)})<br>$$<br>where $\theta = \sum_{j=1}^n \beta_j\phi(x^{(j)})$.</p>
-<h6 id="Prediction"><a href="#Prediction" class="headerlink" title="Prediction"></a>Prediction</h6><p>Using $\beta$  and $K$ instead of $\alpha$ and $\phi$ to perform prediction. Assume here is a new $x$:<br>$$<br>\begin{align}<br>    \hat y &amp;= h_\theta(\phi(x)) = \theta^T\phi(x) \\<br>    &amp;= \sum_{j=1}^n \beta_j\phi(x^{(j)})\phi(x) \\<br>    &amp;= \sum_{j=1}^n \beta_jK(x^{(i)}, x) \\<br>    &amp;= h_{\beta}(K, x)<br>\end{align}<br>$$</p>
-<h4 id="Version-2-More-General"><a href="#Version-2-More-General" class="headerlink" title="Version 2: More General"></a>Version 2: More General</h4><p>For example in linear regression, or logistic regression, or support vector machine, we defined different loss function to minimize (respectively, mean square error, logit loss, hinge loss). For these cases, we can express the loss function as the following form:<br>$$<br>L(y, \theta^Tx)<br>$$<br>where $\theta^Tx$ yields the prediction of the model. In all of above cases, $\theta^Tx$ can be replaced by a function $f(x)$ which denotes the prediction of model for input $x$. </p>
-<p>The regularized cost function can be written as:<br>$$<br>J_\lambda(\theta) = \frac{1}{n} \sum_{i=1}^{n}L(y^{(i)}, f(x^{(i)})) + \frac{\lambda}{2}||f||_2^2<br>$$<br>where $f(x) = g(\theta^Tx)$ for the examples above.</p>
-<h6 id="The-Representer-Theorem"><a href="#The-Representer-Theorem" class="headerlink" title="The Representer Theorem"></a>The Representer Theorem</h6><p>Consider the optimization problem<br>$$<br>\min_{f} D(f(x_1), \dots, f(x_n)) + P(||f||^2_2)<br>$$<br>where $P$ is nondecreasing function and $D$ depends on $f$ only though $f(x_i)$. It has a minimizer of the form<br>$$<br>f(z) = \sum_{i=1}^{n} \beta_i K(z, x_i)<br>$$<br>where $\beta \in \mathbb{R}$ and $K$ is a kernel function. And if $P$ is strictly increasing, then every solution of this optimization problem will have this form.</p>
-<p>Proof of this theorem can be found <a href="http://web.eecs.umich.edu/~cscott/past_courses/eecs598w14/notes/13_kernel_methods.pdf" target="_blank" rel="noopener">here</a> or <a href="http://cs229.stanford.edu/extra-notes/representer-function.pdf" target="_blank" rel="noopener">here</a>.</p>
-<h6 id="Prediction-1"><a href="#Prediction-1" class="headerlink" title="Prediction"></a>Prediction</h6><p>From the last equation, we can see that this theorem enables us to <strong>make predictions</strong> using $\beta$ and $K$ other than $\theta$ or $f$.</p>
-<h6 id="Update-Rule-1"><a href="#Update-Rule-1" class="headerlink" title="Update Rule"></a>Update Rule</h6><p>We need a new update rule to update $\beta$ directly, instead of calculating $\theta$. Let $f(x_i) = K^{(i)}\beta$ where $K^{(i)}$ is the same definition as in Version 1. The consise form of the cost function is<br>$$<br>J_P(\beta) = D(K^{(1)}\beta, \dots, K^{(n)}\beta) + P(\beta^TK\beta)<br>$$<br>To get the update rule for $\beta$, we compute the gradient for $\beta$. For all of our 3 examples above, $D$ is an averaging function of the loss functions and $P$ is usually take the form of l2 regularization, $P(r) = \frac{\lambda}{2}r$. Then this gradient is<br>$$<br>\begin{align}<br>    \nabla_\beta J_P(\beta) &amp;= \nabla_\beta(\frac{1}{n} \sum_{i=1}^{n} L(K^{(i)^T} \beta, y) + \frac{\lambda}{2}\beta^TK\beta) \\<br>    &amp;= \frac{1}{n} \sum_{i=1}^{n} L’(K^{(i)^T} \beta, y)K^{(i)} + \lambda K\beta<br>\end{align}<br>$$<br>This is how we update $\beta$.</p>
+<p>$$<br>Q_j(z^{(i)}) := p(z^{(i)}=j|x^{(i)};\theta)<br>$$</p>
+<ol start="2">
+<li><strong>M-STEP</strong>: <em>GIVEN</em> = $Q_j(z^{(i)})$; <em>DO</em> = estimate parameters $\theta$</li>
+</ol>
+<p>$$<br>\theta := arg\max_{\theta}\sum_{i=1}^{N}\sum_{j = 1}^{K}Q_j(z^{(i)})\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q_j(z^{(i)})}<br>$$</p>
+<h2 id="GMM-Cheat-sheet"><a href="#GMM-Cheat-sheet" class="headerlink" title="GMM Cheat sheet"></a>GMM Cheat sheet</h2><ol>
+<li><strong>E-STEP</strong>: </li>
+</ol>
+<p>$$<br>\begin{align}<br>    Q_j(z^{(i)}) :&amp;= \frac{p(x^{(i)},z^{(i)=j};\theta)}{p(x^{(i)})} \\<br>     &amp;= \frac{p(x^{(i)}|z^{(i)=j};\theta) p(z^{(i)}=j)}{\sum_{j=1}^{K}p(x^{(i)}|z^{(i)};\theta) p(z^{(i)}=j)}<br>\end{align} \\<br>$$</p>
+<ol start="2">
+<li><strong>M-STEP</strong>:</li>
+</ol>
+<p>$$<br>\begin{align}<br>    \phi_j :&amp;= \frac{1}{n} \sum_{i=1}^{n}Q_j(z^{(i)}) \\<br>    \mu_j :&amp;=\frac{\sum_{i=1}^{n}Q_j(z^{(i)})x^{(i)}}{\sum_{i=1}^{n}Q_j(z^{(i)})} \\<br>    \Sigma_j :&amp;= \frac{\sum_{i=1}^{n}Q_j(z^{(i)})(x^{(i)} - \mu_j)(x^{(i)} - \mu_j)^T}{\sum_{i=1}^{n}Q_j(z^{(i)})}<br>\end{align}<br>$$</p>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
-<li><a href="https://towardsdatascience.com/understanding-the-kernel-trick-e0bc6112ef78" target="_blank" rel="noopener">Harish Kandan: kernel method</a></li>
-<li><a href="https://towardsdatascience.com/kernel-function-6f1d2be6091" target="_blank" rel="noopener">Tejumade Afonja: kernel method</a></li>
-<li><a href="http://cs229.stanford.edu/extra-notes/representer-function.pdf" target="_blank" rel="noopener">CS229 Supplemental Notes: representer theorem</a></li>
-<li><a href="http://web.eecs.umich.edu/~cscott/past_courses/eecs598w14/notes/13_kernel_methods.pdf" target="_blank" rel="noopener">UMICH EECS 598: kernel methods</a></li>
-<li><a href="https://people.eecs.berkeley.edu/~bartlett/courses/281b-sp08/8.pdf" target="_blank" rel="noopener">Berkeley CS281B: Representer theorem and kernel examples</a></li>
+<li><p><a href="http://cs229.stanford.edu/notes/cs229-notes8.pdf" target="_blank" rel="noopener">CS229 Lecture Notes</a></p>
+</li>
+<li><p><a href="http://bengio.abracadoudou.com/lectures/gmm.pdf" target="_blank" rel="noopener">Statistical Machine Learning from Data by Samy Bengio</a></p>
+</li>
 </ol>
 
       
@@ -439,7 +487,9 @@
           
             <a href="/tags/algorithm/" rel="tag"># algorithm</a>
           
-            <a href="/tags/kernel/" rel="tag"># kernel</a>
+            <a href="/tags/em/" rel="tag"># em</a>
+          
+            <a href="/tags/gmm/" rel="tag"># gmm</a>
           
         </div>
       
@@ -452,8 +502,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/24/generative-models/" rel="next" title="Generative Models -- Gaussian Discriminant Analysis">
-                <i class="fa fa-chevron-left"></i> Generative Models -- Gaussian Discriminant Analysis
+              <a href="/2020/05/12/kernel-method/" rel="next" title="Kernel Method Note">
+                <i class="fa fa-chevron-left"></i> Kernel Method Note
               </a>
             
           </div>
@@ -461,10 +511,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/06/01/em-algorithm/" rel="prev" title="EM Algorithm Notes">
-                EM Algorithm Notes <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -625,7 +671,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Motivation-of-Kernel-Method"><span class="nav-number">1.</span> <span class="nav-text">Motivation of Kernel Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Feature-Map"><span class="nav-number">1.0.1.</span> <span class="nav-text">Feature Map</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kernel-Method"><span class="nav-number">2.</span> <span class="nav-text">Kernel Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Definition"><span class="nav-number">2.0.1.</span> <span class="nav-text">Definition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-What-is-a-Valid-Kernel"><span class="nav-number">2.0.2.</span> <span class="nav-text">1. What is a Valid Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Kernel-Matrix"><span class="nav-number">2.0.2.0.1.</span> <span class="nav-text">Kernel Matrix</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-How-to-Avoid-phi-in-Calculation"><span class="nav-number">2.0.3.</span> <span class="nav-text">2. How to Avoid $\phi$ in Calculation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-of-Kernel-Method"><span class="nav-number">3.</span> <span class="nav-text">Implementation of Kernel Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Version-1-With-the-Example-of-Least-Mean-Squares"><span class="nav-number">3.0.1.</span> <span class="nav-text">Version 1: With the Example of Least Mean Squares</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Update-Rule"><span class="nav-number">3.0.1.0.1.</span> <span class="nav-text">Update Rule</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Prediction"><span class="nav-number">3.0.1.0.2.</span> <span class="nav-text">Prediction</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Version-2-More-General"><span class="nav-number">3.0.2.</span> <span class="nav-text">Version 2: More General</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#The-Representer-Theorem"><span class="nav-number">3.0.2.0.1.</span> <span class="nav-text">The Representer Theorem</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Prediction-1"><span class="nav-number">3.0.2.0.2.</span> <span class="nav-text">Prediction</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Update-Rule-1"><span class="nav-number">3.0.2.0.3.</span> <span class="nav-text">Update Rule</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#EM-And-GMM"><span class="nav-number">1.</span> <span class="nav-text">EM And GMM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMM-Algorithm"><span class="nav-number">2.</span> <span class="nav-text">GMM Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-of-the-Model"><span class="nav-number">2.0.1.</span> <span class="nav-text">Description of the Model</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mathematical-Definition"><span class="nav-number">2.1.</span> <span class="nav-text">Mathematical Definition</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Setting"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">Model Setting</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Fit"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">Model Fit</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-EM-Algorithm"><span class="nav-number">3.</span> <span class="nav-text">The EM Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Description-of-the-Idea"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">Description of the Idea</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Wrap-up-the-Idea"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">Wrap up the Idea</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMM-Cheat-sheet"><span class="nav-number">4.</span> <span class="nav-text">GMM Cheat sheet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
             
 
           </div>
@@ -901,13 +947,13 @@
       var articles = db.collection('articles')
 
       //https://hexo.io/zh-tw/docs/variables.html
-      var isPost = 'Kernel Method Note'.length > 0
+      var isPost = 'EM Algorithm Notes'.length > 0
       var isArchive = '' === 'true'
       var isCategory = ''.length > 0
       var isTag = ''.length > 0
 
       if (isPost) { //is article page
-        var title = 'Kernel Method Note'
+        var title = 'EM Algorithm Notes'
         var doc = articles.doc(title)
 
         getCount(doc, true).then(appendCountTo($('.post-meta')))
