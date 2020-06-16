@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="algorithm,stats," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="The basics of survival analysis, why do we need it and how does it work">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Survival Analysis -- the Basics">
+<meta property="og:url" content="http://yoursite.com/2020/06/14/survival-analysis/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="The basics of survival analysis, why do we need it and how does it work">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://jtd.amegroups.com/article/viewFile/22276/html/178542">
+<meta property="og:image" content="https://www.students4bestevidence.net/app/uploads/2016/04/Figure-2-Loai-JPEG.jpg">
+<meta property="article:published_time" content="2020-06-14T07:50:17.000Z">
+<meta property="article:modified_time" content="2020-06-16T03:30:31.676Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="stats">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jtd.amegroups.com/article/viewFile/22276/html/178542">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/14/survival-analysis/"/>
+
+
+
+
+
+  <title>Survival Analysis -- the Basics | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/14/survival-analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Survival Analysis -- the Basics</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-14T00:50:17-07:00">
+                2020-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/14/survival-analysis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/06/14/survival-analysis/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  The basics of survival analysis, why do we need it and how does it work
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>##What is Survival Analysis and When to Use It?</p>
+<p>Survival analysis can be generalized as <u>time-to-event analysis</u>, which is <strong>analyzing the time to certain event (e.g. disease, death, or some positive events, etc.)</strong>. Survival analysis gives us the estimation of, for example:</p>
+<ol>
+<li>the time it takes before some events occur;</li>
+<li>the probability of having experienced certain event at certain time point;</li>
+<li>or which factors have what effect on the time to certain event.</li>
+</ol>
+<p><em>Case 1</em>: Here is a group of patients with lung cancer, the study[^1] recorded <strong>whether the patient’s death was observed</strong> within the range of the study, <strong>the time to event</strong>, and other information about this group. </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">library</span>(survival)</span><br><span class="line">&gt; data(lung)</span><br><span class="line">&gt; head(lung)</span><br><span class="line">  inst time status age sex ph.ecog ph.karno pat.karno meal.cal wt.loss</span><br><span class="line"><span class="number">1</span>    <span class="number">3</span>  <span class="number">306</span>      <span class="number">2</span>  <span class="number">74</span>   <span class="number">1</span>       <span class="number">1</span>       <span class="number">90</span>       <span class="number">100</span>     <span class="number">1175</span>      <span class="literal">NA</span></span><br><span class="line"><span class="number">2</span>    <span class="number">3</span>  <span class="number">455</span>      <span class="number">2</span>  <span class="number">68</span>   <span class="number">1</span>       <span class="number">0</span>       <span class="number">90</span>        <span class="number">90</span>     <span class="number">1225</span>      <span class="number">15</span></span><br><span class="line"><span class="number">3</span>    <span class="number">3</span> <span class="number">1010</span>      <span class="number">1</span>  <span class="number">56</span>   <span class="number">1</span>       <span class="number">0</span>       <span class="number">90</span>        <span class="number">90</span>       <span class="literal">NA</span>      <span class="number">15</span></span><br><span class="line"><span class="number">4</span>    <span class="number">5</span>  <span class="number">210</span>      <span class="number">2</span>  <span class="number">57</span>   <span class="number">1</span>       <span class="number">1</span>       <span class="number">90</span>        <span class="number">60</span>     <span class="number">1150</span>      <span class="number">11</span></span><br><span class="line"><span class="number">5</span>    <span class="number">1</span>  <span class="number">883</span>      <span class="number">2</span>  <span class="number">60</span>   <span class="number">1</span>       <span class="number">0</span>      <span class="number">100</span>        <span class="number">90</span>       <span class="literal">NA</span>       <span class="number">0</span></span><br><span class="line"><span class="number">6</span>   <span class="number">12</span> <span class="number">1022</span>      <span class="number">1</span>  <span class="number">74</span>   <span class="number">1</span>       <span class="number">1</span>       <span class="number">50</span>        <span class="number">80</span>      <span class="number">513</span>       <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>Questions may include:</p>
+<ol>
+<li>What is the probability of survival for this group after time $t$?</li>
+<li>Given a new patient with same information known, can we predict the probability that this new patient will survival at time $t$?</li>
+<li>Is there statistical differences of survival between male patients and female patients?</li>
+<li>Within those information that we know about the patients, which ones have influence on the probabilities of survival?</li>
+</ol>
+<p>All of those questions can be answered by survival analysis, using the following methods that will be covered in this article:</p>
+<ol>
+<li>Kaplan-Meier Estimator</li>
+<li>Log-Rank Test</li>
+<li>Cox Proportional Hazards Model</li>
+</ol>
+<p>These methods are by far the most commonly used techniques for answering these questions in medical literature[^2].</p>
+<h2 id="Survival-Data-and-Censoring"><a href="#Survival-Data-and-Censoring" class="headerlink" title="Survival Data and Censoring"></a>Survival Data and Censoring</h2><h3 id="What-is-New-about-Survival-Data"><a href="#What-is-New-about-Survival-Data" class="headerlink" title="What is New about Survival Data?"></a>What is New about Survival Data?</h3><p>Look back to the data example we have above, if we want to estimate the time, which are numeric values for each patient, can we just use linear regression?</p>
+<p>The answer is <strong>NO</strong> and that is because <strong><u>there are some patients who didn’t died even until the end of the study</u></strong> (or we simply don’t have that information recorded). Thus, some patient don’t have the “time to event”. How to solve this question? Here are some tries:</p>
+<ol>
+<li>Manually set or impute that data. <ol>
+<li>*”For those who don’t have time-to-death, we simply impute them as the mean or median of the data we know.”* In fact, for those patients who “outlived” the study, they typically won’t be represented by the notion of “average”. They were much better than “average” (in term of survival).</li>
+<li><em>“Since no event occurred , we set the time to event to be $\infty$.”</em> That makes more sense than $a$, but that causes a big problem for linear regression.</li>
+</ol>
+</li>
+<li>Exclude those patients in our study. That won’t work either. That is because not only that part of patients contain information that is needed by the model to make better predictions, but also when a new patient with mild symptoms coming in, we want to have the ability to predict that is patient won’t die, rather than another “time to event”.</li>
+</ol>
+<h3 id="Censoring"><a href="#Censoring" class="headerlink" title="Censoring"></a>Censoring</h3><p><strong>The subjects whose events were not observed</strong>, these observations are called censored. There are many types of censoring. Let’s take a look this figure.</p>
+<p><img src="https://jtd.amegroups.com/article/viewFile/22276/html/178542" alt="censoring[^3]" style="zoom:67%;" /><em>Fig 1. Examples of Censoring[^3]</em></p>
+<ol>
+<li>Right-censoring: subject 3 and 4 are right-censoring. It means that either follow-up information was lack to know the time for outcome (subject 4), or the outcome happened after study ended (subject 3).</li>
+<li>Left-censoring: subject 6 is left-censoring. Exact time for entry or exposure happened before study began, which is unknown. What is known is the time that study began.</li>
+</ol>
+<h2 id="Kaplan-Meier-Estimator"><a href="#Kaplan-Meier-Estimator" class="headerlink" title="Kaplan-Meier Estimator"></a>Kaplan-Meier Estimator</h2><p>It is also called “product-limit method”, is a non-parametric method used to estimate the probability of survival past given time points. Specifically, the function $S(t) = \text{probability of survival at time } t$. </p>
+<h3 id="Assumptions"><a href="#Assumptions" class="headerlink" title="Assumptions"></a>Assumptions</h3><p>There are several assumptions for this analysis to be valid (pretty much all the methods that we will talked about rely on these assumptions more or less). Here we will mention two most important assumptions[^4]:</p>
+<ol>
+<li>Left-censoring should be minimized or avoided. Left-censoring makes the survival time not accurate and does not reflect observed survival time.</li>
+<li>Independence of censoring and the event. This assumption is saying that when subjects are marked “censored”, it is not because they are at greater risk of the event. Legitimate censoring includes natural dropout or withdrawal (e.g. inpatient discharged) or event not occurred during study interval. Kaplan-Meier method assumes that <strong>censored data behaves in the same way as uncensored data (after the censoring)</strong>.</li>
+</ol>
+<h3 id="The-Model"><a href="#The-Model" class="headerlink" title="The Model"></a>The Model</h3><p>$S(t)$ estimates the survival rate at time $t$: $P_s(t)$, and is called survivor function.<br>$$<br>P_s(t) = \frac{\text{number of subjects surviving}}{\text{number of subjects in the study}}<br>$$<br>And<br>$$<br>S(t) = \prod_{t_i &lt; t}(1 - \frac{d_i}{n_i})<br>$$<br>where $t_j$ is a small time window that we study, and $t_j &lt; t$, this window is within the following time of the study. $d_j$ is the subjects that have the outcome at $t_j$. And $n_j$ is the subjects that had no outcome before $t_j$, which also includes $d_j$. </p>
+<p>With K-M estimator, we can plot a curve with x-axis = time and y-axis = survival probability. This curve is called Kaplan-Meier curve or survival curve.</p>
+<h3 id="Kaplan-Meier-Curve"><a href="#Kaplan-Meier-Curve" class="headerlink" title="Kaplan-Meier Curve"></a>Kaplan-Meier Curve</h3><p>Here is an example[^5] of Kaplan-Meier curve. Patients are divided into two groups, and survival curve for two groups are plotted on the same figure. Each point on the line represent a value pair of (time after entry, survival rate of the group).</p>
+<img src="https://www.students4bestevidence.net/app/uploads/2016/04/Figure-2-Loai-JPEG.jpg" alt="km_curve" style="zoom:67%;" />
+
+<p>As soon as we can understand this figure, question arises as “Can we statistically compare these two group and say ‘treatment’ group is better than ‘placebo’ ?”. That when we move to the next common method, log-rank test. </p>
+<h2 id="Log-rank-Test"><a href="#Log-rank-Test" class="headerlink" title="Log-rank Test"></a>Log-rank Test</h2><p>Log-rank test is one of the most widely used <a href="https://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test" target="_blank" rel="noopener">Pearson’s chi-squared test</a>. But there are some differences. Let’s take a look. Note that for simplicity, we are discussing two groups, while more than two groups cases are also valid using this test.<br>$$<br>H_0 : h_1(t) = h_2(t) \<br>H_1 : h_1(t) \neq h_2(t)<br>$$</p>
+<p><em>Null hypothesis: two groups share an identical hazard function.</em></p>
+<p>The test statistics is defined as:<br>$$<br>Z = \frac{\sum_{t=1}^{T}(O_{i,t} - E_{i, t})}{\sqrt{\sum_{t=1}^{T}V_{i,t}}} \to^d \mathcal{N}(0,1)<br>$$<br>where<br>$$<br>\begin{align}<br>    N_{i,t} &amp;= \text{observed subjects at time point }t \\<br>    O_{i,t} &amp;= \text{observed outcomes at time point }t \\<br>    E_{i,t} &amp;= \text{expected number of }O_{i,t}\text{ at }t \\<br>    V_{i,t} &amp;= \text{varaince of }O_{i,t}\text{ at }t<br>\end{align}<br>$$<br>Assuming for each group $i = 1,2$, $O_{i,t}$ follows a <a href="https://en.wikipedia.org/wiki/Hypergeometric_distribution" target="_blank" rel="noopener">hypergeometric distribution</a> with mean and variance (under null hypothesis, they have the same risk function, which is estimated by averaging two groups):<br>$$<br>\begin{align}<br>    E_{i,t} &amp;= N_{i,t}\frac{O_t}{N_t} \\<br>    V_{i,t} &amp;= E_{i, t}(\frac{N_t - O_t}{N_t})(\frac{N_t - N_{i,t}}{N_t - 1})<br>\end{align}<br>$$<br>Using the test statistics $Z$, we can have the <em>p-value</em> using quantiles of Gaussian distribution. Here are some further notes about this test.</p>
+<p><em>NOTES</em>[^6]: </p>
+<ul>
+<li>Symmetric in two groups</li>
+<li>Only rank matters</li>
+<li>At each time point, we treat as independent</li>
+<li>If at certain time point, for one group, $N_{i,t} = 0$, then that time point won’t contribute to the test. </li>
+</ul>
+<p>Now, what if what we want to know is not the influence from categorical data like “treatment vs. placebo” but rather continuous data like age?</p>
+<h2 id="Cox-Proportional-Hazards-Regression"><a href="#Cox-Proportional-Hazards-Regression" class="headerlink" title="Cox Proportional Hazards Regression"></a>Cox Proportional Hazards Regression</h2><p>As said before, when the question comes to test the relationship between survival time and quantitative predictors or several factors at the same time, KM curves is limited and a new method is needed.</p>
+<h3 id="Hazard-Function"><a href="#Hazard-Function" class="headerlink" title="Hazard Function"></a>Hazard Function</h3><p>Let $T$ be the survival time. $f(T)$ is the probability density function of time to survival. And the <em>survivor function</em> $S(T)$ is the probability that an individual survives past $T$. We have:<br>$$<br>F(T) = \text{Pr}(t &lt; T) = \int_0^Tf(t)dt<br>$$<br>And<br>$$<br>S(T) = \text{Pr}(T \geq t) = 1 - F(T)<br>$$<br>The <em>hazard function</em> is the probability that a subject experiences the event of interest at time $T$, given that the individual has survived until the start of time $T$.<br>$$<br>h(T) = \frac{f(T)}{S(T)}<br>$$</p>
+<h3 id="The-Model-1"><a href="#The-Model-1" class="headerlink" title="The Model"></a>The Model</h3><p>We can show:<br>$$<br>\frac{d}{dT}[- \log S(T)] =\frac{f(T)}{S(T)} = h(T)<br>$$<br>Cox regression assumes the relationship between hazard function and variables is:<br>$$<br>\log[\frac{h(T|x)}{h_0(T)}] = \beta^T x<br>$$<br>where $x$ we called covariates;</p>
+<p>​            $h(T|x)$ is the hazard function at time $T$ given covariates $x$;</p>
+<p>​            $\beta^T x = \sum_{i = 1}^p x_i \beta_i$ , $\beta$s are the parameters, note that this function is not a function of time $T$ but just covariates;</p>
+<p>​            $h_0(T)$ is called <strong><em>baseline hazard function</em></strong>, and this function is a function of time $T$ but not covariates.</p>
+<h3 id="Solve-the-Model"><a href="#Solve-the-Model" class="headerlink" title="Solve the Model"></a>Solve the Model</h3><p>This part is left empty for now, may or may not be updated.</p>
+<h2 id="The-End"><a href="#The-End" class="headerlink" title="The End"></a>The End</h2><p>In the next article, a case study of survival analysis using R will be shown.</p>
+<h2 id="References-and-Citations"><a href="#References-and-Citations" class="headerlink" title="References and Citations"></a>References and Citations</h2><p>[^1]: Loprinzi, C. L., Laurie, J. A., Wieand, H. S., Krook, J. E., Novotny, P. J., Kugler, J. W., … &amp; Klatt, N. E. (1994). Prospective evaluation of prognostic variables from patient-completed questionnaires. North Central Cancer Treatment Group. <em>Journal of Clinical Oncology</em>, <em>12</em>(3), 601-607.<br>[^2]: Schober, P., &amp; Vetter, T. R. (2018). Survival analysis and interpretation of time-to-event data: the tortoise and the hare. <em>Anesthesia and analgesia</em>, <em>127</em>(3), 792.<br>[^3]: Brembilla, A., Olland, A., Puyraveau, M., Massard, G., Mauny, F., &amp; Falcoz, P. E. (2018). Use of the Cox regression analysis in thoracic surgical research. <em>Journal of thoracic disease</em>, <em>10</em>(6), 3891.<br>[^4]: Statistics, L. (2013). Kaplan-Meier using SPSS statistics.</p>
+<p>[^5]: <a href="https://www.students4bestevidence.net/blog/2016/04/05/tutorial-hazard-ratios/" target="_blank" rel="noopener">Tutorial about Hazard Ratios</a> by Loai Albarqouni<br>[^6]: Survival Analysis: Logrank Test</p>
+<p>[^7]: <a href="https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Cox_Regression.pdf" target="_blank" rel="noopener">NCSS Statistical Software</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          
+            <a href="/tags/stats/" rel="tag"># stats</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/01/em-algorithm/" rel="next" title="EM Algorithm Notes">
+                <i class="fa fa-chevron-left"></i> EM Algorithm Notes
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Survival-Data-and-Censoring"><span class="nav-number">1.</span> <span class="nav-text">Survival Data and Censoring</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-New-about-Survival-Data"><span class="nav-number">1.1.</span> <span class="nav-text">What is New about Survival Data?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Censoring"><span class="nav-number">1.2.</span> <span class="nav-text">Censoring</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kaplan-Meier-Estimator"><span class="nav-number">2.</span> <span class="nav-text">Kaplan-Meier Estimator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Assumptions"><span class="nav-number">2.1.</span> <span class="nav-text">Assumptions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Model"><span class="nav-number">2.2.</span> <span class="nav-text">The Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kaplan-Meier-Curve"><span class="nav-number">2.3.</span> <span class="nav-text">Kaplan-Meier Curve</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Log-rank-Test"><span class="nav-number">3.</span> <span class="nav-text">Log-rank Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cox-Proportional-Hazards-Regression"><span class="nav-number">4.</span> <span class="nav-text">Cox Proportional Hazards Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hazard-Function"><span class="nav-number">4.1.</span> <span class="nav-text">Hazard Function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Model-1"><span class="nav-number">4.2.</span> <span class="nav-text">The Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Solve-the-Model"><span class="nav-number">4.3.</span> <span class="nav-text">Solve the Model</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-End"><span class="nav-number">5.</span> <span class="nav-text">The End</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References-and-Citations"><span class="nav-number">6.</span> <span class="nav-text">References and Citations</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Survival Analysis -- the Basics'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Survival Analysis -- the Basics'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
