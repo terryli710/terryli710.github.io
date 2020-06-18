@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="From this article, we will use R language to perform survival analysis to a data set, in order to demonstrate some syntax and show the procedural of survival analysis using R. The DataA very classic d">
+<meta name="description" content="Survival Analysis Case Study Using R">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Survival Analysis Case Study Using R">
 <meta property="og:url" content="http://yoursite.com/2020/06/16/r-survival/index.html">
 <meta property="og:site_name" content="TERRY&#39;S BLOG">
-<meta property="og:description" content="From this article, we will use R language to perform survival analysis to a data set, in order to demonstrate some syntax and show the procedural of survival analysis using R. The DataA very classic d">
+<meta property="og:description" content="Survival Analysis Case Study Using R">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/2020/06/16/r-survival/heatmap.png">
 <meta property="og:image" content="http://yoursite.com/2020/06/16/r-survival/cormatrix.png">
@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/06/16/r-survival/km_curve.png">
 <meta property="og:image" content="http://yoursite.com/2020/06/16/r-survival/visual.png">
 <meta property="article:published_time" content="2020-06-16T07:06:20.000Z">
-<meta property="article:modified_time" content="2020-06-18T00:36:11.628Z">
+<meta property="article:modified_time" content="2020-06-18T01:00:07.835Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="survival analysis">
 <meta property="article:tag" content="R">
@@ -356,6 +356,10 @@
           
 
           
+              <div class="post-description">
+                  Survival Analysis Case Study Using R
+              </div>
+          
 
         </div>
       </header>
@@ -392,9 +396,9 @@
 <h2 id="Kaplan-Meier-Analysis-and-Log-rank-Test"><a href="#Kaplan-Meier-Analysis-and-Log-rank-Test" class="headerlink" title="Kaplan-Meier Analysis and Log-rank Test"></a>Kaplan-Meier Analysis and Log-rank Test</h2><p>Suppose we want to first see the overall survival condition (basic KM curve) and then see is there any significant varied patterns of patients who have different <code>sex</code> (KM analysis curve &amp; log-rank test).</p>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">library</span>(survminer)</span><br><span class="line"><span class="comment">### KM Analysis ###</span></span><br><span class="line"><span class="comment"># basic curve</span></span><br><span class="line">fit1 &lt;- survfit(Surv(time, status)~<span class="number">1</span>, data = lung)</span><br><span class="line">ggsurvplot(fit1, data = lung, censor=<span class="literal">T</span>)</span><br><span class="line"><span class="comment"># KM analysis curve</span></span><br><span class="line">fit2 &lt;- survfit(Surv(time, status)~sex, data = lung)</span><br><span class="line">ggsurvplot(fit2, data = lung, pval = <span class="literal">T</span>, pval.method = <span class="literal">T</span>, conf.int = <span class="literal">T</span>, censor=<span class="literal">T</span>)</span><br></pre></td></tr></table></figure>
 
-<img src="basickm.png" alt="hm" title="Basic Kaplan-Meier Curve" style="zoom:100%;" />
+<img src="basickm.png" alt="bm" title="Basic Kaplan-Meier Curve" style="zoom:100%;" />
 
-<img src="km_curve.png" alt="hm" title="Kaplan-Meier Curves for Male and Female Patients" style="zoom:100%;" />
+<img src="km_curve.png" alt="kc" title="Kaplan-Meier Curves for Male and Female Patients" style="zoom:100%;" />
 
 <p>Here, <code>survminer</code> package is used to plot KM curves by <code>ggsurvplot()</code> function, here are some parameters that I found useful:</p>
 <blockquote>
@@ -412,7 +416,7 @@
 </ul>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### Cox Regression ###</span></span><br><span class="line">&gt; <span class="keyword">library</span>(survminer)</span><br><span class="line">&gt; <span class="comment"># Cox PH Model</span></span><br><span class="line">&gt; cox &lt;- coxph(Surv(time, status) ~ age + sex + ph.karno + pat.karno + meal.cal + wt.loss, data = lung)</span><br><span class="line">&gt; cox</span><br><span class="line">Call:</span><br><span class="line">coxph(formula = Surv(time, status) ~ age + sex + ph.karno + pat.karno + </span><br><span class="line">    meal.cal + wt.loss, data = lung)</span><br><span class="line"></span><br><span class="line">                coef  exp(coef)   se(coef)      z      p</span><br><span class="line">age        <span class="number">0.0090807</span>  <span class="number">1.0091220</span>  <span class="number">0.0117503</span>  <span class="number">0.773</span> <span class="number">0.4396</span></span><br><span class="line">sex       -<span class="number">0.4859823</span>  <span class="number">0.6150927</span>  <span class="number">0.1995728</span> -<span class="number">2.435</span> <span class="number">0.0149</span></span><br><span class="line">ph.karno  -<span class="number">0.0023393</span>  <span class="number">0.9976635</span>  <span class="number">0.0079466</span> -<span class="number">0.294</span> <span class="number">0.7685</span></span><br><span class="line">pat.karno -<span class="number">0.0193962</span>  <span class="number">0.9807907</span>  <span class="number">0.0077533</span> -<span class="number">2.502</span> <span class="number">0.0124</span></span><br><span class="line">meal.cal   <span class="number">0.0000126</span>  <span class="number">1.0000126</span>  <span class="number">0.0002460</span>  <span class="number">0.051</span> <span class="number">0.9592</span></span><br><span class="line">wt.loss   -<span class="number">0.0080307</span>  <span class="number">0.9920014</span>  <span class="number">0.0073014</span> -<span class="number">1.100</span> <span class="number">0.2714</span></span><br><span class="line"></span><br><span class="line">Likelihood ratio test=<span class="number">17.53</span>  on <span class="number">6</span> df, p=<span class="number">0.007508</span></span><br><span class="line">n= <span class="number">169</span>, number of events= <span class="number">122</span> </span><br><span class="line">   (<span class="number">59</span> observations deleted due to missingness)</span><br><span class="line">&gt; <span class="comment"># Test Proportional Hazards Assumption</span></span><br><span class="line">&gt; czph &lt;- cox.zph(cox)</span><br><span class="line">&gt; czph</span><br><span class="line">            chisq df      p</span><br><span class="line">age        <span class="number">0.5502</span>  <span class="number">1</span> <span class="number">0.4583</span></span><br><span class="line">sex        <span class="number">1.4804</span>  <span class="number">1</span> <span class="number">0.2237</span></span><br><span class="line">ph.karno   <span class="number">7.9155</span>  <span class="number">1</span> <span class="number">0.0049</span></span><br><span class="line">pat.karno  <span class="number">3.8774</span>  <span class="number">1</span> <span class="number">0.0489</span></span><br><span class="line">meal.cal   <span class="number">5.1873</span>  <span class="number">1</span> <span class="number">0.0228</span></span><br><span class="line">wt.loss    <span class="number">0.0143</span>  <span class="number">1</span> <span class="number">0.9050</span></span><br><span class="line">GLOBAL    <span class="number">14.5493</span>  <span class="number">6</span> <span class="number">0.0241</span></span><br><span class="line">&gt; <span class="comment"># Visualize Results</span></span><br><span class="line">&gt; ggforest(cox, data = lung)</span><br></pre></td></tr></table></figure>
 
-<img src="visual.png" alt="hm" title="Visualization of Parameters in Cox PH Model" style="zoom:100%;" />
+<img src="visual.png" alt="vs" title="Visualization of Parameters in Cox PH Model" style="zoom:100%;" />
 
 
       
