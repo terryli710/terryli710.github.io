@@ -406,8 +406,29 @@
       
 
       
-        <h2 id="Square-Loss-Function-in-Linear-Regression"><a href="#Square-Loss-Function-in-Linear-Regression" class="headerlink" title="Square Loss Function (in Linear Regression)"></a>Square Loss Function (in Linear Regression)</h2><p>For linear regression, the way that we used to find the optimal parameters $\overrightarrow \theta$ is called gradient descent, which we seek for $\overrightarrow \theta$ that minimize the loss function:<br>$$<br>\mathcal{J}(\theta) = \frac{1}{2} \sum_{i=1}^{n}(y^{(i)} - \theta^T x^{(i)})^2<br>$$<br>That is:<br>$$<br>\hat \theta = \underset{\theta}{\mathrm{argmin}}[\frac{1}{2} \sum_{i=1}^{n}(y^{(i)} - \theta^T x^{(i)})^2]<br>$$</p>
-<h2 id="Interpret-the-Loss-Function-as-MLE"><a href="#Interpret-the-Loss-Function-as-MLE" class="headerlink" title="Interpret the Loss Function as MLE"></a>Interpret the Loss Function as MLE</h2><p>In linear regression, we assume the model to be:<br>$$<br>\overrightarrow y = \theta^T x^{(i)} + \epsilon^{(i)}<br>$$<br>where $\epsilon$ is called the error term which conposes of unmodelled factors and random noise. And under general assumption, $\epsilon^{(i)}$s are gaussian random variables that are independent from each other<br>$$<br>\epsilon \in \text{iid }N(0,\sigma^2)<br>$$<br>Under this assumption, the distribution of $y$ can be expressed as<br>$$<br>P(y^{(i)}|x^{(i)};\theta) = \frac{1}{\sqrt{2\pi}\sigma} \text{exp}(\frac{-(y^{(i)} - \theta^Tx^{(i)})^2}{2\sigma^2})<br>$$<br>That indicates<br>$$<br>y^{(i)} \sim \mathcal{N}(\theta^Tx^{(i)}, \sigma^2)<br>$$<br>The likelihood function<br>$$<br>\begin{align}<br>\mathcal{L}(\theta) &amp;= P(\overrightarrow y|X; \theta) \<br>&amp;= \prod_{i=1}^{n} P(y^{(i)}|X^{(i)}; \theta) \<br>&amp;= \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi}\sigma} \text{exp}(\frac{-(y^{(i)} - \theta^Tx^{(i)})^2}{2\sigma^2})<br>\end{align}<br>$$<br>The log likelihood function<br>$$<br>\mathcal{l}(\theta) = n\log(\frac{1}{\sqrt{2\pi}\sigma}) + \sum_{i=1}^{n} \frac{-(y^{(i)} - \theta^Tx^{(i)})^2}{2\sigma^2}<br>$$<br>We can see here<br>$$<br>l(\theta) \propto  - \frac{1}{2} \sum_{i=1}^{n}(y^{(i)} - \theta^T x^{(i)})^2 = - \mathcal{J}(\theta)<br>$$<br>So we can see minimizing loss function $\mathcal{J}$ is actually equivalent to find the maximum likelihood estimation of $\overrightarrow y$.</p>
+        <h2 id="Square-Loss-Function-in-Linear-Regression"><a href="#Square-Loss-Function-in-Linear-Regression" class="headerlink" title="Square Loss Function (in Linear Regression)"></a>Square Loss Function (in Linear Regression)</h2><p>For linear regression, the way that we used to find the optimal parameters $\overrightarrow \theta$ is called gradient descent, which we seek for $\overrightarrow \theta$ that minimize the loss function:</p>
+<script type="math/tex; mode=display">
+\mathcal{J}(\theta) = \frac{1}{2} \sum_{i=1}^{n}(y^{(i)} - \theta^T x^{(i)})^2</script><p>That is:</p>
+<script type="math/tex; mode=display">
+\hat \theta = \underset{\theta}{\mathrm{argmin}}[\frac{1}{2} \sum_{i=1}^{n}(y^{(i)} - \theta^T x^{(i)})^2]</script><h2 id="Interpret-the-Loss-Function-as-MLE"><a href="#Interpret-the-Loss-Function-as-MLE" class="headerlink" title="Interpret the Loss Function as MLE"></a>Interpret the Loss Function as MLE</h2><p>In linear regression, we assume the model to be:</p>
+<script type="math/tex; mode=display">
+\overrightarrow y = \theta^T x^{(i)} + \epsilon^{(i)}</script><p>where $\epsilon$ is called the error term which conposes of unmodelled factors and random noise. And under general assumption, $\epsilon^{(i)}$s are gaussian random variables that are independent from each other</p>
+<script type="math/tex; mode=display">
+\epsilon \in \text{iid }N(0,\sigma^2)</script><p>Under this assumption, the distribution of $y$ can be expressed as</p>
+<script type="math/tex; mode=display">
+P(y^{(i)}|x^{(i)};\theta) = \frac{1}{\sqrt{2\pi}\sigma} \text{exp}(\frac{-(y^{(i)} - \theta^Tx^{(i)})^2}{2\sigma^2})</script><p>That indicates</p>
+<script type="math/tex; mode=display">
+y^{(i)} \sim \mathcal{N}(\theta^Tx^{(i)}, \sigma^2)</script><p>The likelihood function</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\mathcal{L}(\theta) &= P(\overrightarrow y|X; \theta) \\
+&= \prod_{i=1}^{n} P(y^{(i)}|X^{(i)}; \theta) \\
+&= \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi}\sigma} \text{exp}(\frac{-(y^{(i)} - \theta^Tx^{(i)})^2}{2\sigma^2})
+\end{align}</script><p>The log likelihood function</p>
+<script type="math/tex; mode=display">
+\mathcal{l}(\theta) = n\log(\frac{1}{\sqrt{2\pi}\sigma}) + \sum_{i=1}^{n} \frac{-(y^{(i)} - \theta^Tx^{(i)})^2}{2\sigma^2}</script><p>We can see here</p>
+<script type="math/tex; mode=display">
+l(\theta) \propto  - \frac{1}{2} \sum_{i=1}^{n}(y^{(i)} - \theta^T x^{(i)})^2 = - \mathcal{J}(\theta)</script><p>So we can see minimizing loss function $\mathcal{J}$ is actually equivalent to find the maximum likelihood estimation of $\overrightarrow y$.</p>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
 <li><a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation" target="_blank" rel="noopener">Maximum likelihood estimation</a></li>
 <li><a href="http://pages.cs.wisc.edu/~matthewb/pages/notes/pdf/lossfunctions/SquaredLoss.pdf" target="_blank" rel="noopener">Square loss</a></li>

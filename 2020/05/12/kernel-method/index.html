@@ -127,7 +127,7 @@
 <meta property="og:image" content="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png">
 <meta property="og:image" content="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png">
 <meta property="article:published_time" content="2020-05-12T18:48:35.000Z">
-<meta property="article:modified_time" content="2020-05-13T04:36:40.086Z">
+<meta property="article:modified_time" content="2020-06-18T00:56:44.287Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
 <meta property="article:tag" content="algorithm">
@@ -410,15 +410,22 @@
 
       
         <h2 id="Motivation-of-Kernel-Method"><a href="#Motivation-of-Kernel-Method" class="headerlink" title="Motivation of Kernel Method"></a>Motivation of Kernel Method</h2><p>In classifications, it is often the case that we want to obtain a non-linear decision boundary. </p>
-<img title="figure 1: non-linear boundary" src="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png" alt="non-linear boundary" style="zoom:50%;" />
-
+<p><img title="figure 1: non-linear boundary" src="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png" alt="non-linear boundary" style="zoom:50%;" /></p>
 <p>For example, for this problem (figure 2), we want a desicion boundary that is somewhat like a circle, however, our model only yields linear boundaries. In order to let our model to have more flexibility without changing the basic algorithms, we can apply a transformation onto the feature space $X$. like the figure on the right. In higher dimensionality, we can see that a linear seperation hyperplane serves as a non-linear decision boundary in original feature space. In this case, we performed a transfor somewhat like $(x-\mu)^2$ to make the center $X$ to be smaller while the further away from the center $\mu$, the larger the values are.</p>
-<img title="figure 2: Kernel example" src="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png" alt="kernel visualize" style="zoom:80%;" />
-
+<p><img title="figure 2: Kernel example" src="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png" alt="kernel visualize" style="zoom:80%;" /></p>
 <p>This idea is called feature map.</p>
-<h4 id="Feature-Map"><a href="#Feature-Map" class="headerlink" title="Feature Map"></a>Feature Map</h4><p>Consider a function $\phi(X): \mathbb{R}^d \to \mathbb{R}^p$ that transforms (or, projects) the features $X \in \mathbb{R}^d$ to a new feature space $X’ \in \mathbb{R}^p$. We call<br>$$<br>\begin{align}<br>    \text{the function } \phi &amp;\text{: feature map} \\<br>    X’ &amp;\text{: (new) features} \\<br>    X &amp;\text{: attributes}<br>\end{align}<br>$$<br>e.g. for instance, the attributes contain 2 variables, $X = \{x_1, x_2\}$, the feature map wants to create a new feature space that includes <strong>any conbination of attributes within degree of 3</strong>. Thus<br>$$<br>\phi(X) = [1, x_1, x_2, x_1^2, x_2^2, x_1x_2, x_1^3, x_2^3, x_1^2x_2, x_1x_2^2]<br>$$</p>
-<p>Now $\phi(X)$ has 10 terms. However, this number could go up very rapidly as the <strong>number of attributes</strong> and the number of polynomials that we want to express goes up, which makes feature map a problem in computing. That is, <strong><u>after feature map, the feature space could have a tremendously large (or infinate) dimensionality, which causes problem for computing</u></strong>. That is where we introduce the kernel method.</p>
-<h2 id="Kernel-Method"><a href="#Kernel-Method" class="headerlink" title="Kernel Method"></a>Kernel Method</h2><h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>Given a feature map function $\phi$, we define the kernel that corresponds to this feature mapping is as follows<br>$$<br>K(x, z) = &lt;\phi(x), \phi(z)&gt;<br>$$<br>where $&lt;a, b&gt; = a^Tb$, denotes dot product of two vectors. And $K: \mathbb{R}^{p} \times \mathbb{R}^{p} \to \mathbb{R}$</p>
+<h4 id="Feature-Map"><a href="#Feature-Map" class="headerlink" title="Feature Map"></a>Feature Map</h4><p>Consider a function $\phi(X): \mathbb{R}^d \to \mathbb{R}^p$ that transforms (or, projects) the features $X \in \mathbb{R}^d$ to a new feature space $X’ \in \mathbb{R}^p$. We call </p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \text{the function } \phi &\text{: feature map} \\\\
+    X' &\text{: (new) features} \\\\
+    X &\text{: attributes}
+\end{align}</script><p>e.g. for instance, the attributes contain 2 variables, $X = \{x_1, x_2\}$, the feature map wants to create a new feature space that includes <strong>any conbination of attributes within degree of 3</strong>. Thus</p>
+<script type="math/tex; mode=display">
+\phi(X) = [1, x_1, x_2, x_1^2, x_2^2, x_1x_2, x_1^3, x_2^3, x_1^2x_2, x_1x_2^2]</script><p>Now $\phi(X)$ has 10 terms. However, this number could go up very rapidly as the <strong>number of attributes</strong> and the number of polynomials that we want to express goes up, which makes feature map a problem in computing. That is, <strong><u>after feature map, the feature space could have a tremendously large (or infinate) dimensionality, which causes problem for computing</u></strong>. That is where we introduce the kernel method.</p>
+<h2 id="Kernel-Method"><a href="#Kernel-Method" class="headerlink" title="Kernel Method"></a>Kernel Method</h2><h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>Given a feature map function $\phi$, we define the kernel that corresponds to this feature mapping is as follows</p>
+<script type="math/tex; mode=display">
+K(x, z) = <\phi(x), \phi(z)></script><p>where $<a, b> = a^Tb$, denotes dot product of two vectors. And $K: \mathbb{R}^{p} \times \mathbb{R}^{p} \to \mathbb{R}$</p>
 <p>The trick is: </p>
 <ol>
 <li>We can design a kernel function instead of a feature transformation function, since feature map functions maybe hard to image in higher dimensionalities, knowing that a valid kernel maps to a feature map;</li>
@@ -426,11 +433,13 @@
 </ol>
 <p>Why these are true? Let’s take a closer look at each of them.</p>
 <h4 id="1-What-is-a-Valid-Kernel"><a href="#1-What-is-a-Valid-Kernel" class="headerlink" title="1. What is a Valid Kernel"></a>1. What is a Valid Kernel</h4><p>For functions $K$ from $\mathbb{R}^{p} \times \mathbb{R}^{p}$ to $\mathbb{R}$, valid kernel functions will be able to be “decomposed” into feature map’s dot product like above. However, it is not always convenient to check the feature map function since it could be very complex. The save way that we can design a kernel function knowing it is valid or not is by looking at the kernel matrix.</p>
-<h6 id="Kernel-Matrix"><a href="#Kernel-Matrix" class="headerlink" title="Kernel Matrix"></a>Kernel Matrix</h6><p>Suppose there are $n$ samples $X = x^{(1)},\dots, x^{(n)} $, the <strong>kernel matrix</strong> of a kernel function $K(x, z)$ on this data set $X$ is defined as $K \in \mathbb{R}^{n \times n}$, where<br>$$<br>K_{ij} = K(x^{(i)}, x^{(j)}) = \phi(x^{(i)})^T\phi(x^{(j)})<br>$$<br>the element in position $(i,j)$ is the kernel function’s result of $x^{(i)}$ and $x^{(j)}$. </p>
+<h6 id="Kernel-Matrix"><a href="#Kernel-Matrix" class="headerlink" title="Kernel Matrix"></a>Kernel Matrix</h6><p>Suppose there are $n$ samples $X = x^{(1)},\dots, x^{(n)} $, the <strong>kernel matrix</strong> of a kernel function $K(x, z)$ on this data set $X$ is defined as $K \in \mathbb{R}^{n \times n}$, where </p>
+<script type="math/tex; mode=display">
+K_{ij} = K(x^{(i)}, x^{(j)}) = \phi(x^{(i)})^T\phi(x^{(j)})</script><p>the element in position $(i,j)$ is the kernel function’s result of $x^{(i)}$ and $x^{(j)}$. </p>
 <p>​    Observations:</p>
 <ol>
-<li><p>The kernel matrix is symmetric, $K_{ij}= \phi(x^{(i)})^T\phi(x^{(j)}) = \phi(x^{(j)})^T\phi(x^{(i)}) = K_{ji}$;</p>
-<ol start="2">
+<li><p>The kernel matrix is symmetric, $K<em>{ij}= \phi(x^{(i)})^T\phi(x^{(j)}) = \phi(x^{(j)})^T\phi(x^{(i)}) = K</em>{ji}$;</p>
+<ol>
 <li>For any vector $z$, we have $z^TKz = \sum_k (\sum_iz_i \phi(x^{(i)}))^2 \geq 0$.</li>
 </ol>
 </li>
@@ -438,17 +447,61 @@
 <p>These lead to our theorem to judge whether a kernel is valid.</p>
 <p><strong>Mercer’s Theorem</strong>: Let $K:\mathbb{R}^{p} \times \mathbb{R}^{p} \to \mathbb{R}$ be given, Then for $k$ to be a valid (Mercer) kernel, iff for any $\{x^{(1)}, \dots, x^{(n)}\}, (m &lt; \infty)$, the corresponding kernel matrix is <strong>symmetric positiev semi-definite</strong>.</p>
 <h4 id="2-How-to-Avoid-phi-in-Calculation"><a href="#2-How-to-Avoid-phi-in-Calculation" class="headerlink" title="2. How to Avoid $\phi$ in Calculation"></a>2. How to Avoid $\phi$ in Calculation</h4><p>That is the topic of implementing kernel method in a algorithm.</p>
-<h2 id="Implementation-of-Kernel-Method"><a href="#Implementation-of-Kernel-Method" class="headerlink" title="Implementation of Kernel Method"></a>Implementation of Kernel Method</h2><h4 id="Version-1-With-the-Example-of-Least-Mean-Squares"><a href="#Version-1-With-the-Example-of-Least-Mean-Squares" class="headerlink" title="Version 1: With the Example of Least Mean Squares"></a>Version 1: With the Example of Least Mean Squares</h4><p>For example whe implementing linear regression, where our model is<br>$$<br>y = \theta^Tx + \epsilon<br>$$<br>Now we want to tranform our feauture $x$ to let the model has the ability to capture more trends. Now new features become $\phi(x)$. The model’s prediction is now<br>$$<br>\hat y = h_\theta(\phi(x)) = \theta^T\phi(x)<br>$$</p>
-<h6 id="Update-Rule"><a href="#Update-Rule" class="headerlink" title="Update Rule"></a>Update Rule</h6><p>If we are using gradient descent to update this model, the update rule is<br>$$<br>\theta := \theta + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)})<br>$$<br><strong>Claim</strong>: (proof is omitted here) we can find a set of parameters $\beta_i$ where $i = 1,2,\dots,n$, such that<br>$$<br>\theta = \sum_{i=1}^n \beta_i\phi(x^{(i)})<br>$$<br>then the update rule can be expressed as<br>$$<br>\begin{align}<br>    \theta &amp;:= \sum_{i=1}^n \beta_i \phi(x^{(i)}) + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)}) \\<br>    &amp;= \sum_{i=1}^n ( \beta_i + \alpha \frac{1}{n} \sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)})))\phi(x^{(i)}) \\<br>    &amp;= \sum_{i=1}^n \beta_{i(new)}\phi (x^{(i)})<br>\end{align}<br>$$<br>If we let every $\beta_i$ to be updated <strong>just like</strong> $\theta$ in the following way:<br>$$<br>\begin{align}<br>    \beta_i &amp;:= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \theta^T\phi(x^{(i)})) \\<br>    &amp;= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \sum_{j=1}^n \beta_j\phi(x^{(j)})^T\phi(x^{(i)})) \\<br>    &amp;= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \sum_{j=1}^n \beta_jK(x^{(j)}, x^{(i)}))<br>\end{align}<br>$$<br>where $\theta = \sum_{j=1}^n \beta_j\phi(x^{(j)})$ by our assumption; $K(x, z)$ is the kernel function for $\phi$; $i = 1, 2, \dots, n$. we can see that $\theta$ is completly replaced by calculation of kernel function $K$ in this case. </p>
+<h2 id="Implementation-of-Kernel-Method"><a href="#Implementation-of-Kernel-Method" class="headerlink" title="Implementation of Kernel Method"></a>Implementation of Kernel Method</h2><h4 id="Version-1-With-the-Example-of-Least-Mean-Squares"><a href="#Version-1-With-the-Example-of-Least-Mean-Squares" class="headerlink" title="Version 1: With the Example of Least Mean Squares"></a>Version 1: With the Example of Least Mean Squares</h4><p>For example whe implementing linear regression, where our model is </p>
+<script type="math/tex; mode=display">
+y = \theta^Tx + \epsilon</script><p>Now we want to tranform our feauture $x$ to let the model has the ability to capture more trends. Now new features become $\phi(x)$. The model’s prediction is now</p>
+<script type="math/tex; mode=display">
+\hat y = h_\theta(\phi(x)) = \theta^T\phi(x)</script><h6 id="Update-Rule"><a href="#Update-Rule" class="headerlink" title="Update Rule"></a>Update Rule</h6><p>If we are using gradient descent to update this model, the update rule is</p>
+<script type="math/tex; mode=display">
+\theta := \theta + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)})</script><p><strong>Claim</strong>: (proof is omitted here) we can find a set of parameters $\beta_i$ where $i = 1,2,\dots,n$, such that</p>
+<script type="math/tex; mode=display">
+\theta = \sum_{i=1}^n \beta_i\phi(x^{(i)})</script><p>then the update rule can be expressed as</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \theta &:= \sum_{i=1}^n \beta_i \phi(x^{(i)}) + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)}) \\\\
+    &= \sum_{i=1}^n ( \beta_i + \alpha \frac{1}{n} \sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)})))\phi(x^{(i)}) \\\\
+    &= \sum_{i=1}^n \beta_{i(new)}\phi (x^{(i)})
+\end{align}</script><p>If we let every $\beta_i$ to be updated <strong>just like</strong> $\theta$ in the following way: </p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \beta_i &:= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \theta^T\phi(x^{(i)})) \\\\
+    &= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \sum_{j=1}^n \beta_j\phi(x^{(j)})^T\phi(x^{(i)})) \\\\
+    &= \beta_i + \alpha \frac{1}{n} (y^{(i)} - \sum_{j=1}^n \beta_jK(x^{(j)}, x^{(i)}))
+\end{align}</script><p>where $\theta = \sum_{j=1}^n \beta_j\phi(x^{(j)})$ by our assumption; $K(x, z)$ is the kernel function for $\phi$; $i = 1, 2, \dots, n$. we can see that $\theta$ is completly replaced by calculation of kernel function $K$ in this case. </p>
 <p><strong>NOTE</strong>: The updates of $\theta$ and $\beta$ are “synchronized”. Each iteration of $\theta$ updated is equivalent to $\beta$ updated once. This is more clear if we write the update rule of $\beta$ in vecotrized way.</p>
-<p>Given $\beta \in \mathbb{R}^n$, $K^{(i)} = [K(x^{(i)}, x^{(1)}), K(x^{(i)}, x^{(2)}), \dots, K(x^{(i)}, x^{(n)})]^T$, so that $K = [K^{(1)}, K^{(1)}, \dots, K^{(n)}]$, we have<br>$$<br>\beta := \alpha \frac{1}{n}(y - \beta^TK)<br>$$<br>is equivalent to<br>$$<br>\theta := \theta + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)})<br>$$<br>where $\theta = \sum_{j=1}^n \beta_j\phi(x^{(j)})$.</p>
-<h6 id="Prediction"><a href="#Prediction" class="headerlink" title="Prediction"></a>Prediction</h6><p>Using $\beta$  and $K$ instead of $\alpha$ and $\phi$ to perform prediction. Assume here is a new $x$:<br>$$<br>\begin{align}<br>    \hat y &amp;= h_\theta(\phi(x)) = \theta^T\phi(x) \\<br>    &amp;= \sum_{j=1}^n \beta_j\phi(x^{(j)})\phi(x) \\<br>    &amp;= \sum_{j=1}^n \beta_jK(x^{(i)}, x) \\<br>    &amp;= h_{\beta}(K, x)<br>\end{align}<br>$$</p>
-<h4 id="Version-2-More-General"><a href="#Version-2-More-General" class="headerlink" title="Version 2: More General"></a>Version 2: More General</h4><p>For example in linear regression, or logistic regression, or support vector machine, we defined different loss function to minimize (respectively, mean square error, logit loss, hinge loss). For these cases, we can express the loss function as the following form:<br>$$<br>L(y, \theta^Tx)<br>$$<br>where $\theta^Tx$ yields the prediction of the model. In all of above cases, $\theta^Tx$ can be replaced by a function $f(x)$ which denotes the prediction of model for input $x$. </p>
-<p>The regularized cost function can be written as:<br>$$<br>J_\lambda(\theta) = \frac{1}{n} \sum_{i=1}^{n}L(y^{(i)}, f(x^{(i)})) + \frac{\lambda}{2}||f||_2^2<br>$$<br>where $f(x) = g(\theta^Tx)$ for the examples above.</p>
-<h6 id="The-Representer-Theorem"><a href="#The-Representer-Theorem" class="headerlink" title="The Representer Theorem"></a>The Representer Theorem</h6><p>Consider the optimization problem<br>$$<br>\min_{f} D(f(x_1), \dots, f(x_n)) + P(||f||^2_2)<br>$$<br>where $P$ is nondecreasing function and $D$ depends on $f$ only though $f(x_i)$. It has a minimizer of the form<br>$$<br>f(z) = \sum_{i=1}^{n} \beta_i K(z, x_i)<br>$$<br>where $\beta \in \mathbb{R}$ and $K$ is a kernel function. And if $P$ is strictly increasing, then every solution of this optimization problem will have this form.</p>
+<p>Given $\beta \in \mathbb{R}^n$, $K^{(i)} = [K(x^{(i)}, x^{(1)}), K(x^{(i)}, x^{(2)}), \dots, K(x^{(i)}, x^{(n)})]^T$, so that $K = [K^{(1)}, K^{(1)}, \dots, K^{(n)}]$, we have</p>
+<script type="math/tex; mode=display">
+\beta := \alpha \frac{1}{n}(y - \beta^TK)</script><p>is equivalent to </p>
+<script type="math/tex; mode=display">
+\theta := \theta + \alpha \frac{1}{n}\sum_{i=1}^n(y^{(i)} - \theta^T\phi(x^{(i)}))\phi(x^{(i)})</script><p>where $\theta = \sum_{j=1}^n \beta_j\phi(x^{(j)})$.</p>
+<h6 id="Prediction"><a href="#Prediction" class="headerlink" title="Prediction"></a>Prediction</h6><p>Using $\beta$  and $K$ instead of $\alpha$ and $\phi$ to perform prediction. Assume here is a new $x$:</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \hat y &= h_\theta(\phi(x)) = \theta^T\phi(x) \\\\
+    &= \sum_{j=1}^n \beta_j\phi(x^{(j)})\phi(x) \\\\
+    &= \sum_{j=1}^n \beta_jK(x^{(i)}, x) \\\\
+    &= h_{\beta}(K, x)
+\end{align}</script><h4 id="Version-2-More-General"><a href="#Version-2-More-General" class="headerlink" title="Version 2: More General"></a>Version 2: More General</h4><p>For example in linear regression, or logistic regression, or support vector machine, we defined different loss function to minimize (respectively, mean square error, logit loss, hinge loss). For these cases, we can express the loss function as the following form:</p>
+<script type="math/tex; mode=display">
+L(y, \theta^Tx)</script><p>where $\theta^Tx$ yields the prediction of the model. In all of above cases, $\theta^Tx$ can be replaced by a function $f(x)$ which denotes the prediction of model for input $x$. </p>
+<p>The regularized cost function can be written as:</p>
+<script type="math/tex; mode=display">
+J_\lambda(\theta) = \frac{1}{n} \sum_{i=1}^{n}L(y^{(i)}, f(x^{(i)})) + \frac{\lambda}{2}||f||_2^2</script><p>where $f(x) = g(\theta^Tx)$ for the examples above.</p>
+<h6 id="The-Representer-Theorem"><a href="#The-Representer-Theorem" class="headerlink" title="The Representer Theorem"></a>The Representer Theorem</h6><p>Consider the optimization problem</p>
+<script type="math/tex; mode=display">
+\min_{f} D(f(x_1), \dots, f(x_n)) + P(||f||^2_2)</script><p>where $P$ is nondecreasing function and $D$ depends on $f$ only though $f(x_i)$. It has a minimizer of the form </p>
+<script type="math/tex; mode=display">
+f(z) = \sum_{i=1}^{n} \beta_i K(z, x_i)</script><p>where $\beta \in \mathbb{R}$ and $K$ is a kernel function. And if $P$ is strictly increasing, then every solution of this optimization problem will have this form.</p>
 <p>Proof of this theorem can be found <a href="http://web.eecs.umich.edu/~cscott/past_courses/eecs598w14/notes/13_kernel_methods.pdf" target="_blank" rel="noopener">here</a> or <a href="http://cs229.stanford.edu/extra-notes/representer-function.pdf" target="_blank" rel="noopener">here</a>.</p>
 <h6 id="Prediction-1"><a href="#Prediction-1" class="headerlink" title="Prediction"></a>Prediction</h6><p>From the last equation, we can see that this theorem enables us to <strong>make predictions</strong> using $\beta$ and $K$ other than $\theta$ or $f$.</p>
-<h6 id="Update-Rule-1"><a href="#Update-Rule-1" class="headerlink" title="Update Rule"></a>Update Rule</h6><p>We need a new update rule to update $\beta$ directly, instead of calculating $\theta$. Let $f(x_i) = K^{(i)}\beta$ where $K^{(i)}$ is the same definition as in Version 1. The consise form of the cost function is<br>$$<br>J_P(\beta) = D(K^{(1)}\beta, \dots, K^{(n)}\beta) + P(\beta^TK\beta)<br>$$<br>To get the update rule for $\beta$, we compute the gradient for $\beta$. For all of our 3 examples above, $D$ is an averaging function of the loss functions and $P$ is usually take the form of l2 regularization, $P(r) = \frac{\lambda}{2}r$. Then this gradient is<br>$$<br>\begin{align}<br>    \nabla_\beta J_P(\beta) &amp;= \nabla_\beta(\frac{1}{n} \sum_{i=1}^{n} L(K^{(i)^T} \beta, y) + \frac{\lambda}{2}\beta^TK\beta) \\<br>    &amp;= \frac{1}{n} \sum_{i=1}^{n} L’(K^{(i)^T} \beta, y)K^{(i)} + \lambda K\beta<br>\end{align}<br>$$<br>This is how we update $\beta$.</p>
+<h6 id="Update-Rule-1"><a href="#Update-Rule-1" class="headerlink" title="Update Rule"></a>Update Rule</h6><p>We need a new update rule to update $\beta$ directly, instead of calculating $\theta$. Let $f(x_i) = K^{(i)}\beta$ where $K^{(i)}$ is the same definition as in Version 1. The consise form of the cost function is</p>
+<script type="math/tex; mode=display">
+J_P(\beta) = D(K^{(1)}\beta, \dots, K^{(n)}\beta) + P(\beta^TK\beta)</script><p>To get the update rule for $\beta$, we compute the gradient for $\beta$. For all of our 3 examples above, $D$ is an averaging function of the loss functions and $P$ is usually take the form of l2 regularization, $P(r) = \frac{\lambda}{2}r$. Then this gradient is</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \nabla_\beta J_P(\beta) &= \nabla_\beta(\frac{1}{n} \sum_{i=1}^{n} L(K^{(i)^T} \beta, y) + \frac{\lambda}{2}\beta^TK\beta) \\\\
+    &= \frac{1}{n} \sum_{i=1}^{n} L'(K^{(i)^T} \beta, y)K^{(i)} + \lambda K\beta
+\end{align}</script><p>This is how we update $\beta$.</p>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
 <li><a href="https://towardsdatascience.com/understanding-the-kernel-trick-e0bc6112ef78" target="_blank" rel="noopener">Harish Kandan: kernel method</a></li>
 <li><a href="https://towardsdatascience.com/kernel-function-6f1d2be6091" target="_blank" rel="noopener">Tejumade Afonja: kernel method</a></li>

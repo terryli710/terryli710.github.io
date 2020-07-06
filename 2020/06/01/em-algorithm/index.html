@@ -106,7 +106,7 @@
 
 
 
-  <meta name="keywords" content="machine learning,algorithm,em,gmm," />
+  <meta name="keywords" content="machine learning,em,gmm,algorithm," />
 
 
 
@@ -127,12 +127,12 @@
 <meta property="og:image" content="https://www.mathworks.com/help/examples/stats/win64/ClusterDataUsingAGaussianMixtureModelExample_01.png">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/e/ea/K-means_convergence.gif">
 <meta property="article:published_time" content="2020-06-01T16:44:06.000Z">
-<meta property="article:modified_time" content="2020-06-03T17:37:34.300Z">
+<meta property="article:modified_time" content="2020-06-03T17:40:37.017Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
-<meta property="article:tag" content="algorithm">
 <meta property="article:tag" content="em">
 <meta property="article:tag" content="gmm">
+<meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://www.mathworks.com/help/examples/stats/win64/ClusterDataUsingAGaussianMixtureModelExample_01.png">
 
@@ -420,8 +420,7 @@
 <li>Assign each point to a cluster;</li>
 <li>Update the centroid of each cluster.</li>
 </ol>
-<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/K-means_convergence.gif" alt="k-means" style="zoom:50%;" />
-
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/K-means_convergence.gif" alt="k-means" style="zoom:50%;" /></p>
 <p>Image GMM algorithm is trying to do a similar thing, with some modifications:</p>
 <ol>
 <li>Assume each cluster is sampled from a <strong>gaussian distribution</strong>;</li>
@@ -435,7 +434,11 @@
 <h3 id="Mathematical-Definition"><a href="#Mathematical-Definition" class="headerlink" title="Mathematical Definition"></a>Mathematical Definition</h3><h5 id="Model-Setting"><a href="#Model-Setting" class="headerlink" title="Model Setting"></a>Model Setting</h5><p><strong>NOTE</strong>: <em>$x^{(i)}$: data points ;$K$: number of clusters (pre-determined just like k-means); $z^{(i)}=j$: latent variable, means “Data point $x^{(i)}$ comes from cluster $j$”;</em></p>
 <p><strong>Given</strong>: $x^{(1)}, x^{(2)}, \dots, x^{(n)} \in \mathbb{R}^d$ and $K \in \{1,2,3,\dots\}$.</p>
 <p><strong>Do</strong>: find $z^{(i)}=j$’s probability $p(z^{(i)}=j)$: the probability that a point $x^{(i)}$ is sampled from cluster $j$.</p>
-<p><strong>Model</strong>:<br>$$<br>p(x^{(i)}, z^{(i)}=j) = p(x^{(i)}| z^{(i)=j})p(z^{(i)}=j) \\<br>z^{(i)} \sim \text{Multinomial}(\phi) \\<br>x^{(i)}| z^{(i)}=j \sim N(\mu_j, \sigma^2_j)<br>$$<br>By words, the model assumes:</p>
+<p><strong>Model</strong>: </p>
+<script type="math/tex; mode=display">
+p(x^{(i)}, z^{(i)}=j) = p(x^{(i)}| z^{(i)=j})p(z^{(i)}=j) \\\\
+z^{(i)} \sim \text{Multinomial}(\phi) \\\\
+x^{(i)}| z^{(i)}=j \sim N(\mu_j, \sigma^2_j)</script><p>By words, the model assumes:</p>
 <ol>
 <li>The probability of  $z^{(i)}|x^{(i)}$ can be obtained by joint distribution of $x^{(i)}, z^{(i)}$, which is given by two “simpler” form of distributions that we can estimate;</li>
 <li>Latent variable $z^{(i)}$ is Multinomial;</li>
@@ -443,62 +446,88 @@
 </ol>
 <h5 id="Model-Fit"><a href="#Model-Fit" class="headerlink" title="Model Fit"></a>Model Fit</h5><p>Fitting the model requires the EM algorithm.</p>
 <h2 id="The-EM-Algorithm"><a href="#The-EM-Algorithm" class="headerlink" title="The EM Algorithm"></a>The EM Algorithm</h2><p>The EM algorithm consists of <a href="#1"><strong>iterating two steps</strong></a>, which very much resemble the two steps in k-means algorithm. The differences between EM and directly MLE is that EM algorithm, which is dealing with missing data or latent variables, adds a step (E-step) to estimate them, and uses its estimation to do MLE (M-step).</p>
-<h5 id="Description-of-the-Idea"><a href="#Description-of-the-Idea" class="headerlink" title="Description of the Idea"></a>Description of the Idea</h5><p>Assume that the distributions of $z^{(i)}$ and $x^{(i)}|z^{(i)}$ are parametrized by $\theta$. Then, ultimately, we want to find $\theta$ such that:<br>$$<br>\begin{align}<br>    \theta_{MLE} &amp;= arg\max_{\theta}l(\theta) \\<br>    &amp;= arg\max_{\theta}\sum_{i=1}^{n}\log p(x^{(i)};\theta)<br>\end{align}<br>$$<br>But we cannot optimize that directly. Here are some <strong>observations</strong>:</p>
+<h5 id="Description-of-the-Idea"><a href="#Description-of-the-Idea" class="headerlink" title="Description of the Idea"></a>Description of the Idea</h5><p>Assume that the distributions of $z^{(i)}$ and $x^{(i)}|z^{(i)}$ are parametrized by $\theta$. Then, ultimately, we want to find $\theta$ such that:</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \theta_{MLE} &= arg\max_{\theta}l(\theta) \\\\
+    &= arg\max_{\theta}\sum_{i=1}^{n}\log p(x^{(i)};\theta)
+\end{align}</script><p>But we cannot optimize that directly. Here are some <strong>observations</strong>:</p>
 <ol>
 <li>Most obviously, we do not know the pdf of $x$.</li>
 <li>We can write $p(x^{(i)};\theta) = \sum_{j=1}^{K} p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta)$, which we made assumptions on, can we estimate using these?  While for Gaussian distribution, we can estimate its parameters using MLE by calculating the gradients, it is not feasible to directly done here as the gradient depends on $p(z^{(i)}=j;\theta)$, which were not observed, and also requires estimation;</li>
 <li>On the other hand, the gradients regarding the Multinomial distributions depends on Gaussians;</li>
 <li>So, a simple way of optimizing the log-likelihood other than directly calculating gradient is needed.</li>
 </ol>
-<p>The main idea, which was hinted in the observations, is that we have an annoying structure that makes the calculation to be very complicated<br>$$<br>\log \sum_{j=1}^K(p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta))<br>$$<br>So directly maximizing $l(\theta)$ is not a good idea.</p>
-<p><strong>THOUGHT 1 (goal)</strong>: Find a function $f(\theta)$, such that<br>$$<br>arg\max_{\theta}l(\theta) = arg\max_{\theta}\sum_{i=1}^{n}f_{x^{(i)}}(\theta)<br>$$<br>and $f(\theta)$ has a nicer form to estimate by taking gradients.</p>
-<p><strong>THOUGHT 2 (failed try)</strong>: Recall Jensen’s inequality, we have<br>$$<br>\begin{align}<br>    \log &amp;\sum_{j=1}^K(p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta)) \\<br>    &amp;=  \log \sum_{j=1}^Kp(x^{(i)}, z^{(i)};\theta)\\<br>    &amp;\geq \sum_{j=1}^K\log(p(x^{(i)}, z^{(i)};\theta))<br>\end{align}<br>$$</p>
-<p>If $f_{x^{(i)}}(\theta) = \sum_{j=1}^K\log(p(x^{(i)}, z^{(i)};\theta))$, the summation is out of the way, and $p(x^{(i)}, z^{(i)})$ can be easily expressed by the model. </p>
+<p>The main idea, which was hinted in the observations, is that we have an annoying structure that makes the calculation to be very complicated</p>
+<script type="math/tex; mode=display">
+\log \sum_{j=1}^K(p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta))</script><p>So directly maximizing $l(\theta)$ is not a good idea.</p>
+<p><strong>THOUGHT 1 (goal)</strong>: Find a function $f(\theta)$, such that</p>
+<script type="math/tex; mode=display">
+arg\max_{\theta}l(\theta) = arg\max_{\theta}\sum_{i=1}^{n}f_{x^{(i)}}(\theta)</script><p>and $f(\theta)$ has a nicer form to estimate by taking gradients.</p>
+<p><strong>THOUGHT 2 (failed try)</strong>: Recall Jensen’s inequality, we have </p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \log &\sum_{j=1}^K(p(x^{(i)}| z^{(i)}=j;\theta)p(z^{(i)}=j;\theta)) \\\\
+    &=  \log \sum_{j=1}^Kp(x^{(i)}, z^{(i)};\theta)\\\\
+    &\geq \sum_{j=1}^K\log(p(x^{(i)}, z^{(i)};\theta))
+\end{align}</script><p>If $f<em>{x^{(i)}}(\theta) = \sum</em>{j=1}^K\log(p(x^{(i)}, z^{(i)};\theta))$, the summation is out of the way, and $p(x^{(i)}, z^{(i)})$ can be easily expressed by the model. </p>
 <p><em>NOT WORKING!</em>: Though $p(x,z)$ has a nice form, maximizing the latter does not guarantee maximizing the previous!.</p>
-<p><strong>THOUGHT 3 (brilliant)</strong>: Let $f(\theta)$ to be<br>$$<br>f_{x^{(i)}}(\theta) = \sum_{j=1}^{K}Q_j\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q_j}<br>$$<br>where for $\forall j \in {1,\dots, K}, Q_j &gt; 0$ and $\sum_j Q_j = 1 $. Some observations:</p>
+<p><strong>THOUGHT 3 (brilliant)</strong>: Let $f(\theta)$ to be</p>
+<script type="math/tex; mode=display">
+f_{x^{(i)}}(\theta) = \sum_{j=1}^{K}Q_j\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q_j}</script><p>where for $\forall j \in {1,\dots, K}, Q_j &gt; 0$ and $\sum_j Q_j = 1 $. Some observations:</p>
 <ol>
 <li>Easy to see, we are also using $p(x, z)$ here, so <strong>easily estimated</strong> checked;</li>
 <li>“Mysterious” variable $Q_j$s are introduced, which satisfies some conditions. Those conditions make $Q_j$ to be able to serves as the <strong>pdf function of a discrete R.V.</strong>;</li>
 <li>Most importantly, we can show: maximizing $f$ is related to maximizing $l$: </li>
 </ol>
-<p>$$<br>\text{Suppose } \theta_M = arg\max_{\theta}f(\theta) \\<br>\begin{align}<br>    f(\theta_M) - f(\theta) &amp;= \log(p(x^{(i)};\theta_M)) - \log(p(x^{(i)};\theta)) - \sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} \\<br>    \log(p(x^{(i)};\theta_M)) - \log(p(x^{(i)};\theta)) &amp;= f(\theta_M) - f(\theta) + \sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)}<br>\end{align}<br>$$</p>
-<p>​            These means: </p>
+<script type="math/tex; mode=display">
+\text{Suppose } \theta_M = arg\max_{\theta}f(\theta) \\\\
+\begin{align}
+    f(\theta_M) - f(\theta) &= \log(p(x^{(i)};\theta_M)) - \log(p(x^{(i)};\theta)) - \sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} \\\\
+    \log(p(x^{(i)};\theta_M)) - \log(p(x^{(i)};\theta)) &= f(\theta_M) - f(\theta) + \sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)}
+\end{align}</script><p>​            These means: </p>
 <ul>
 <li>We maximized $f(\theta)$ by taking $\theta_M$;</li>
 <li>log-likelihood $l(\theta)$ will be increasing (at least not decreasing) if $\sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} &gt; 0$</li>
 </ul>
-<ol start="4">
+<ol>
 <li>$\sum_{j=1}^{K}Q_j \log \frac{p(z^{(i)}|x^{(i)};\theta)}{p(z^{(i)}|x^{(i)};\theta_M)} &gt; 0$ is obtained if we let </li>
 </ol>
-<p>$$<br>Q_j = p(z^{(i)}|x^{(i)};\theta)<br>$$</p>
-<h5 id="Wrap-up-the-Idea"><a href="#Wrap-up-the-Idea" class="headerlink" title="Wrap up the Idea"></a>Wrap up the Idea</h5><ol>
+<script type="math/tex; mode=display">
+Q_j = p(z^{(i)}|x^{(i)};\theta)</script><h5 id="Wrap-up-the-Idea"><a href="#Wrap-up-the-Idea" class="headerlink" title="Wrap up the Idea"></a>Wrap up the Idea</h5><ol>
 <li>Do not try to obtained $\theta_{MLE}$ by maximizing</li>
 </ol>
-<p>$$<br>l(\theta) = \sum_{i=1}^{n}\log p(x^{(i)};\theta)<br>$$</p>
-<ol start="2">
+<script type="math/tex; mode=display">
+l(\theta) = \sum_{i=1}^{n}\log p(x^{(i)};\theta)</script><ol>
 <li>Introducing $Q(z^{(i)}) = p(z^{(i)}|x^{(i)};\theta)$, and maximizing $f(\theta)$</li>
 </ol>
-<p>$$<br>f(\theta) = \sum_{j=1}^{K} Q(z^{(i)})\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q(z^{(i)})}<br>$$</p>
-<p><strong>NOTE</strong>: <em>$f(\theta)$ is actually an expectation $f(\theta) = E(log\frac{p(x^{(i)}, z^{(i)}; \theta)}{Q(z^{(i)})} | x^{(i)}; \theta)$</em></p>
+<script type="math/tex; mode=display">
+f(\theta) = \sum_{j=1}^{K} Q(z^{(i)})\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q(z^{(i)})}</script><p><strong>NOTE</strong>: <em>$f(\theta)$ is actually an expectation $f(\theta) = E(log\frac{p(x^{(i)}, z^{(i)}; \theta)}{Q(z^{(i)})} | x^{(i)}; \theta)$</em></p>
 <p>Naturally, we can see how this idea works: <strong>First, re-estimate $Q(z^{(i)})$ according to new $\theta$. Then, update $\theta$ with renewed $Q(z^{(i)})$.</strong> Let’s properly write down this idea.</p>
-<p>##Formalizing the Algorithm</p>
-<ol>
+<h2 id="Formalizing-the-Algorithm"><a href="#Formalizing-the-Algorithm" class="headerlink" title="Formalizing the Algorithm"></a>Formalizing the Algorithm</h2><ol>
 <li><strong>E-STEP</strong>: <em>GIVEN</em> = {$X$, $\theta$}; <em>DO</em> = calculate </li>
 </ol>
-<p>$$<br>Q_j(z^{(i)}) := p(z^{(i)}=j|x^{(i)};\theta)<br>$$</p>
-<ol start="2">
-<li><strong>M-STEP</strong>: <em>GIVEN</em> = $Q_j(z^{(i)})$; <em>DO</em> = estimate parameters $\theta$</li>
+<script type="math/tex; mode=display">
+Q_j(z^{(i)}) := p(z^{(i)}=j|x^{(i)};\theta)</script><ol>
+<li><strong>M-STEP</strong>: <em>GIVEN</em> = $Q<em>j(z^{(i)})$; _DO</em> = estimate parameters $\theta$</li>
 </ol>
-<p>$$<br>\theta := arg\max_{\theta}\sum_{i=1}^{N}\sum_{j = 1}^{K}Q_j(z^{(i)})\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q_j(z^{(i)})}<br>$$</p>
-<h2 id="GMM-Cheat-sheet"><a href="#GMM-Cheat-sheet" class="headerlink" title="GMM Cheat sheet"></a>GMM Cheat sheet</h2><ol>
+<script type="math/tex; mode=display">
+\theta := arg\max_{\theta}\sum_{i=1}^{N}\sum_{j = 1}^{K}Q_j(z^{(i)})\log \frac{p(x^{(i)}, z^{(i)}; \theta)}{Q_j(z^{(i)})}</script><h2 id="GMM-Cheat-sheet"><a href="#GMM-Cheat-sheet" class="headerlink" title="GMM Cheat sheet"></a>GMM Cheat sheet</h2><ol>
 <li><strong>E-STEP</strong>: </li>
 </ol>
-<p>$$<br>\begin{align}<br>    Q_j(z^{(i)}) :&amp;= \frac{p(x^{(i)},z^{(i)=j};\theta)}{p(x^{(i)})} \\<br>     &amp;= \frac{p(x^{(i)}|z^{(i)=j};\theta) p(z^{(i)}=j)}{\sum_{j=1}^{K}p(x^{(i)}|z^{(i)};\theta) p(z^{(i)}=j)}<br>\end{align} \\<br>$$</p>
-<ol start="2">
+<script type="math/tex; mode=display">
+\begin{align}
+    Q_j(z^{(i)}) :&= \frac{p(x^{(i)},z^{(i)=j};\theta)}{p(x^{(i)})} \\\\
+     &= \frac{p(x^{(i)}|z^{(i)=j};\theta) p(z^{(i)}=j)}{\sum_{j=1}^{K}p(x^{(i)}|z^{(i)};\theta) p(z^{(i)}=j)}
+\end{align} \\\\</script><ol>
 <li><strong>M-STEP</strong>:</li>
 </ol>
-<p>$$<br>\begin{align}<br>    \phi_j :&amp;= \frac{1}{n} \sum_{i=1}^{n}Q_j(z^{(i)}) \\<br>    \mu_j :&amp;=\frac{\sum_{i=1}^{n}Q_j(z^{(i)})x^{(i)}}{\sum_{i=1}^{n}Q_j(z^{(i)})} \\<br>    \Sigma_j :&amp;= \frac{\sum_{i=1}^{n}Q_j(z^{(i)})(x^{(i)} - \mu_j)(x^{(i)} - \mu_j)^T}{\sum_{i=1}^{n}Q_j(z^{(i)})}<br>\end{align}<br>$$</p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<script type="math/tex; mode=display">
+\begin{align}
+    \phi_j :&= \frac{1}{n} \sum_{i=1}^{n}Q_j(z^{(i)}) \\\\ 
+    \mu_j :&=\frac{\sum_{i=1}^{n}Q_j(z^{(i)})x^{(i)}}{\sum_{i=1}^{n}Q_j(z^{(i)})} \\\\  
+    \Sigma_j :&= \frac{\sum_{i=1}^{n}Q_j(z^{(i)})(x^{(i)} - \mu_j)(x^{(i)} - \mu_j)^T}{\sum_{i=1}^{n}Q_j(z^{(i)})}
+\end{align}</script><h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
 <li><p><a href="http://cs229.stanford.edu/notes/cs229-notes8.pdf" target="_blank" rel="noopener">CS229 Lecture Notes</a></p>
 </li>
 <li><p><a href="http://bengio.abracadoudou.com/lectures/gmm.pdf" target="_blank" rel="noopener">Statistical Machine Learning from Data by Samy Bengio</a></p>
@@ -523,11 +552,11 @@
           
             <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
           
-            <a href="/tags/algorithm/" rel="tag"># algorithm</a>
-          
             <a href="/tags/em/" rel="tag"># em</a>
           
             <a href="/tags/gmm/" rel="tag"># gmm</a>
+          
+            <a href="/tags/algorithm/" rel="tag"># algorithm</a>
           
         </div>
       
@@ -713,7 +742,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#EM-And-GMM"><span class="nav-number">1.</span> <span class="nav-text">EM And GMM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMM-Algorithm"><span class="nav-number">2.</span> <span class="nav-text">GMM Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-of-the-Model"><span class="nav-number">2.0.1.</span> <span class="nav-text">Description of the Model</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mathematical-Definition"><span class="nav-number">2.1.</span> <span class="nav-text">Mathematical Definition</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Setting"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">Model Setting</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Fit"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">Model Fit</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-EM-Algorithm"><span class="nav-number">3.</span> <span class="nav-text">The EM Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Description-of-the-Idea"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">Description of the Idea</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Wrap-up-the-Idea"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">Wrap up the Idea</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMM-Cheat-sheet"><span class="nav-number">4.</span> <span class="nav-text">GMM Cheat sheet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#EM-And-GMM"><span class="nav-number">1.</span> <span class="nav-text">EM And GMM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMM-Algorithm"><span class="nav-number">2.</span> <span class="nav-text">GMM Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-of-the-Model"><span class="nav-number">2.0.1.</span> <span class="nav-text">Description of the Model</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mathematical-Definition"><span class="nav-number">2.1.</span> <span class="nav-text">Mathematical Definition</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Setting"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">Model Setting</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Model-Fit"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">Model Fit</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-EM-Algorithm"><span class="nav-number">3.</span> <span class="nav-text">The EM Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Description-of-the-Idea"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">Description of the Idea</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Wrap-up-the-Idea"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">Wrap up the Idea</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Formalizing-the-Algorithm"><span class="nav-number">4.</span> <span class="nav-text">Formalizing the Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GMM-Cheat-sheet"><span class="nav-number">5.</span> <span class="nav-text">GMM Cheat sheet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
             
 
           </div>

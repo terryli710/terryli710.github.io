@@ -419,11 +419,7 @@
 </ul>
 </li>
 </ul>
-<p>Basic usage</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Set up SMOTE</span></span><br><span class="line">oversample = SMOTE()  </span><br><span class="line"><span class="comment"># Transform the data set</span></span><br><span class="line">XSmote, YSmote = oversample.fit_resample(X,Y)</span><br></pre></td></tr></table></figure>
-
-
-
+<p>Basic usage<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Set up SMOTE</span></span><br><span class="line">oversample = SMOTE()  </span><br><span class="line"><span class="comment"># Transform the data set</span></span><br><span class="line">XSmote, YSmote = oversample.fit_resample(X,Y)</span><br></pre></td></tr></table></figure></p>
 <h3 id="Suggestions"><a href="#Suggestions" class="headerlink" title="Suggestions"></a>Suggestions</h3><ul>
 <li><p>First use random under-sampling to trim the number of examples in the majority class, then use SMOTE to over-sample the minority class to balance the class distribution.</p>
 <blockquote>
