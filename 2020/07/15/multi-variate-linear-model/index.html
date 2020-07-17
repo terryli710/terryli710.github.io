@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Serif:300,300italic,400,400italic,700,700italic|Abril Fatface:300,300italic,400,400italic,700,700italic|PT Serif:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="algorithm,stats,linear regression," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="How to perform linear regression and addressing the problem of collinearity and find feature importance.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Multivariate Linear Regression -- Collinearity and Feature Importance">
+<meta property="og:url" content="http://yoursite.com/2020/07/15/multi-variate-linear-model/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="How to perform linear regression and addressing the problem of collinearity and find feature importance.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-15T21:00:58.000Z">
+<meta property="article:modified_time" content="2020-07-17T19:44:14.525Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="stats">
+<meta property="article:tag" content="linear regression">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/15/multi-variate-linear-model/"/>
+
+
+
+
+
+  <title>Multivariate Linear Regression -- Collinearity and Feature Importance | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/15/multi-variate-linear-model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Multivariate Linear Regression -- Collinearity and Feature Importance</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-07-15T14:00:58-07:00">
+                2020-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/15/multi-variate-linear-model/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/15/multi-variate-linear-model/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  How to perform linear regression and addressing the problem of collinearity and find feature importance.
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>This article will discuss some problems in implementing multivariate linear regression. These problems are:</p>
+<ol>
+<li>What to do with the collinearity phenomenon in linear regression?</li>
+<li>How to extract feature importance of a linear regression, is it just the coefficient of the model?</li>
+</ol>
+<h2 id="Collinearity"><a href="#Collinearity" class="headerlink" title="Collinearity"></a>Collinearity</h2><h3 id="What-is-collinearity"><a href="#What-is-collinearity" class="headerlink" title="What is collinearity"></a>What is collinearity</h3><p>Collinearity is a condition in which some of the independent variables are highly correlated. Collinearity will occur more often when the number of predictors is very large, as we can imagine that there is a higher chance that some predictor are correlated with others. However, there are some typical problems with collinearity.</p>
+<h3 id="Problems-of-collinearity"><a href="#Problems-of-collinearity" class="headerlink" title="Problems of collinearity"></a>Problems of collinearity</h3><ol>
+<li>Large variance of coefficients. The coefficients will be very sensitive to small changes of the data, p-values will be not significant.</li>
+<li>The credibility of the estimated coefficients compromised. The statistical power of the regression model is weakened, p-values that indicates variables that are statistically significant may NOT be trustworthy.</li>
+</ol>
+<p>However, there are some aspects which collinearity doesn’t affect, such as the performance of the model. So there is no need to deal with collinearity in some situation.</p>
+<h2 id="When-to-Deal-with-Collinearity"><a href="#When-to-Deal-with-Collinearity" class="headerlink" title="When to Deal with Collinearity?"></a>When to Deal with Collinearity?</h2><ol>
+<li>When the collinearity effect is very severe that compromised model’s generalizing ability.</li>
+<li>Multicollinearity affects only the specific independent variables that are correlated. Therefore, it depends on the variables that are of interest. If the important variables are not affected, then there is no need to deal with collinearity.</li>
+<li>As mentioned before, the model’s predictions, precision of the predictions, and the goodness-of-fit statistics won’t be affected. So if those are the concern of the model, then there is no need to reduce even severe multicollinearity.</li>
+</ol>
+<h2 id="Variance-Inflation-Factor-VIF"><a href="#Variance-Inflation-Factor-VIF" class="headerlink" title="Variance Inflation Factor (VIF)"></a>Variance Inflation Factor (VIF)</h2><p>In linear models, VIF is a quantity for each predictor variable that quantifies severity of multicollinearity </p>
+<h3 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h3><blockquote>
+<p>In statistics, the <strong>variance inflation factor</strong> (<strong>VIF</strong>) is the quotient of the variance in a model with multiple terms by the variance of a model with one term alone.</p>
+</blockquote>
+<p>Put it in simple words, VIF is measuring how well other features can linearly represent feature $k$. It would be clearer in mathematical form.</p>
+<h3 id="Mathematical-Definition"><a href="#Mathematical-Definition" class="headerlink" title="Mathematical Definition"></a>Mathematical Definition</h3><p>The VIF for predictor $X_i$ is defined as</p>
+<script type="math/tex; mode=display">
+\text{VIF}_i = \frac{1}{1 - R_i^2}</script><p>where $R_i^2$ is the coefficient of determination of the regression of $X_j$ on the other covariates. The model from which $R_i^2$ is calculated looks like this:</p>
+<script type="math/tex; mode=display">
+X_i = \beta_0 + \beta_1X_1 + \dots + \beta_{i-1}X_{i-1} + \beta_{i+1}X_{i+1} + \dots + \beta_mX_m + \epsilon</script><p> The coefficient of determination of a regression represents how much of the variance in the original data is explained by the model and can be calculated as </p>
+<script type="math/tex; mode=display">
+R^2 = 1 - \frac{\sum_i(y_i - \hat y_i)^2}{\sum_i (y_i - \bar y)^2}</script><h3 id="Observation"><a href="#Observation" class="headerlink" title="Observation"></a>Observation</h3><p><em>NOTE: detailed math processed refer to reference 2 and 3.</em></p>
+<p>Consider a linear model with $m$ predictors</p>
+<script type="math/tex; mode=display">
+Y = X\beta + \epsilon</script><p>Using <strong>OLE</strong> to estimate coefficients $\beta$, the normal equation is</p>
+<script type="math/tex; mode=display">
+\hat \beta  = (X'X)^{-1}X'Y</script><p>Thus, the covariance matrix of $\hat \beta$ is</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \Sigma(\hat \beta) &= E[\hat \beta^2] - E[\hat \beta]^2 \\\\
+    &= ((X'X)^{-1}X')^2 E[\epsilon^2] \\\\
+    &= \sigma^2(X'X)^{-1}
+\end{align}</script><p>with $\Sigma<em>{ij} = cov(\hat \beta_i, \hat \beta_j)$ and $\Sigma</em>{ii} = var(\hat \beta_i)$.</p>
+<p>Thus, $\hat{var}(\hat \beta<em>i) = \sigma^2 [(X’X)^{-1}]</em>{ii}$, by calculating the $ii$ entry in the matrix, we can get</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    \hat{var}(\hat \beta_i) &= \sigma^2[X^T_iX_i - \hat \beta_i^T(X^T_{-i}X_{-i})\hat \beta_i]^{-1} \\\\
+    &= \sigma^2 \frac{1}{\text{RSS}_i} \\\\
+    &= \frac{\sigma^2}{(n-1)\hat{var} (X_i)} \frac{1}{1 - R_i^2}
+\end{align}</script><p>The last step uses the fact that $R_i^2 = 1 - \frac{RSS_i}{TSS_i}$ and that$\hat{var}(X_i) = \frac{TSS_i}{n-1}$.</p>
+<p>This reflect the fact that the variance of coefficient comes from several parts:</p>
+<ul>
+<li>$\sigma^2$: The noise from the data, the more scatter the data is, the larger the variance;</li>
+<li>$\frac{1}{n-1}$: The size of the data, the smaller the size, the large the variance;</li>
+<li>$\hat{var}(X_i)$: The variance of a predictor will have inversed influence on the variance of the corresponding coefficient, the larger the variance of predictor, the smaller the variance of coefficient;</li>
+<li>VIF: The larger the VIF is, the larger the variance will be.</li>
+</ul>
+<p>VIF measures the part of variance generated by having linear correlation with other predictors.</p>
+<h3 id="Interpretation"><a href="#Interpretation" class="headerlink" title="Interpretation"></a>Interpretation</h3><p>VIF, as mentioned before, has several interpretations</p>
+<ol>
+<li>The quotient of the variance in a model with multiple terms by the variance of a model with one term alone.</li>
+<li>How well other features can linearly represent feature $i$.</li>
+<li>The part of variance of coefficient $\beta_j$ generated by having linear correlation with other predictors.</li>
+</ol>
+<p>And the rule of thumb for categorizing VIF is as follows:</p>
+<ol>
+<li>$\text{VIF} = 1$ : Not correlated;</li>
+<li>$1 &lt; \text{VIF} &lt; 5$ : Moderately correlated;</li>
+<li>$\text{VIF} &gt; 5$ : Highly correlated.</li>
+</ol>
+<h2 id="How-to-Deal-with-Collinearity"><a href="#How-to-Deal-with-Collinearity" class="headerlink" title="How to Deal with Collinearity?"></a>How to Deal with Collinearity?</h2><p>There is no simple and universal way, but there are some directions that we can put effort on:</p>
+<ul>
+<li>Remove some of the highly correlated independent variables.</li>
+<li>Linearly combine the independent variables, such as adding them together.</li>
+<li>Perform an analysis designed for highly correlated variables, trying to combine them, such as principal components analysis (PCA) or partial least squares (PLS) regression.</li>
+</ul>
+<h2 id="Feature-Importance-Pitfalls-and-the-Right-Thinking"><a href="#Feature-Importance-Pitfalls-and-the-Right-Thinking" class="headerlink" title="Feature Importance, Pitfalls and the Right Thinking"></a>Feature Importance, Pitfalls and the Right Thinking</h2><h3 id="How-about-using-coefficient-values-as-the-raking-of-feature-importance"><a href="#How-about-using-coefficient-values-as-the-raking-of-feature-importance" class="headerlink" title="How about using coefficient values as the raking of feature importance?"></a>How about using coefficient values as the raking of feature importance?</h3><h4 id="The-First-Concern"><a href="#The-First-Concern" class="headerlink" title="The First Concern"></a>The First Concern</h4><p>Obviously there is a problem simply using the magnitude of coefficients to rank the feature importance. For instance, consider a linear model:</p>
+<script type="math/tex; mode=display">
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon</script><p>Consider replacing $X_2$ with $X_2’ = 0.5 X_2$. imaginably, $\beta_2 = 2 \beta_2$ while $\beta_1$ won’t change in this model. In practice, $X_2$ and $X_2’$ could just be the same quantity in different units. <strong>That means by scaling variables, we can change the importance of variables at will, which does not make sense.</strong></p>
+<h4 id="Standardized-Variables-Collinearity"><a href="#Standardized-Variables-Collinearity" class="headerlink" title="Standardized Variables? Collinearity!"></a>Standardized Variables? Collinearity!</h4><p>What about we fix the scale of variables by standardizing the all variables to be of mean 0 and std 1? Well, though the magnitude of coefficients won’t change with the units of covariates, there are still concerns here. <strong>Collinearity</strong>, as we discussed above, if happens in the model, <strong>will cause large variance in the coefficients, thus the feature importance ranking will still be not stable</strong> in this scenario. Here we have an simple example.</p>
+<h5 id="Experiment-of-Collinearity-in-Linear-Regression"><a href="#Experiment-of-Collinearity-in-Linear-Regression" class="headerlink" title="Experiment of Collinearity in Linear Regression"></a>Experiment of Collinearity in Linear Regression</h5><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># Generte X and Y</span></span><br><span class="line">&gt; latent_variable = seq(<span class="number">0</span>,<span class="number">10</span>,length.out=<span class="number">200</span>)</span><br><span class="line">&gt; Y &lt;- <span class="number">2</span> * latent_variable</span><br><span class="line">&gt; x1 &lt;- latent_variable + <span class="number">0.5</span>*rnorm(<span class="number">200</span>)</span><br><span class="line">&gt; x2 &lt;- x1 + <span class="number">0.2</span>*rnorm(<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line">&gt; <span class="comment"># standardize the data</span></span><br><span class="line">&gt; x1s = scale(x1)</span><br><span class="line">&gt; x2s = scale(x2)</span><br><span class="line">&gt; mean(x1s)</span><br><span class="line">[<span class="number">1</span>] <span class="number">1.160194e-16</span></span><br><span class="line">&gt; var(x1s)</span><br><span class="line">     [,<span class="number">1</span>]</span><br><span class="line">[<span class="number">1</span>,]    <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>We constructed a latent variable (not visible to the model), with the dependent variable $Y$ to be proportional to it. Then, we constructed two variables $x_1$ and $x_2$, which are latent variable plus some noise, with $x_2$ is a slightly noisier version of $x_1$. And then they were standardized.</p>
+<p> From the construction, we expect $x_1$ will be slightly more important than $x_2$, since $x_2$ is noisier (note that the noise additionally added to $x_2$ are independent to $x_1$’s noise). Single variable models are construct the test this.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># Single variable linear regression</span></span><br><span class="line">&gt; x1model &lt;- lm(Y ~ x1s)</span><br><span class="line">&gt; summary(x1model)</span><br><span class="line"></span><br><span class="line">Call:</span><br><span class="line">lm(formula = Y ~ x1s)</span><br><span class="line"></span><br><span class="line">Residuals:</span><br><span class="line">    Min      1Q  Median      3Q     Max </span><br><span class="line">-<span class="number">2.6830</span> -<span class="number">0.5936</span> -<span class="number">0.0363</span>  <span class="number">0.5508</span>  <span class="number">3.1349</span> </span><br><span class="line"></span><br><span class="line">Coefficients:</span><br><span class="line">            Estimate Std. Error t value Pr(&gt;|t|)    </span><br><span class="line">(Intercept) <span class="number">10.00000</span>    <span class="number">0.07028</span>  <span class="number">142.28</span>   &lt;<span class="number">2e-16</span> ***</span><br><span class="line">x1s          <span class="number">5.73189</span>    <span class="number">0.07046</span>   <span class="number">81.35</span>   &lt;<span class="number">2e-16</span> ***</span><br><span class="line">---</span><br><span class="line">Signif. codes:  </span><br><span class="line"><span class="number">0</span> ‘***’ <span class="number">0.001</span> ‘**’ <span class="number">0.01</span> ‘*’ <span class="number">0.05</span> ‘.’ <span class="number">0.1</span> ‘ ’ <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Residual standard error: <span class="number">0.994</span> on <span class="number">198</span> degrees of freedom</span><br><span class="line">Multiple R-squared:  <span class="number">0.9709</span>,	Adjusted R-squared:  <span class="number">0.9708</span> </span><br><span class="line"><span class="literal">F</span>-statistic:  <span class="number">6618</span> on <span class="number">1</span> and <span class="number">198</span> DF,  p-value: &lt; <span class="number">2.2e-16</span></span><br><span class="line"></span><br><span class="line">&gt; </span><br><span class="line">&gt; x2model &lt;- lm(Y ~ x2s)</span><br><span class="line">&gt; summary(x2model)</span><br><span class="line"></span><br><span class="line">Call:</span><br><span class="line">lm(formula = Y ~ x2s)</span><br><span class="line"></span><br><span class="line">Residuals:</span><br><span class="line">     Min       1Q   Median       3Q      Max </span><br><span class="line">-<span class="number">3.06413</span> -<span class="number">0.62072</span> -<span class="number">0.04847</span>  <span class="number">0.68914</span>  <span class="number">2.80826</span> </span><br><span class="line"></span><br><span class="line">Coefficients:</span><br><span class="line">            Estimate Std. Error t value Pr(&gt;|t|)    </span><br><span class="line">(Intercept) <span class="number">10.00000</span>    <span class="number">0.07550</span>  <span class="number">132.46</span>   &lt;<span class="number">2e-16</span> ***</span><br><span class="line">x2s          <span class="number">5.71868</span>    <span class="number">0.07568</span>   <span class="number">75.56</span>   &lt;<span class="number">2e-16</span> ***</span><br><span class="line">---</span><br><span class="line">Signif. codes:  </span><br><span class="line"><span class="number">0</span> ‘***’ <span class="number">0.001</span> ‘**’ <span class="number">0.01</span> ‘*’ <span class="number">0.05</span> ‘.’ <span class="number">0.1</span> ‘ ’ <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Residual standard error: <span class="number">1.068</span> on <span class="number">198</span> degrees of freedom</span><br><span class="line">Multiple R-squared:  <span class="number">0.9665</span>,	Adjusted R-squared:  <span class="number">0.9663</span> </span><br><span class="line"><span class="literal">F</span>-statistic:  <span class="number">5709</span> on <span class="number">1</span> and <span class="number">198</span> DF,  p-value: &lt; <span class="number">2.2e-16</span></span><br></pre></td></tr></table></figure>
+<p>Both models look promising, and we know the coefficient for both two variables would be around $5.7$. But when we add them in the same model.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># multivariate linear regression</span></span><br><span class="line">&gt; lr &lt;- lm(Y ~ x1s + x2s)</span><br><span class="line">&gt; summary(lr)</span><br><span class="line"></span><br><span class="line">Call:</span><br><span class="line">lm(formula = Y ~ x1s + x2s)</span><br><span class="line"></span><br><span class="line">Residuals:</span><br><span class="line">     Min       1Q   Median       3Q      Max </span><br><span class="line">-<span class="number">2.67838</span> -<span class="number">0.59166</span> -<span class="number">0.03018</span>  <span class="number">0.55140</span>  <span class="number">3.13235</span> </span><br><span class="line"></span><br><span class="line">Coefficients:</span><br><span class="line">            Estimate Std. Error t value Pr(&gt;|t|)    </span><br><span class="line">(Intercept) <span class="number">10.00000</span>    <span class="number">0.07046</span> <span class="number">141.922</span>  &lt; <span class="number">2e-16</span> ***</span><br><span class="line">x1s          <span class="number">5.68375</span>    <span class="number">1.03254</span>   <span class="number">5.505</span> <span class="number">1.14e-07</span> ***</span><br><span class="line">x2s          <span class="number">0.04825</span>    <span class="number">1.03254</span>   <span class="number">0.047</span>    <span class="number">0.963</span>    </span><br><span class="line">---</span><br><span class="line">Signif. codes:  </span><br><span class="line"><span class="number">0</span> ‘***’ <span class="number">0.001</span> ‘**’ <span class="number">0.01</span> ‘*’ <span class="number">0.05</span> ‘.’ <span class="number">0.1</span> ‘ ’ <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Residual standard error: <span class="number">0.9965</span> on <span class="number">197</span> degrees of freedom</span><br><span class="line">Multiple R-squared:  <span class="number">0.9709</span>,	Adjusted R-squared:  <span class="number">0.9707</span> </span><br><span class="line"><span class="literal">F</span>-statistic:  <span class="number">3292</span> on <span class="number">2</span> and <span class="number">197</span> DF,  p-value: &lt; <span class="number">2.2e-16</span></span><br></pre></td></tr></table></figure>
+<p>We can see that the model only sees the value in $x_1$ and almost “throwed” $x_2$. The coefficient of $x_2$ is nearly 0 and p-value is not significant. If we look at their VIF values, we can see the severe collinearity effect between them.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># VIF</span></span><br><span class="line">&gt; <span class="keyword">library</span>(car)</span><br><span class="line">&gt; car::vif(lr)</span><br><span class="line">     x1s      x2s </span><br><span class="line"><span class="number">213.6636</span> <span class="number">213.6636</span></span><br></pre></td></tr></table></figure>
+<p><em>Note: There will be cases when the most important features also have large variance if there are moderate collinearity effect. It is a question to ask that what kind of feature is considered most important? The most stable one or the most heavily loaded one?</em></p>
+<p>To conclude, when we are using coefficient to rank variable importance. It could make sense, after dealing with scaling and collinearity. But we should be very clear what is the definition of feature importance and what does it mean when in a linear model.</p>
+<h2 id="Feature-Importance-of-Linear-Regression"><a href="#Feature-Importance-of-Linear-Regression" class="headerlink" title="Feature Importance of Linear Regression"></a>Feature Importance of Linear Regression</h2><p>Here are some potential feasible ways, not just applicable to linear regression but also other models (black box) too. Demos are using R package <code>relaimpo</code>, which calculates relative importance for linear regression, with dataset <code>Carseats</code> from <code>Data for an Introduction to Statistical Learning with Applications in R</code> in package <code>ISLR</code>.</p>
+<h3 id="Simple-relative-feature-importance"><a href="#Simple-relative-feature-importance" class="headerlink" title="Simple relative feature importance"></a>Simple relative feature importance</h3><ol>
+<li>The metric <code>first</code>: $R^2$ value for each variable from $k$ regression models with one predictor only. e.g. $R^2$ of model $Y = \beta_0 + \beta_iX_i + \epsilon$;</li>
+<li>The metric <code>last</code>: The increase in $R^2$ of adding $X<em>i$ assuming that other variables are already in the model. e.g. $R^2</em>{total} - R^2<em>i$ where $R^2</em>{total}$ from the model $Y = \beta_0 + \sum_j b_jX_j + \epsilon, j = 1,2,\dots, k$ and $R^2_i$ is from the model that consists all other variables except $X_i$;</li>
+<li>The metric <code>betasq</code>: Standardized coefficient (similar to what we discussed above);</li>
+</ol>
+<h3 id="Computer-intensive-relative-importance-metrics"><a href="#Computer-intensive-relative-importance-metrics" class="headerlink" title="Computer-intensive relative importance metrics"></a>Computer-intensive relative importance metrics</h3><ol>
+<li>The metric <code>lmg</code>: Averaged sequential $R^2$ with every possible orderings. Sequential $R^2$ for a variable is the increased $R^2$ when adding that variable to the model. However, this value will change when adding variables in different orderings for each variable. So this method is taking average of all possible orderings.</li>
+<li>The metric <code>pmvd</code>: Improved <code>lmg</code> method, weighted average of sequential $R^2$. It assure that a variable with actual coefficient 0 in the model will also be allocated an feature importance of 0.</li>
+</ol>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&gt; help(<span class="string">"Carseats"</span>)</span><br><span class="line">&gt; <span class="keyword">library</span>(ISLR)</span><br><span class="line">&gt; <span class="keyword">library</span>(relaimpo)</span><br><span class="line">     Sales          CompPrice       Income      </span><br><span class="line"> Min.   : <span class="number">0.000</span>   Min.   : <span class="number">77</span>   Min.   : <span class="number">21.00</span>  </span><br><span class="line"> 1st Qu.: <span class="number">5.390</span>   1st Qu.:<span class="number">115</span>   1st Qu.: <span class="number">42.75</span>  </span><br><span class="line"> Median : <span class="number">7.490</span>   Median :<span class="number">125</span>   Median : <span class="number">69.00</span>  </span><br><span class="line"> Mean   : <span class="number">7.496</span>   Mean   :<span class="number">125</span>   Mean   : <span class="number">68.66</span>  </span><br><span class="line"> 3rd Qu.: <span class="number">9.320</span>   3rd Qu.:<span class="number">135</span>   3rd Qu.: <span class="number">91.00</span>  </span><br><span class="line"> Max.   :<span class="number">16.270</span>   Max.   :<span class="number">175</span>   Max.   :<span class="number">120.00</span>  </span><br><span class="line">  Advertising       Population        Price      </span><br><span class="line"> Min.   : <span class="number">0.000</span>   Min.   : <span class="number">10.0</span>   Min.   : <span class="number">24.0</span>  </span><br><span class="line"> 1st Qu.: <span class="number">0.000</span>   1st Qu.:<span class="number">139.0</span>   1st Qu.:<span class="number">100.0</span>  </span><br><span class="line"> Median : <span class="number">5.000</span>   Median :<span class="number">272.0</span>   Median :<span class="number">117.0</span>  </span><br><span class="line"> Mean   : <span class="number">6.635</span>   Mean   :<span class="number">264.8</span>   Mean   :<span class="number">115.8</span>  </span><br><span class="line"> 3rd Qu.:<span class="number">12.000</span>   3rd Qu.:<span class="number">398.5</span>   3rd Qu.:<span class="number">131.0</span>  </span><br><span class="line"> Max.   :<span class="number">29.000</span>   Max.   :<span class="number">509.0</span>   Max.   :<span class="number">191.0</span>  </span><br><span class="line">  ShelveLoc        Age          Education    Urban    </span><br><span class="line"> Bad   : <span class="number">96</span>   Min.   :<span class="number">25.00</span>   Min.   :<span class="number">10.0</span>   No :<span class="number">118</span>  </span><br><span class="line"> Good  : <span class="number">85</span>   1st Qu.:<span class="number">39.75</span>   1st Qu.:<span class="number">12.0</span>   Yes:<span class="number">282</span>  </span><br><span class="line"> Medium:<span class="number">219</span>   Median :<span class="number">54.50</span>   Median :<span class="number">14.0</span>            </span><br><span class="line">              Mean   :<span class="number">53.32</span>   Mean   :<span class="number">13.9</span>            </span><br><span class="line">              3rd Qu.:<span class="number">66.00</span>   3rd Qu.:<span class="number">16.0</span>            </span><br><span class="line">              Max.   :<span class="number">80.00</span>   Max.   :<span class="number">18.0</span>            </span><br><span class="line">   US     </span><br><span class="line"> No :<span class="number">142</span>  </span><br><span class="line"> Yes:<span class="number">258</span>  </span><br><span class="line"><span class="comment"># Helper function of dataset Carseats</span></span><br><span class="line">&gt; help(<span class="string">"Carseats"</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<h2 id="Sales-of-Child-Car-Seats"><a href="#Sales-of-Child-Car-Seats" class="headerlink" title="Sales of Child Car Seats"></a>Sales of Child Car Seats</h2><h4 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h4><p>A simulated data set containing sales of child car seats at 400 different stores.</p>
+<h4 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h4><p><code>Carseats</code></p>
+<h4 id="Format"><a href="#Format" class="headerlink" title="Format"></a>Format</h4><p>A data frame with 400 observations on the following 11 variables.</p>
+<p><code>Sales</code><br>    Unit sales (in thousands) at each location</p>
+<p><code>CompPrice</code><br>    Price charged by competitor at each location</p>
+<p><code>Income</code><br>    Community income level (in thousands of dollars)</p>
+<p><code>Advertising</code><br>    Local advertising budget for company at each location (in thousands of dollars)</p>
+<p><code>Population</code><br>    Population size in region (in thousands)</p>
+<p><code>Price</code><br>    Price company charges for car seats at each site</p>
+<p><code>ShelveLoc</code><br>    A factor with levels Bad, Good and Medium indicating the quality of the shelving location for the car seats at each site</p>
+<p><code>Age</code><br>    Average age of the local population</p>
+<p><code>Education</code><br>    Education level at each location</p>
+<p><code>Urban</code><br>    A factor with levels No and Yes to indicate whether the store is in an urban or rural location</p>
+<p><code>US</code><br>    A factor with levels No and Yes to indicate whether the store is in the US or not</p>
+</blockquote>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># Select numeric columns</span></span><br><span class="line">&gt; nums &lt;- unlist(lapply(Carseats, is.numeric)) </span><br><span class="line">&gt; linmod &lt;- lm(Sales ~ ., data = Carseats[,nums])</span><br><span class="line">&gt; summary(linmod)</span><br><span class="line"></span><br><span class="line">Call:</span><br><span class="line">lm(formula = Sales ~ ., data = Carseats[, nums])</span><br><span class="line"></span><br><span class="line">Residuals:</span><br><span class="line">    Min      1Q  Median      3Q     Max </span><br><span class="line">-<span class="number">5.0598</span> -<span class="number">1.3515</span> -<span class="number">0.1739</span>  <span class="number">1.1331</span>  <span class="number">4.8304</span> </span><br><span class="line"></span><br><span class="line">Coefficients:</span><br><span class="line">              Estimate Std. Error t value Pr(&gt;|t|)    </span><br><span class="line">(Intercept)  <span class="number">7.7076934</span>  <span class="number">1.1176260</span>   <span class="number">6.896</span> <span class="number">2.15e-11</span> ***</span><br><span class="line">CompPrice    <span class="number">0.0939149</span>  <span class="number">0.0078395</span>  <span class="number">11.980</span>  &lt; <span class="number">2e-16</span> ***</span><br><span class="line">Income       <span class="number">0.0128717</span>  <span class="number">0.0034757</span>   <span class="number">3.703</span> <span class="number">0.000243</span> ***</span><br><span class="line">Advertising  <span class="number">0.1308637</span>  <span class="number">0.0151219</span>   <span class="number">8.654</span>  &lt; <span class="number">2e-16</span> ***</span><br><span class="line">Population  -<span class="number">0.0001239</span>  <span class="number">0.0006877</span>  -<span class="number">0.180</span> <span class="number">0.857092</span>    </span><br><span class="line">Price       -<span class="number">0.0925226</span>  <span class="number">0.0050521</span> -<span class="number">18.314</span>  &lt; <span class="number">2e-16</span> ***</span><br><span class="line">Age         -<span class="number">0.0449743</span>  <span class="number">0.0060083</span>  -<span class="number">7.485</span> <span class="number">4.75e-13</span> ***</span><br><span class="line">Education   -<span class="number">0.0399844</span>  <span class="number">0.0371257</span>  -<span class="number">1.077</span> <span class="number">0.282142</span>    </span><br><span class="line">---</span><br><span class="line">Signif. codes:  <span class="number">0</span> ‘***’ <span class="number">0.001</span> ‘**’ <span class="number">0.01</span> ‘*’ <span class="number">0.05</span> ‘.’ <span class="number">0.1</span> ‘ ’ <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Residual standard error: <span class="number">1.929</span> on <span class="number">392</span> degrees of freedom</span><br><span class="line">Multiple R-squared:  <span class="number">0.5417</span>,	Adjusted R-squared:  <span class="number">0.5335</span> </span><br><span class="line"><span class="literal">F</span>-statistic: <span class="number">66.18</span> on <span class="number">7</span> and <span class="number">392</span> DF,  p-value: &lt; <span class="number">2.2e-16</span></span><br><span class="line"></span><br><span class="line">&gt; calc.relimp(linmod, type = c(<span class="string">"first"</span>, <span class="string">"last"</span>, <span class="string">"betasq"</span>, <span class="string">"lmg"</span>))</span><br><span class="line">Response variable: Sales </span><br><span class="line">Total response variance: <span class="number">7.975626</span> </span><br><span class="line">Analysis based on <span class="number">400</span> observations </span><br><span class="line"></span><br><span class="line"><span class="number">7</span> Regressors: </span><br><span class="line">CompPrice Income Advertising Population Price Age Education </span><br><span class="line">Proportion of variance explained by model: <span class="number">54.17</span>%</span><br><span class="line">Metrics are not normalized (rela=<span class="literal">FALSE</span>). </span><br><span class="line"></span><br><span class="line">Relative importance metrics: </span><br><span class="line"></span><br><span class="line">                    lmg         last       first       betasq</span><br><span class="line">CompPrice   <span class="number">0.085463002</span> <span class="number">1.677996e-01</span> <span class="number">0.004106084</span> <span class="number">2.600424e-01</span></span><br><span class="line">Income      <span class="number">0.019008134</span> <span class="number">1.603602e-02</span> <span class="number">0.023089100</span> <span class="number">1.627012e-02</span></span><br><span class="line">Advertising <span class="number">0.078847156</span> <span class="number">8.756412e-02</span> <span class="number">0.072633905</span> <span class="number">9.496515e-02</span></span><br><span class="line">Population  <span class="number">0.001720914</span> <span class="number">3.796537e-05</span> <span class="number">0.002547320</span> <span class="number">4.182253e-05</span></span><br><span class="line">Price       <span class="number">0.293822615</span> <span class="number">3.921527e-01</span> <span class="number">0.197981150</span> <span class="number">6.016889e-01</span></span><br><span class="line">Age         <span class="number">0.060944719</span> <span class="number">6.551305e-02</span> <span class="number">0.053738398</span> <span class="number">6.655961e-02</span></span><br><span class="line">Education   <span class="number">0.001854091</span> <span class="number">1.356228e-03</span> <span class="number">0.002699347</span> <span class="number">1.376560e-03</span></span><br></pre></td></tr></table></figure>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a href="https://statisticsbyjim.com/regression/multicollinearity-in-regression-analysis/" target="_blank" rel="noopener">Multicollinearity in Regression Analysis: Problems, Detection, and Solutions</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Variance_inflation_factor" target="_blank" rel="noopener">Variant inflation factor</a></li>
+<li><a href="https://math.stackexchange.com/questions/687310/variance-of-coefficients-in-a-simple-linear-regression" target="_blank" rel="noopener">Variance of Coefficients in a Simple Linear Regression</a></li>
+<li><a href="https://stats.stackexchange.com/questions/202221/for-linear-classifiers-do-larger-coefficients-imply-more-important-features/202846" target="_blank" rel="noopener">For linear classifiers, do larger coefficients imply more important features?</a></li>
+<li><a href="https://core.ac.uk/reader/6305006" target="_blank" rel="noopener">Relative Importance for Linear Regression in R: The Package <code>relaimpo</code></a></li>
+<li><a href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1745-459X.2012.00370.x" target="_blank" rel="noopener">A REVIEW OF STATISTICAL METHODS FOR DETERMINATION OF RELATIVE IMPORTANCE OF CORRELATED PREDICTORS AND IDENTIFICATION OF DRIVERS OF CONSUMER LIKING</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          
+            <a href="/tags/stats/" rel="tag"># stats</a>
+          
+            <a href="/tags/linear-regression/" rel="tag"># linear regression</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/28/cs229/" rel="next" title="CS229 Problem Sets Spring 2020">
+                <i class="fa fa-chevron-left"></i> CS229 Problem Sets Spring 2020
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Collinearity"><span class="nav-number">1.</span> <span class="nav-text">Collinearity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-collinearity"><span class="nav-number">1.1.</span> <span class="nav-text">What is collinearity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Problems-of-collinearity"><span class="nav-number">1.2.</span> <span class="nav-text">Problems of collinearity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-to-Deal-with-Collinearity"><span class="nav-number">2.</span> <span class="nav-text">When to Deal with Collinearity?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Variance-Inflation-Factor-VIF"><span class="nav-number">3.</span> <span class="nav-text">Variance Inflation Factor (VIF)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition"><span class="nav-number">3.1.</span> <span class="nav-text">Definition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mathematical-Definition"><span class="nav-number">3.2.</span> <span class="nav-text">Mathematical Definition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Observation"><span class="nav-number">3.3.</span> <span class="nav-text">Observation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interpretation"><span class="nav-number">3.4.</span> <span class="nav-text">Interpretation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-Deal-with-Collinearity"><span class="nav-number">4.</span> <span class="nav-text">How to Deal with Collinearity?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Feature-Importance-Pitfalls-and-the-Right-Thinking"><span class="nav-number">5.</span> <span class="nav-text">Feature Importance, Pitfalls and the Right Thinking</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-about-using-coefficient-values-as-the-raking-of-feature-importance"><span class="nav-number">5.1.</span> <span class="nav-text">How about using coefficient values as the raking of feature importance?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#The-First-Concern"><span class="nav-number">5.1.1.</span> <span class="nav-text">The First Concern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Standardized-Variables-Collinearity"><span class="nav-number">5.1.2.</span> <span class="nav-text">Standardized Variables? Collinearity!</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Experiment-of-Collinearity-in-Linear-Regression"><span class="nav-number">5.1.2.1.</span> <span class="nav-text">Experiment of Collinearity in Linear Regression</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Feature-Importance-of-Linear-Regression"><span class="nav-number">6.</span> <span class="nav-text">Feature Importance of Linear Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Simple-relative-feature-importance"><span class="nav-number">6.1.</span> <span class="nav-text">Simple relative feature importance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Computer-intensive-relative-importance-metrics"><span class="nav-number">6.2.</span> <span class="nav-text">Computer-intensive relative importance metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo"><span class="nav-number">6.3.</span> <span class="nav-text">Demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sales-of-Child-Car-Seats"><span class="nav-number">7.</span> <span class="nav-text">Sales of Child Car Seats</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description"><span class="nav-number">7.0.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Usage"><span class="nav-number">7.0.2.</span> <span class="nav-text">Usage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Format"><span class="nav-number">7.0.3.</span> <span class="nav-text">Format</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">8.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Multivariate Linear Regression -- Collinearity and Feature Importance'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Multivariate Linear Regression -- Collinearity and Feature Importance'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
