@@ -125,7 +125,7 @@
 <meta property="og:description" content="How to perform linear regression and addressing the problem of collinearity and find feature importance.">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-07-15T21:00:58.000Z">
-<meta property="article:modified_time" content="2020-07-17T23:55:18.785Z">
+<meta property="article:modified_time" content="2020-07-18T06:21:20.469Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="algorithm">
 <meta property="article:tag" content="stats">
@@ -495,7 +495,7 @@ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon</script><p>Consider replacing
 <h2 id="Feature-Importance-of-Linear-Regression"><a href="#Feature-Importance-of-Linear-Regression" class="headerlink" title="Feature Importance of Linear Regression"></a>Feature Importance of Linear Regression</h2><p>Here are some potential feasible ways, not just applicable to linear regression but also other models (black box) too. Demos are using R package <code>relaimpo</code>, which calculates relative importance for linear regression, with dataset <code>Carseats</code> from <code>Data for an Introduction to Statistical Learning with Applications in R</code> in package <code>ISLR</code>.</p>
 <h3 id="Simple-relative-feature-importance"><a href="#Simple-relative-feature-importance" class="headerlink" title="Simple relative feature importance"></a>Simple relative feature importance</h3><ol>
 <li>The metric <code>first</code>: $R^2$ value for each variable from $k$ regression models with one predictor only. e.g. $R^2$ of model $Y = \beta_0 + \beta_iX_i + \epsilon$;</li>
-<li>The metric <code>last</code>: The increase in $R^2$ of adding $X<em>i$ assuming that other variables are already in the model. e.g. $$R^2</em>{total} - R^2<em>i<script type="math/tex">where</script>R^2</em>{total}<script type="math/tex">from the model</script>Y = \beta_0 + \sum_j b_jX_j + \epsilon, j = 1,2,\dots, k<script type="math/tex">and</script>R^2_i<script type="math/tex">is from the model that consists all other variables except</script>X_i$$;</li>
+<li>The metric <code>last</code>: The increase in <script type="math/tex">R^2</script> of adding <script type="math/tex">X_i</script> assuming that other variables are already in the model. e.g. <script type="math/tex">R^2_{total} - R^2_i</script> where <script type="math/tex">R^2_{total}</script> from the model <script type="math/tex">Y = \beta_0 + \sum_j b_jX_j + \epsilon, j = 1,2,\dots, k</script> and <script type="math/tex">R^2_i</script> is from the model that consists all other variables except <script type="math/tex">X_i</script>;</li>
 <li>The metric <code>betasq</code>: Standardized coefficient (similar to what we discussed above);</li>
 </ol>
 <h3 id="Computer-intensive-relative-importance-metrics"><a href="#Computer-intensive-relative-importance-metrics" class="headerlink" title="Computer-intensive relative importance metrics"></a>Computer-intensive relative importance metrics</h3><ol>
