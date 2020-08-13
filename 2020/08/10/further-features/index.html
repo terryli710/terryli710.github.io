@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Serif:300,300italic,400,400italic,700,700italic|Abril Fatface:300,300italic,400,400italic,700,700italic|PT Serif:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="algorithm,stats,linear regression," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Discussed two more methods of estimating relative importance of linear regression features. Commonality Analysis and Dominance analysis.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Further Discussion of Relative Importance">
+<meta property="og:url" content="http://yoursite.com/2020/08/10/further-features/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="Discussed two more methods of estimating relative importance of linear regression features. Commonality Analysis and Dominance analysis.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.researchgate.net/profile/Robert_Capraro/publication/238605329/figure/fig1/AS:669410532548621@1536611316685/Illustrating-Commonality-Analysis.png">
+<meta property="og:image" content="https://github.com/dominance-analysis/dominance-analysis/raw/master/images/Dom%20Stat.jpg">
+<meta property="article:published_time" content="2020-08-11T00:20:30.000Z">
+<meta property="article:modified_time" content="2020-08-13T22:25:15.075Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="stats">
+<meta property="article:tag" content="linear regression">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.researchgate.net/profile/Robert_Capraro/publication/238605329/figure/fig1/AS:669410532548621@1536611316685/Illustrating-Commonality-Analysis.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/10/further-features/"/>
+
+
+
+
+
+  <title>Further Discussion of Relative Importance | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/10/further-features/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Further Discussion of Relative Importance</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-10T17:20:30-07:00">
+                2020-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/10/further-features/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/10/further-features/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Discussed two more methods of estimating relative importance of linear regression features. Commonality Analysis and Dominance analysis.
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>From the last article, several methods to analyze relative importance of features in linear regression models are discussed. Besides, for those methods that are based on standardized coefficients, collinearity issues should also be considered. <a href="https://en.wikipedia.org/wiki/Variance_inflation_factor" target="_blank" rel="noopener">Variance Inflation Factor</a> (VIF) is introduced to deal with this issue.</p>
+<p>In this article, two more methods will be discussed that takes not only linear correlation of a single predictor variable with the dependent variable, but also considers the intertwined effects.</p>
+<p>These two methods are Commonality Analysis (CA) and Dominance Analysis (DA). They share some similarities yet differs in focuses of analyzing relative importance.</p>
+<h3 id="Commonality-Analysis"><a href="#Commonality-Analysis" class="headerlink" title="Commonality Analysis"></a>Commonality Analysis</h3><h4 id="Idea"><a href="#Idea" class="headerlink" title="Idea"></a>Idea</h4><p><a href="https://en.wikipedia.org/wiki/Commonality_analysis#:~:text=Commonality%20analysis%20is%20a%20statistical,regression%20model%20into%20commonality%20coefficients." target="_blank" rel="noopener">Commonality Analysis</a> is a statistical technique within <a href="https://en.wikipedia.org/wiki/Linear_regression" target="_blank" rel="noopener">multiple linear regression</a> that decomposes a model’s <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination" target="_blank" rel="noopener"><em>R</em>2 statistic</a> (i.e., explained variance) by all <a href="https://en.wikipedia.org/wiki/Independent_variable" target="_blank" rel="noopener">independent variables</a> on a <a href="https://en.wikipedia.org/wiki/Dependent_variable" target="_blank" rel="noopener">dependent variable</a> in a multiple linear regression model into commonality coefficients. </p>
+<p>To illustrate this idea, we can image a model with three independent variables <script type="math/tex">X_1, X_2, X_3</script>. The idea of commonality analysis assumes that <strong>each variable</strong> (eg. <script type="math/tex">X_i</script>), <strong>as well as each combinations of variables</strong> (eg. <script type="math/tex">X_i X_j</script>), including combinations of all variables adding together, <strong>have some effect on the <script type="math/tex">R^2</script> of the full model</strong>.</p>
+<script type="math/tex; mode=display">
+ Y \sim X_1 + X_2 + X_3</script><p>So commonality analysis is trying to decompose the $R^2$ of the full model to each combinations of variables by computing linear models for <strong>all possible subsets regression</strong>.</p>
+<h4 id="How-to-Interpret-CA"><a href="#How-to-Interpret-CA" class="headerlink" title="How to Interpret CA"></a>How to Interpret CA</h4><p>Suppose we used commonality analysis on the <code>iris</code> dataset with the model</p>
+<script type="math/tex; mode=display">
+\text{Sepal.Length} \sim \text{Sepal.Width} + \text{Petal.Length} + \text{Petal.Width}</script><p>Here is the typical table that we will get as result.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Variable Names</th>
+<th>Coefficient</th>
+<th><script type="math/tex">\%</script> Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sepal.width</td>
+<td>0.09235042</td>
+<td>0.10755784</td>
+</tr>
+<tr>
+<td>Petal.Length</td>
+<td>0.15137464</td>
+<td>0.17630163</td>
+</tr>
+<tr>
+<td>Petal.Width</td>
+<td>0.01843388</td>
+<td>0.02146941</td>
+</tr>
+<tr>
+<td>Sepal.Width,Petal.Length</td>
+<td>-0.05414103</td>
+<td>-0.06305648</td>
+</tr>
+<tr>
+<td>Sepal.Width,Petal.Width</td>
+<td>-0.01212723</td>
+<td>-0.01412423</td>
+</tr>
+<tr>
+<td>Petal.Length,Petal.Width</td>
+<td>0.67498054</td>
+<td>0.78613012</td>
+</tr>
+<tr>
+<td>Sepal.Width,Petal.Length,Petal.Width</td>
+<td>-0.01225950</td>
+<td>-0.01427829</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Explanation of each column:</p>
+<ul>
+<li><code>Variable Names</code>: names of all combinations of variables, all of them will have a row in the table;</li>
+<li><code>Coefficient</code>: calculated $R^2$ associated with the specific combinations of variables by CA algorithm, this serves as the ‘relative importance’;</li>
+<li><code>% Total</code>: contribution to linear model as percent.</li>
+</ul>
+<p>The rows with only one variable denote effects that are “<strong>unique</strong>“, while other rows with multiple variables together are “<strong>common</strong>“ effects. Coefficients are calculated <script type="math/tex">R^2</script> increases of associated variable or variable combinations. Common effects and unique effects can be compared directly and more positive the coefficient, the more important they are. <em>Note that common effects are not simply the <script type="math/tex">R^2</script> with more variables, so it would make sense to compare rows with different amount of variables in them.</em> And unique effects of each variable also denote the importance as well as the <strong>irreplaceability</strong> of individual variables.</p>
+<p>For example in our case, <code>Petal.Length,Petal.Width</code> is the most significant contributor to the model, which contributed 78.6% of the $R^2$ of the final model. And among unique effects, <code>Petal.Length</code> is the most important one, while its effect will be greatly deteriorated without <code>Petal.Width</code>. </p>
+<p><em>Side note: With <code>Petal.Length,Petal.Width</code> being the most important feature, one can easily think of that <code>Sepal.Length</code> is somehow related to the <strong>area of Petal</strong>. But actually, the area of Petal cannot be computed in linear model using <code>Petal.Length,Petal.Width</code>. Linear models only computes the linear combinations of these two variables, while area should be something like <code>variable</code> <script type="math/tex">=</script> <code>Petal.Length</code> <script type="math/tex">\times</script> <code>Petal.Width</code>.</em></p>
+<h4 id="How-to-Perform-CA"><a href="#How-to-Perform-CA" class="headerlink" title="How to Perform CA"></a>How to Perform CA</h4><h5 id="Theoretically"><a href="#Theoretically" class="headerlink" title="Theoretically"></a>Theoretically</h5><h6 id="STEP-1-All-Possible-Subsets-Regression"><a href="#STEP-1-All-Possible-Subsets-Regression" class="headerlink" title="STEP 1: All Possible Subsets Regression"></a>STEP 1: All Possible Subsets Regression</h6><p>The first steps of performing CA involves performing linear regressions for all possible subsets of independent variables. <script type="math/tex">R^2</script>s are recorded.</p>
+<p>For example for <code>iris</code> dataset that we just mentioned. All Possible Subsets Regression is performed.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Variable Names</th>
+<th>K</th>
+<th><script type="math/tex">R^2</script></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sepal.width</td>
+<td>1</td>
+<td>0.01382265</td>
+</tr>
+<tr>
+<td>Petal.Length</td>
+<td>1</td>
+<td>0.75995465</td>
+</tr>
+<tr>
+<td>Petal.Width</td>
+<td>1</td>
+<td>0.66902769</td>
+</tr>
+<tr>
+<td>Sepal.Width,Petal.Length</td>
+<td>2</td>
+<td>0.84017784</td>
+</tr>
+<tr>
+<td>Sepal.Width,Petal.Width</td>
+<td>2</td>
+<td>0.70723708</td>
+</tr>
+<tr>
+<td>Petal.Length,Petal.Width</td>
+<td>2</td>
+<td>0.76626130</td>
+</tr>
+<tr>
+<td>Sepal.Width,Petal.Length,Petal.Width</td>
+<td>3</td>
+<td>0.85861172</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each row denotes a regression model with the features in this model recorded in the first column. <code>K</code> is the number of features in the models. The <script type="math/tex">R^2</script> for each regression model is recorded in the third column.</p>
+<h6 id="STEP-2-Commonality-Weights"><a href="#STEP-2-Commonality-Weights" class="headerlink" title="STEP 2: Commonality Weights"></a>STEP 2: Commonality Weights</h6><p>To compute the commonality effect, we need commonality weights, which is a transform matrix from APS <script type="math/tex">R^2</script> to commonality effects. Before explain the nature of commonality weight matrix, here we show two examples of feature number <script type="math/tex">n=2</script> and <script type="math/tex">n = 3</script> respectively.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Contributors</th>
+<th><script type="math/tex">R^2_{y\cdot i}</script></th>
+<th><script type="math/tex">R^2_{y \cdot j}</script></th>
+<th><script type="math/tex">R^2_{y \cdot ij}</script></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><script type="math/tex">U(i)</script></td>
+<td>0</td>
+<td>-1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><script type="math/tex">U(j)</script></td>
+<td>-1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><script type="math/tex">C(i, j)</script></td>
+<td>1</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Contributors</th>
+<th><script type="math/tex">R^2_{y\cdot i}</script></th>
+<th><script type="math/tex">R^2_{y\cdot j}</script></th>
+<th><script type="math/tex">R^2_{y\cdot k}</script></th>
+<th><script type="math/tex">R^2_{y\cdot ij}</script></th>
+<th><script type="math/tex">R^2_{y\cdot ik}</script></th>
+<th><script type="math/tex">R^2_{y\cdot jk}</script></th>
+<th><script type="math/tex">R^2_{y\cdot ijk}</script></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><script type="math/tex">U(i)</script></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><script type="math/tex">U(j)</script></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><script type="math/tex">U(k)</script></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><script type="math/tex">C(i,j)</script></td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><script type="math/tex">C(i,k)</script></td>
+<td>0</td>
+<td>-1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><script type="math/tex">C(j,k)</script></td>
+<td>-1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><script type="math/tex">C(i,j, k)</script></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>-1</td>
+<td>-1</td>
+<td>-1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each row is a commonality effect to compute while each column is a regression <script type="math/tex">R^2</script> that may be used to compute the effect. For example in the first row of <script type="math/tex">n=2</script> table, the formula to compute unique effect of variable <script type="math/tex">i</script> is :</p>
+<script type="math/tex; mode=display">
+U(i) = (-1) \times R^2_{y \cdot j} + 1 \times R^2_{y \cdot ij}</script><h6 id="Nature-of-Commonality-Weights"><a href="#Nature-of-Commonality-Weights" class="headerlink" title="Nature of Commonality Weights"></a>Nature of Commonality Weights</h6><p>Thinking of the computation of common and unique effects as a computation in overlapping sets illustrated by the Venn diagram below (variable 1 <script type="math/tex">= i</script>, variable 2 <script type="math/tex">= j</script>, variable 3 <script type="math/tex">= k</script>). The <script type="math/tex">R^2</script>s of regression models (columns of the table) are complete circular area or combination of <strong>circular area</strong>, think of them as <strong>unions</strong>. For example:</p>
+<script type="math/tex; mode=display">
+\begin{align}
+    R^2_{y \cdot i} &= \text{Unique to var i} + \text{Common to var i&j} + \text{Common to var i&j} + \text{Common to var i&j&k} \\\\
+    R^2_{y \cdot ij} &= \text{Unique to var i} + \text{Common to var i&j} + \text{Common to var i&j} + \text{Common to var i&j&k} + \text{Common to var j&k}
+\end{align}</script><p><img src="https://www.researchgate.net/profile/Robert_Capraro/publication/238605329/figure/fig1/AS:669410532548621@1536611316685/Illustrating-Commonality-Analysis.png" alt="Illustrating Commonality Analysis. | Download Scientific Diagram"></p>
+<p>And unique effects or common effects are the <strong>small pieces in the diagram</strong> as labeled, think of them as <strong>complements</strong> or <strong>intersections</strong>. </p>
+<p>The commonality weights serves as a transfer matrix for these two groups of values that have meanings in set theory.</p>
+<h5 id="In-Practice"><a href="#In-Practice" class="headerlink" title="In Practice"></a>In Practice</h5><p><code>R</code> provides a package for Commonality Analysis: <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.459.9485&amp;rep=rep1&amp;type=pdf" target="_blank" rel="noopener"><code>yhat</code></a> , documentation of the package by CRAN is <a href="https://cran.r-project.org/web/packages/yhat/yhat.pdf" target="_blank" rel="noopener">here</a> and by RDocumentation is <a href="https://www.rdocumentation.org/packages/yhat/versions/2.0-2" target="_blank" rel="noopener">here</a>. (But there is no package in Python that provides these functions)</p>
+<p>Core functions for commonality analysis are <a href="https://www.rdocumentation.org/packages/yhat/versions/2.0-2/topics/aps" target="_blank" rel="noopener"><code>aps</code></a>, which performs all possible subset regression; and <a href="https://www.rdocumentation.org/packages/yhat/versions/2.0-2/topics/commonality" target="_blank" rel="noopener"><code>commonality</code></a>, which uses commonality weights to do the transformation. </p>
+<p><a href="https://www.rdocumentation.org/packages/yhat/versions/2.0-2/topics/commonalityCoefficients" target="_blank" rel="noopener"><code>commonalityCoefficients</code></a> function is like an end-to-end function that outputs the final results of CA from input variables. Here is an very straight forward example of performing CA using <code>R</code> with <code>yhat</code> package with <code>iris</code> dataset.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">library</span>(yhat)</span><br><span class="line">&gt; <span class="keyword">library</span>(datasets)</span><br><span class="line">&gt; data(iris)</span><br><span class="line">&gt; <span class="comment"># all possible subset regression and results</span></span><br><span class="line">&gt; all_subset_regression &lt;- aps(iris, <span class="string">"Sepal.Length"</span>, list(<span class="string">"Sepal.Width"</span>, <span class="string">"Petal.Length"</span>, <span class="string">"Petal.Width"</span>))</span><br><span class="line">&gt; all_subset_regression</span><br><span class="line">$ivID</span><br><span class="line">             [,<span class="number">1</span>]</span><br><span class="line">Sepal.Width     <span class="number">1</span></span><br><span class="line">Petal.Length    <span class="number">2</span></span><br><span class="line">Petal.Width     <span class="number">4</span></span><br><span class="line"></span><br><span class="line">$PredBitMap</span><br><span class="line">             [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>] [,<span class="number">5</span>] [,<span class="number">6</span>] [,<span class="number">7</span>]</span><br><span class="line">Sepal.Width     <span class="number">1</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">0</span>    <span class="number">1</span></span><br><span class="line">Petal.Length    <span class="number">0</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">1</span></span><br><span class="line">Petal.Width     <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span></span><br><span class="line"></span><br><span class="line">$apsBitMap</span><br><span class="line">                                     [,<span class="number">1</span>]</span><br><span class="line">Sepal.Width                             <span class="number">1</span></span><br><span class="line">Petal.Length                            <span class="number">2</span></span><br><span class="line">Petal.Width                             <span class="number">4</span></span><br><span class="line">Sepal.Width,Petal.Length                <span class="number">3</span></span><br><span class="line">Sepal.Width,Petal.Width                 <span class="number">5</span></span><br><span class="line">Petal.Length,Petal.Width                <span class="number">6</span></span><br><span class="line">Sepal.Width,Petal.Length,Petal.Width    <span class="number">7</span></span><br><span class="line"></span><br><span class="line">$APSMatrix</span><br><span class="line">                                     k         R2</span><br><span class="line">Sepal.Width                          <span class="number">1</span> <span class="number">0.01382265</span></span><br><span class="line">Petal.Length                         <span class="number">1</span> <span class="number">0.75995465</span></span><br><span class="line">Petal.Width                          <span class="number">1</span> <span class="number">0.66902769</span></span><br><span class="line">Sepal.Width,Petal.Length             <span class="number">2</span> <span class="number">0.84017784</span></span><br><span class="line">Sepal.Width,Petal.Width              <span class="number">2</span> <span class="number">0.70723708</span></span><br><span class="line">Petal.Length,Petal.Width             <span class="number">2</span> <span class="number">0.76626130</span></span><br><span class="line">Sepal.Width,Petal.Length,Petal.Width <span class="number">3</span> <span class="number">0.85861172</span></span><br><span class="line"></span><br><span class="line">&gt; <span class="comment"># commonality calculation</span></span><br><span class="line">&gt; commonality(all_subset_regression)</span><br><span class="line">                                     Coefficient     % Total</span><br><span class="line">Sepal.Width                           <span class="number">0.09235042</span>  <span class="number">0.10755784</span></span><br><span class="line">Petal.Length                          <span class="number">0.15137464</span>  <span class="number">0.17630163</span></span><br><span class="line">Petal.Width                           <span class="number">0.01843388</span>  <span class="number">0.02146941</span></span><br><span class="line">Sepal.Width,Petal.Length             -<span class="number">0.05414103</span> -<span class="number">0.06305648</span></span><br><span class="line">Sepal.Width,Petal.Width              -<span class="number">0.01212723</span> -<span class="number">0.01412423</span></span><br><span class="line">Petal.Length,Petal.Width              <span class="number">0.67498054</span>  <span class="number">0.78613012</span></span><br><span class="line">Sepal.Width,Petal.Length,Petal.Width -<span class="number">0.01225950</span> -<span class="number">0.01427829</span></span><br><span class="line"></span><br><span class="line">&gt; <span class="comment"># or, just using commonalityCoefficients</span></span><br><span class="line">&gt; commonalityCoefficients(iris, <span class="string">"Sepal.Length"</span>, list(<span class="string">"Sepal.Width"</span>, <span class="string">"Petal.Length"</span>, <span class="string">"Petal.Width"</span>))</span><br><span class="line">$CC</span><br><span class="line">                                                     Coefficient     % Total</span><br><span class="line">Unique to Sepal.Width                                     <span class="number">0.0924</span>       <span class="number">10.76</span></span><br><span class="line">Unique to Petal.Length                                    <span class="number">0.1514</span>       <span class="number">17.63</span></span><br><span class="line">Unique to Petal.Width                                     <span class="number">0.0184</span>        <span class="number">2.15</span></span><br><span class="line">Common to Sepal.Width, and Petal.Length                  -<span class="number">0.0541</span>       -<span class="number">6.31</span></span><br><span class="line">Common to Sepal.Width, and Petal.Width                   -<span class="number">0.0121</span>       -<span class="number">1.41</span></span><br><span class="line">Common to Petal.Length, and Petal.Width                   <span class="number">0.6750</span>       <span class="number">78.61</span></span><br><span class="line">Common to Sepal.Width, Petal.Length, and Petal.Width     -<span class="number">0.0123</span>       -<span class="number">1.43</span></span><br><span class="line">Total                                                     <span class="number">0.8586</span>      <span class="number">100.00</span></span><br><span class="line"></span><br><span class="line">$CCTotalbyVar</span><br><span class="line">             Unique  Common  Total</span><br><span class="line">Sepal.Width  <span class="number">0.0924</span> -<span class="number">0.0786</span> <span class="number">0.0138</span></span><br><span class="line">Petal.Length <span class="number">0.1514</span>  <span class="number">0.6086</span> <span class="number">0.7600</span></span><br><span class="line">Petal.Width  <span class="number">0.0184</span>  <span class="number">0.6506</span> <span class="number">0.6690</span></span><br></pre></td></tr></table></figure>
+<h6 id="A-Mathematical-Algorithm"><a href="#A-Mathematical-Algorithm" class="headerlink" title="A Mathematical Algorithm"></a>A Mathematical Algorithm</h6><p>Computation of commonality weights, or the process of constructing the commonality weight matrix, is not a very straight forward process. Though there are many approaches to do so, here, I will provide my thinking of doing it. This approach is different from <code>yhat</code> package, and was the way that I came up with when implementing CA in Python.</p>
+<p>To simplify the symbol representations, here we let </p>
+<ul>
+<li><script type="math/tex">U(X)</script> denotes the unions of effects, thus, are calculated from all possible subset regression(APS), and is considered known in computing commonality effects. eg. <script type="math/tex">U(i, j) = R^2_{y \cdot ij}</script>, is the r squared of regression containing variable <script type="math/tex">i</script> and <script type="math/tex">j</script>.</li>
+<li><script type="math/tex">I(X)</script> denotes the intersection or complement of sets. When <script type="math/tex">X</script> contains only one set, it’s complement of that set. eg. <script type="math/tex">I(i) = i - \cup j, k, l ,\dots</script>. When <script type="math/tex">X</script> contains more than one set, it means intersection. eg. <script type="math/tex">I(i, j, k) = i \cap j \cap k</script>. These values are intermediate values that neither do we know nor do we want as results (except for the complements).</li>
+<li><script type="math/tex">C(X)</script> denotes the exclusive complements of sets, which fits the definition of commonality effects, thus are the goals of the algorithm. eg. <script type="math/tex">C(i) = i - \cup j,k,l, \dots = I(i)</script> can be represented as “unique effect of <script type="math/tex">i</script>“ in the Venn diagram; <script type="math/tex">C(i, j) = i \cap j - \cup k , l, \dots</script> is represented as “unique effect of <script type="math/tex">i</script> and <script type="math/tex">j</script>“.</li>
+</ul>
+<p><strong>ALGORITHM 1: Calculating Commonality Effect</strong></p>
+<ol>
+<li>Calculate <script type="math/tex">I(X)</script> from <script type="math/tex">U(X)</script>, <script type="math/tex">X</script> is any combinations of input variables.<ol>
+<li>For order in 1 to num_variables: <ul>
+<li>Calculate <script type="math/tex">I(X)</script> for X from combination of order, using inclusion-exclusion principle</li>
+<li>eg. <script type="math/tex">I(i, j) = i \cap j =  U(i) + U(j) - U(i, j)</script></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Calculate <script type="math/tex">C(X)</script> from <script type="math/tex">I(X)</script> and <script type="math/tex">U(X)</script>.<ol>
+<li>For order in 1 to num_variables:<ul>
+<li>Calculate <script type="math/tex">C(X)</script> for X from combination of order, using inclusion-exclusion principle</li>
+<li>eg. <script type="math/tex">C(i, j) = I(i, j) - I(i, j, k) - I(i,j,l) - \dots + \dots</script></li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="Dominance-Analysis"><a href="#Dominance-Analysis" class="headerlink" title="Dominance Analysis"></a>Dominance Analysis</h3><h4 id="Idea-1"><a href="#Idea-1" class="headerlink" title="Idea"></a>Idea</h4><p>The idea behind dominance analysis is reasonably well stated in the quote below. Budescu (1993) set out three conditions for determining the relative importance<br>of predictors in a regression equation:</p>
+<blockquote>
+<p>(a) Importance should be defined in terms of a variable’s “reduction of error” in predicting the criterion, y; </p>
+<p>(b) The method should allow for direct comparison of relative importance instead of relying on inferred measures; </p>
+<p>(c) Importance should reflect a variable’s direct effect (i.e. when considered by itself), total effect (i.e., conditional on all other predictors), and partial effect (i.e. conditional on subsets of predictors).</p>
+<p>Dominance analysis compares pairs of predictors and how they behave in <script type="math/tex">h = 2^{(p-2)}</script> models. These models involve all subsets of predictors. Variable <script type="math/tex">a</script> dominates variable <script type="math/tex">b</script> in model <script type="math/tex">h</script> if adding variable a to model <script type="math/tex">h</script> results in a greater <script type="math/tex">R^2</script> than adding variable <script type="math/tex">b</script> to model <script type="math/tex">h</script>. By performing a dominance analysis for all pairs of the <script type="math/tex">p</script> predictors, dominance analysis determines an order of importance for the predictors, if that order exists.</p>
+</blockquote>
+<h4 id="How-to-interpret-DA"><a href="#How-to-interpret-DA" class="headerlink" title="How to interpret DA"></a>How to interpret DA</h4><p>Dominance analysis provides the “<script type="math/tex">R^2</script> increased by adding a variable”. Average of the effect of adding the variable in each possible order and in any number of variables of models. </p>
+<p>DA does not meant to rank the variables, but provides comparisons between pairs of variables. There are kinds of relationship between variables, as shown in the figure below. Descriptions can be found <a href="https://github.com/dominance-analysis/dominance-analysis" target="_blank" rel="noopener">here</a>.</p>
+<p><img src="https://github.com/dominance-analysis/dominance-analysis/raw/master/images/Dom%20Stat.jpg" alt="img"></p>
+<p>Some notes about these relationships</p>
+<ol>
+<li>Individual Dominance: like method <code>first</code>.</li>
+<li>Interactional Dominance: like method <code>last</code>.</li>
+<li>Total Dominance: Average of all the conditional values.</li>
+</ol>
+<h4 id="How-to-Perform-DA"><a href="#How-to-Perform-DA" class="headerlink" title="How to Perform DA"></a>How to Perform DA</h4><p>This question is much simpler than CA, since they share the first steps and the second step of DA is much more straight forward.</p>
+<h5 id="Theoretically-1"><a href="#Theoretically-1" class="headerlink" title="Theoretically"></a>Theoretically</h5><p>STEP 1: All Possible Subset Regression</p>
+<p>STEP 2: Form the DA table.</p>
+<h5 id="In-Practice-1"><a href="#In-Practice-1" class="headerlink" title="In Practice"></a>In Practice</h5><p>There is an python package to perform DA, <code>dominance-analysis</code>, with the source code <a href="https://github.com/dominance-analysis/dominance-analysis" target="_blank" rel="noopener">here</a>.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a href="https://conservancy.umn.edu/handle/11299/213096" target="_blank" rel="noopener">Multiple Regression in Industrial Organizational Psychology: Relative Importance and Model Sensitivity</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Commonality_analysis#:~:text=Commonality%20analysis%20is%20a%20statistical,regression%20model%20into%20commonality%20coefficients." target="_blank" rel="noopener">Commonality analysis — Wikipedia</a></li>
+<li><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/ijop.12284" target="_blank" rel="noopener">Which types of income matter most for well‐being in China: Absolute, relative or income aspirations?</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          
+            <a href="/tags/stats/" rel="tag"># stats</a>
+          
+            <a href="/tags/linear-regression/" rel="tag"># linear regression</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/15/multi-variate-linear-model/" rel="next" title="Multivariate Linear Regression -- Collinearity and Feature Importance">
+                <i class="fa fa-chevron-left"></i> Multivariate Linear Regression -- Collinearity and Feature Importance
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Commonality-Analysis"><span class="nav-number">1.</span> <span class="nav-text">Commonality Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Idea"><span class="nav-number">1.1.</span> <span class="nav-text">Idea</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-to-Interpret-CA"><span class="nav-number">1.2.</span> <span class="nav-text">How to Interpret CA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-to-Perform-CA"><span class="nav-number">1.3.</span> <span class="nav-text">How to Perform CA</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Theoretically"><span class="nav-number">1.3.1.</span> <span class="nav-text">Theoretically</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#STEP-1-All-Possible-Subsets-Regression"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">STEP 1: All Possible Subsets Regression</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#STEP-2-Commonality-Weights"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">STEP 2: Commonality Weights</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Nature-of-Commonality-Weights"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">Nature of Commonality Weights</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#In-Practice"><span class="nav-number">1.3.2.</span> <span class="nav-text">In Practice</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#A-Mathematical-Algorithm"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">A Mathematical Algorithm</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dominance-Analysis"><span class="nav-number">2.</span> <span class="nav-text">Dominance Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Idea-1"><span class="nav-number">2.1.</span> <span class="nav-text">Idea</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-to-interpret-DA"><span class="nav-number">2.2.</span> <span class="nav-text">How to interpret DA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-to-Perform-DA"><span class="nav-number">2.3.</span> <span class="nav-text">How to Perform DA</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Theoretically-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">Theoretically</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#In-Practice-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">In Practice</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number"></span> <span class="nav-text">References</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Further Discussion of Relative Importance'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Further Discussion of Relative Importance'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
