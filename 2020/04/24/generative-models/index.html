@@ -128,7 +128,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/04/24/generative-models/lda_dimension.png">
 <meta property="og:image" content="http://yoursite.com/2020/04/24/generative-models/gda_visual.png">
 <meta property="article:published_time" content="2020-04-24T22:08:22.000Z">
-<meta property="article:modified_time" content="2020-08-16T22:38:23.774Z">
+<meta property="article:modified_time" content="2020-08-17T00:08:12.444Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
 <meta property="article:tag" content="algorithm">
@@ -501,7 +501,7 @@ J(W) = \frac{\text{seperability between 2 classes}}{\text{seperability within ea
     &= \sum_{x \in i}(W^T x -W^T \mu_i)(W^T x -W^T \mu_i)^T \\\\
     &= \sum_{x \in i}W^T(x -\mu_i)(x -\mu_i)^TW \\\\
     &= \sum_{x \in i}W^TS_iW
-\end{align}</script><p>Where $S<em>i$ is the covariance matrix of original feature space $X$ that are labeled by the $i</em>{th}$ class. Define $S_w$ to be the <strong><u>within-class scatter matrix</u></strong></p>
+\end{align}</script><p>Where <script type="math/tex">S_i</script> is the covariance matrix of original feature space <script type="math/tex">X</script> that are labeled by the <script type="math/tex">i_{th}</script> class. Define <script type="math/tex">S_w</script> to be the <strong><u>within-class scatter matrix</u></strong></p>
 <script type="math/tex; mode=display">
 S_W = \sum_{i \in C} S_i</script><script type="math/tex; mode=display">
 \tilde S_W = W^TS_WW</script><p>And the numerator:</p>
@@ -524,16 +524,16 @@ J(W) = \frac{|\tilde S_B|}{|\tilde S_W|} = \frac{|W^TS_BW|}{|W^TS_WW|}</script><
 <script type="math/tex; mode=display">
 S_Bw = \lambda S_Ww</script><p>Or</p>
 <script type="math/tex; mode=display">
-S_W^{-1}S_Bw = \lambda w</script><p>Notice that this is a linear system where $\lambda = J(W)$ is a scaler and represents the eigenvalues, and $W = [w<em>1 w_2 \dots w</em>{C-1}]$ is the eigen-vector matrix where each column contains an eigen-vector. When there are only two classes, $C = 2$, $W = w \in \mathbb{R}^{d \times 1}$, recall $S_B = (\mu_0 - \mu_1)(\mu_0 - \mu_1)^T$, Thus $S_Bw$‘s direction is fixed at $\mu_0 - \mu_1$, only the length will change. Without losing anything, we assume that </p>
+S_W^{-1}S_Bw = \lambda w</script><p>Notice that this is a linear system where <script type="math/tex">\lambda = J(W)</script> is a scaler and represents the eigenvalues, and <script type="math/tex">W = [w_1 w_2 \dots w_{C-1}]</script> is the eigen-vector matrix where each column contains an eigen-vector. When there are only two classes, <script type="math/tex">C = 2</script>, <script type="math/tex">W = w \in \mathbb{R}^{d \times 1}</script>, recall <script type="math/tex">S_B = (\mu_0 - \mu_1)(\mu_0 - \mu_1)^T</script>, Thus <script type="math/tex">S_Bw</script>‘s direction is fixed at <script type="math/tex">\mu_0 - \mu_1</script>, only the length will change. Without losing anything, we assume that </p>
 <script type="math/tex; mode=display">
 S_Bw = \beta \lambda (\mu_0 - \mu_1)</script><p>So the equation becomes:</p>
 <script type="math/tex; mode=display">
 S_W^{-1}(\mu_0 - \mu_1) = w</script><p>To maximize $J$ means $w$ should be the eigenvector that corresponds to the <strong>largest</strong> eigenvalue $\lambda$.</p>
 <h4 id="Some-Observations"><a href="#Some-Observations" class="headerlink" title="Some Observations"></a>Some Observations</h4><ol>
 <li>Notice that for two-classes case, the $\theta_1$ for approach 1 is  the $w$ in approach 2, means that graphically, the classifier looks for a optimal subspace that separates the classes the best, and calculate sigmoid of that to be the predictions.</li>
-<li><p>For dimensionality reduction purpose, in a $C$ classes problem, LDA or GDA can reduce feature space $X$ into sub-space of dimension ${1, 2, \dots, C-1}$. e.g. for 2-classes problem, the reduced dimension has to be 1.</p>
+<li><p>For dimensionality reduction purpose, in a $C$ classes problem, LDA or GDA can reduce feature space $X$ into sub-space of dimension <script type="math/tex">\{1, 2, \dots, C-1\}</script>. e.g. for 2-classes problem, the reduced dimension has to be 1.</p>
 <ul>
-<li>Explanation: notice in $S<em>W^{-1}S_Bw = \lambda w$, $S_B = \sum</em>{i \in C}(\mu_i - \mu)(\mu_i - \mu)^T$, so $rank(S_B) \leq C - 1$, there are at most $C-1$ eigenvectors in the linear system for $W$.</li>
+<li>Explanation: notice in <script type="math/tex">S_W^{-1}S_Bw = \lambda w</script>, <script type="math/tex">S_B = \sum_{i \in C}(\mu_i - \mu)(\mu_i - \mu)^T</script>, so <script type="math/tex">rank(S_B) \leq C - 1</script>, there are at most <script type="math/tex">C-1</script> eigenvectors in the linear system for <script type="math/tex">W</script>.</li>
 </ul>
 </li>
 <li><p>Though from approach 2, we can “separate” the samples, without further calculation of $\theta_0$ (as we seen in approach 1), the decision boundary cannot be deduced.</p>
