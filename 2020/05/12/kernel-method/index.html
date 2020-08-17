@@ -127,7 +127,7 @@
 <meta property="og:image" content="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png">
 <meta property="og:image" content="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png">
 <meta property="article:published_time" content="2020-05-12T18:48:35.000Z">
-<meta property="article:modified_time" content="2020-06-18T00:56:44.287Z">
+<meta property="article:modified_time" content="2020-08-16T22:41:43.482Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
 <meta property="article:tag" content="algorithm">
@@ -420,9 +420,9 @@
     \text{the function } \phi &\text{: feature map} \\\\
     X' &\text{: (new) features} \\\\
     X &\text{: attributes}
-\end{align}</script><p>e.g. for instance, the attributes contain 2 variables, $X = \{x_1, x_2\}$, the feature map wants to create a new feature space that includes <strong>any conbination of attributes within degree of 3</strong>. Thus</p>
+\end{align}</script><p>e.g. for instance, the attributes contain 2 variables, $X = \{x_1, x_2\}$, the feature map wants to create a new feature space that includes <strong>any combination of attributes within degree of 3</strong>. Thus</p>
 <script type="math/tex; mode=display">
-\phi(X) = [1, x_1, x_2, x_1^2, x_2^2, x_1x_2, x_1^3, x_2^3, x_1^2x_2, x_1x_2^2]</script><p>Now $\phi(X)$ has 10 terms. However, this number could go up very rapidly as the <strong>number of attributes</strong> and the number of polynomials that we want to express goes up, which makes feature map a problem in computing. That is, <strong><u>after feature map, the feature space could have a tremendously large (or infinate) dimensionality, which causes problem for computing</u></strong>. That is where we introduce the kernel method.</p>
+\phi(X) = [1, x_1, x_2, x_1^2, x_2^2, x_1x_2, x_1^3, x_2^3, x_1^2x_2, x_1x_2^2]</script><p>Now $\phi(X)$ has 10 terms. However, this number could go up very rapidly as the <strong>number of attributes</strong> and the number of polynomials that we want to express goes up, which makes feature map a problem in computing. That is, <strong><u>after feature map, the feature space could have a tremendously large (or infinite) dimensionality, which causes problem for computing</u></strong>. That is where we introduce the kernel method.</p>
 <h2 id="Kernel-Method"><a href="#Kernel-Method" class="headerlink" title="Kernel Method"></a>Kernel Method</h2><h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>Given a feature map function $\phi$, we define the kernel that corresponds to this feature mapping is as follows</p>
 <script type="math/tex; mode=display">
 K(x, z) = <\phi(x), \phi(z)></script><p>where $<a, b> = a^Tb$, denotes dot product of two vectors. And $K: \mathbb{R}^{p} \times \mathbb{R}^{p} \to \mathbb{R}$</p>
@@ -438,7 +438,7 @@ K(x, z) = <\phi(x), \phi(z)></script><p>where $<a, b> = a^Tb$, denotes dot produ
 K_{ij} = K(x^{(i)}, x^{(j)}) = \phi(x^{(i)})^T\phi(x^{(j)})</script><p>the element in position $(i,j)$ is the kernel function’s result of $x^{(i)}$ and $x^{(j)}$. </p>
 <p>​    Observations:</p>
 <ol>
-<li><p>The kernel matrix is symmetric, $K<em>{ij}= \phi(x^{(i)})^T\phi(x^{(j)}) = \phi(x^{(j)})^T\phi(x^{(i)}) = K</em>{ji}$;</p>
+<li><p>The kernel matrix is symmetric, <script type="math/tex">K_{ij}= \phi(x^{(i)})^T\phi(x^{(j)}) = \phi(x^{(j)})^T\phi(x^{(i)}) = K_{ji}</script>;</p>
 <ol>
 <li>For any vector $z$, we have $z^TKz = \sum_k (\sum_iz_i \phi(x^{(i)}))^2 \geq 0$.</li>
 </ol>
