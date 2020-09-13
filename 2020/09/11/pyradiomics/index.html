@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Serif:300,300italic,400,400italic,700,700italic|Abril Fatface:300,300italic,400,400italic,700,700italic|PT Serif:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,package," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Brief for quick start in pyradiomics package">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pyradiomics Simple Usage">
+<meta property="og:url" content="http://yoursite.com/2020/09/11/pyradiomics/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="Brief for quick start in pyradiomics package">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-11T21:58:49.000Z">
+<meta property="article:modified_time" content="2020-09-13T03:36:38.178Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="package">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/11/pyradiomics/"/>
+
+
+
+
+
+  <title>Pyradiomics Simple Usage | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/11/pyradiomics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Pyradiomics Simple Usage</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-11T14:58:49-07:00">
+                2020-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/11/pyradiomics/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/09/11/pyradiomics/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Brief for quick start in pyradiomics package
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>Pyradiomics is an open-source python package for the extraction of radiomics data from medical images. Image loading and preprocessing (e.g. resampling and cropping) are first done using SimpleITK. Loaded data is then converted into numpy arrays for further calculation using multiple feature classes. Optional filters are also built-in.</p>
+</blockquote>
+<h2 id="Ways-to-Deal-with-Medical-Image-Data"><a href="#Ways-to-Deal-with-Medical-Image-Data" class="headerlink" title="Ways to Deal with Medical Image Data"></a>Ways to Deal with Medical Image Data</h2><p>The reasons that we choose <code>pyradiomics</code> could be its openness, widely recognized and reasonably good performance with a variety of features available. Methods of analyzing medical images could be potential divided into two major ways:</p>
+<ol>
+<li>Traditional Methods, which includes feature extraction and covert image data into another format which is more stable and universal;</li>
+<li>Deep Methods, which involves using deep learning method to condense the image data into later layer’s values. This methods can deal with images directly, but requires larger training data set.</li>
+</ol>
+<p>Pyradiomics is absolutely an good option to use if using traditional methods.</p>
+<h2 id="Pyradiomics-Usage"><a href="#Pyradiomics-Usage" class="headerlink" title="Pyradiomics Usage"></a>Pyradiomics Usage</h2><h3 id="Simple-Examples"><a href="#Simple-Examples" class="headerlink" title="Simple Examples"></a>Simple Examples</h3><h4 id="Single-image-mask"><a href="#Single-image-mask" class="headerlink" title="Single  image/mask"></a>Single  image/mask</h4><p>The simplest way to use <code>pyradiomics</code> is through command line:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyradiomics &lt;path/to/image&gt; &lt;path/to/segmentation&gt; -o &lt;save_path&gt; -f csv</span><br></pre></td></tr></table></figure>
+<p><em>NOTE</em>: </p>
+<ul>
+<li><code>pyradiomics</code> uses <code>simpleITK</code> to process raw image, so the file format of image and segmentation should be one of the formats that are readable by <code>simpleITK</code>:  .bmp, .pic, <strong>.jpg</strong>, .jpeg, <strong>.tif</strong>, .mha, <strong>.nrrd</strong>, .png, etc. (refer to <a href="https://simpleitk.readthedocs.io/en/master/IO.html" target="_blank" rel="noopener">here</a>). </li>
+<li>Available <a href="https://pyradiomics.readthedocs.io/en/latest/customization.html#image-types" target="_blank" rel="noopener">image types</a> are also stored in <code>_enabledImageTypes</code> dictionary in the feature extractor class instance.</li>
+<li><code>-o</code> parameter specifies the save path of extracted features, it should be a CSV file’s path.</li>
+<li><code>-f csv</code> specifies the format of saved file is CSV</li>
+</ul>
+<h4 id="Batch-Mode"><a href="#Batch-Mode" class="headerlink" title="Batch Mode"></a>Batch Mode</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyradiomics &lt;path/to/input&gt; -o &lt;save_path&gt; -f csv</span><br></pre></td></tr></table></figure>
+<p><em>NOTE</em>: </p>
+<ul>
+<li>Here, this <code>input</code> should be a CSV file that looks like this</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>header of <code>path/to/image</code></th>
+<th>header of <code>path/to/seg</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path/to/image_1</code></td>
+<td><code>path/to/seg_1</code></td>
+</tr>
+<tr>
+<td><code>path/to/image_2</code></td>
+<td><code>path/to/seg_2</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>Batch mode provides a scalable way to apply <code>pyradiomics</code> feature extraction, since it needs only to organize a CSV file that contains information about files to extract features from and their segmentations, and one command line execution, to extract features from different files at once.</li>
+</ul>
+<h3 id="In-Code-Usage"><a href="#In-Code-Usage" class="headerlink" title="In Code Usage"></a>In Code Usage</h3><p>To use <code>pyradiomics</code> inside code, with similar effect to simple image/mask usage, code would be like:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> radiomics <span class="keyword">import</span> featureextractor</span><br><span class="line">extractor = featureextractor.RadiomicsFeatureExtractor()</span><br><span class="line">features = extractor.execute(image_nrrd_file_path, segmentation_nrrd_file_path)</span><br></pre></td></tr></table></figure>
+<p>The extractor will return a list of features, instead of store them into some files.</p>
+<h2 id="Customization-of-Features"><a href="#Customization-of-Features" class="headerlink" title="Customization of Features"></a>Customization of Features</h2><h3 id="Parameter-File"><a href="#Parameter-File" class="headerlink" title="Parameter File"></a>Parameter File</h3><h4 id="Include-Parameter-File"><a href="#Include-Parameter-File" class="headerlink" title="Include Parameter File"></a>Include Parameter File</h4><p>A <code>yaml</code> or <code>JSON</code> format file could be provided to change the setting of feature class, as well as image type and <strong>settings</strong>. To use it in command line mode, like this:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyradiomics &lt;path/to/input&gt; --param &lt;parameter_file_path&gt; -o &lt;save_path&gt; -f csv</span><br></pre></td></tr></table></figure>
+<p>And there two ways to add it in python codes:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># add parameter file when creating instance</span></span><br><span class="line">extractor = featureextractor.RadiomicsFeatureExtractor(param_file_path)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># add parameter file after definition, using loadParams()</span></span><br><span class="line">extractor = featureextractor.RadiomicsFeatureExtractor()</span><br><span class="line">extractor.loadParams(param_file_path)</span><br></pre></td></tr></table></figure>
+<p>Note that only file path should be provided, <code>pyradiomics</code> will read in the file.</p>
+<h4 id="Customizations"><a href="#Customizations" class="headerlink" title="Customizations"></a>Customizations</h4><p>Below is an example parameter file named <code>features.yaml</code>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">imageType:</span></span><br><span class="line">  <span class="attr">Original:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">  <span class="attr">LoG:</span></span><br><span class="line">    <span class="attr">sigma:</span> <span class="string">[0.5,</span> <span class="number">1.0</span><span class="string">,</span> <span class="number">2.0</span><span class="string">]</span> </span><br><span class="line">  <span class="attr">Wavelet:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">  <span class="attr">LBP3D:</span></span><br><span class="line">    <span class="attr">binWidth:</span> <span class="number">1.0</span></span><br><span class="line">  <span class="attr">Square:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">  <span class="comment">#SquareRoot: &#123;&#125;</span></span><br><span class="line">  <span class="attr">Logarithm:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">  <span class="comment">#Exponential: &#123;&#125;</span></span><br><span class="line">  <span class="attr">Gradient:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">  <span class="comment">#LBP2D: &#123;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">featureClass:</span></span><br><span class="line">  <span class="comment"># redundant Compactness 1, Compactness 2 an Spherical Disproportion features are disabled by default, they can be</span></span><br><span class="line">  <span class="comment"># enabled by specifying individual feature names (as is done for glcm) and including them in the list.</span></span><br><span class="line">  <span class="attr">shape:</span></span><br><span class="line">  <span class="attr">firstorder:</span></span><br><span class="line">  <span class="attr">glcm:</span>  <span class="comment"># Disable SumAverage by specifying all other GLCM features available</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Autocorrelation'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'JointAverage'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'ClusterProminence'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'ClusterShade'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'ClusterTendency'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Contrast'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Correlation'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'DifferenceAverage'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'DifferenceEntropy'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'DifferenceVariance'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'JointEnergy'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'JointEntropy'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Imc1'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Imc2'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Idm'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Idmn'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Id'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'Idn'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'InverseVariance'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'MaximumProbability'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'SumEntropy'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'SumSquares'</span></span><br><span class="line">  <span class="attr">glrlm:</span></span><br><span class="line">  <span class="attr">glszm:</span></span><br><span class="line">  <span class="attr">gldm:</span></span><br><span class="line">  <span class="attr">ngtdm:</span> <span class="string">[]</span></span><br><span class="line"><span class="attr">setting:</span></span><br><span class="line">  <span class="comment"># Normalization:</span></span><br><span class="line">  <span class="comment"># most likely not needed, CT gray values reflect absolute world values (HU) and should be comparable between scanners.</span></span><br><span class="line">  <span class="comment"># If analyzing using different scanners / vendors, check if the extracted features are correlated to the scanner used.</span></span><br><span class="line">  <span class="comment"># If so, consider enabling normalization by uncommenting settings below:</span></span><br><span class="line">  <span class="comment">#normalize: true</span></span><br><span class="line">  <span class="comment">#normalizeScale: 500  # This allows you to use more or less the same bin width.</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Resampling:</span></span><br><span class="line">  <span class="comment"># Usual spacing for CT is often close to 1 or 2 mm, if very large slice thickness is used,</span></span><br><span class="line">  <span class="comment"># increase the resampled spacing.</span></span><br><span class="line">  <span class="comment"># On a side <span class="doctag">note:</span> increasing the resampled spacing forces PyRadiomics to look at more coarse textures, which may or</span></span><br><span class="line">  <span class="comment"># may not increase accuracy and stability of your extracted features.</span></span><br><span class="line">  <span class="attr">interpolator:</span> <span class="string">'sitkBSpline'</span></span><br><span class="line">  <span class="attr">resampledPixelSpacing:</span></span><br><span class="line">  <span class="comment">#padDistance: 10  # Extra padding for large sigma valued LoG filtered images</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Mask validation:</span></span><br><span class="line">  <span class="comment"># correctMask and geometryTolerance are not needed, as both image and mask are resampled, if you expect very small</span></span><br><span class="line">  <span class="comment"># masks, consider to enable a size constraint by uncommenting settings below:</span></span><br><span class="line">  <span class="comment">#minimumROIDimensions: 2</span></span><br><span class="line">  <span class="comment">#minimumROISize: 50</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Image discretization:</span></span><br><span class="line">  <span class="comment"># The ideal number of bins is somewhere in the order of 16-128 bins. A possible way to define a good binwidt is to</span></span><br><span class="line">  <span class="comment"># extract firstorder:Range from the dataset to analyze, and choose a binwidth so, that range/binwidth remains approximately</span></span><br><span class="line">  <span class="comment"># in this range of bins.</span></span><br><span class="line">  <span class="attr">binWidth:</span> <span class="number">25</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># first order specific settings:</span></span><br><span class="line">  <span class="attr">voxelArrayShift:</span> <span class="number">1000</span>  <span class="comment"># Minimum value in HU is -1000, shift +1000 to prevent negative values from being squared.</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Misc:</span></span><br><span class="line">  <span class="comment"># default label value. Labels can also be defined in the call to featureextractor.execute, as a commandline argument,</span></span><br><span class="line">  <span class="comment"># or in a column "Label" in the input csv (batchprocessing)</span></span><br><span class="line">  <span class="attr">label:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>This file has three major parts: </p>
+<ul>
+<li><a href="https://pyradiomics.readthedocs.io/en/latest/customization.html#image-types" target="_blank" rel="noopener">imageType</a>: image type to calculate features on. <value> is custom kwarg settings (dictionary). if <value> is an empty dictionary (‘{}’), no custom settings are added for this input image.</li>
+<li><a href="https://pyradiomics.readthedocs.io/en/latest/customization.html#enabled-features" target="_blank" rel="noopener">featureClass</a>: Feature class to enable, <value> is list of strings representing enabled features. If no <value> is specified or <value> is an empty list (‘[]’), all features for this class are enabled.</li>
+<li><a href="https://pyradiomics.readthedocs.io/en/latest/customization.html#settings" target="_blank" rel="noopener">setting</a>: Setting to use for pre processing and class specific settings. if no <value> is specified, the value for this setting is set to None.</li>
+</ul>
+<p>Another potential part that is not displayed in this file is voxelSetting, which is used to control the voxel-based specific settings. Refer to the links for further information about the customizations that we can specify.</p>
+<p>Further usage of <code>pyradiomics</code> could (hypothetically) be summarized in further blog articles.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/package/" rel="tag"># package</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/10/further-features/" rel="next" title="Further Discussion of Relative Importance">
+                <i class="fa fa-chevron-left"></i> Further Discussion of Relative Importance
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ways-to-Deal-with-Medical-Image-Data"><span class="nav-number">1.</span> <span class="nav-text">Ways to Deal with Medical Image Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pyradiomics-Usage"><span class="nav-number">2.</span> <span class="nav-text">Pyradiomics Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Simple-Examples"><span class="nav-number">2.1.</span> <span class="nav-text">Simple Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Single-image-mask"><span class="nav-number">2.1.1.</span> <span class="nav-text">Single  image&#x2F;mask</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Batch-Mode"><span class="nav-number">2.1.2.</span> <span class="nav-text">Batch Mode</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#In-Code-Usage"><span class="nav-number">2.2.</span> <span class="nav-text">In Code Usage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Customization-of-Features"><span class="nav-number">3.</span> <span class="nav-text">Customization of Features</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Parameter-File"><span class="nav-number">3.1.</span> <span class="nav-text">Parameter File</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Include-Parameter-File"><span class="nav-number">3.1.1.</span> <span class="nav-text">Include Parameter File</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Customizations"><span class="nav-number">3.1.2.</span> <span class="nav-text">Customizations</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Pyradiomics Simple Usage'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Pyradiomics Simple Usage'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
