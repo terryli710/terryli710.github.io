@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Serif:300,300italic,400,400italic,700,700italic|Abril Fatface:300,300italic,400,400italic,700,700italic|PT Serif:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="package,R," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Example based instructions for using ComplexHeatmap for heatmaps">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Complex Heatmap, flexible package for heatmap based on R">
+<meta property="og:url" content="http://yoursite.com/2020/09/14/complexheatmap/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="Example based instructions for using ComplexHeatmap for heatmaps">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/09/14/complexheatmap/raw_heatmap.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/14/complexheatmap/label_removed_heatmap.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/14/complexheatmap/matrix_3.png">
+<meta property="article:published_time" content="2020-09-14T18:09:38.000Z">
+<meta property="article:modified_time" content="2020-09-20T02:48:26.000Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="package">
+<meta property="article:tag" content="R">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/14/complexheatmap/"/>
+
+
+
+
+
+  <title>Complex Heatmap, flexible package for heatmap based on R | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/14/complexheatmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Complex Heatmap, flexible package for heatmap based on R</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-14T11:09:38-07:00">
+                2020-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/14/complexheatmap/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/09/14/complexheatmap/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Example based instructions for using ComplexHeatmap for heatmaps
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Heatmap is great tool for <strong>visualizing two dimensional data magnitude using colors</strong>. This package provides almost complete features for building a heatmap under multiple conditions. Parameters that are used to customize a heatmap could be extremely complicated. This article try to archive part of the features that have been useful in my recently work. Note down their usage and syntax.</p>
+<h2 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h2><p>The dataset used in this article comes from <a href="https://www.tycho.pitt.edu/" target="_blank" rel="noopener">project Tycho</a>, and is about recorded cases of measles in the United States. The 2-D data that we try to visualize is <strong>the count of cases of measles in each year, in each state</strong>. </p>
+<p>This dataset is downloaded by the following way:</p>
+<ol>
+<li>Go to <a href="https://www.tycho.pitt.edu/data/" target="_blank" rel="noopener">https://www.tycho.pitt.edu/data/</a>;</li>
+<li>Search for “measles” in pre-compiled US datasets;</li>
+<li>Click <a href="https://www.tycho.pitt.edu/dataset/US.14189004/#" target="_blank" rel="noopener">download</a> using “download data and readme” link as .zip file</li>
+</ol>
+<p>Before drawing the heatmap, data preprocessing steps are as follows</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># loading packages</span></span><br><span class="line"><span class="keyword">library</span>(data.table)</span><br><span class="line"><span class="keyword">library</span>(dplyr)</span><br><span class="line"><span class="keyword">library</span>(tidyr)</span><br><span class="line"><span class="comment"># loading data</span></span><br><span class="line">setwd(<span class="string">"E:/OneDrive - Stanford/Code/R"</span>)</span><br><span class="line">measles &lt;- read.csv(<span class="string">"measles.csv"</span>)</span><br><span class="line"><span class="comment"># processing data</span></span><br><span class="line">columns &lt;- c(<span class="string">"ConditionName"</span>, <span class="string">"Admin1Name"</span>, <span class="string">"PeriodStartDate"</span>)</span><br><span class="line">measles &lt;- measles[columns]</span><br><span class="line">measles$year &lt;- as.numeric(substring(measles$PeriodStartDate,<span class="number">1</span>,<span class="number">4</span>))</span><br><span class="line">measles &lt;- measles%&gt;%group_by(year, Admin1Name)%&gt;%summarise(n=n())</span><br><span class="line">measles &lt;- measles%&gt;%spread(key=year, value=n)</span><br><span class="line"><span class="comment"># filling NAs</span></span><br><span class="line">measles[is.na(measles)] &lt;- <span class="number">0</span></span><br><span class="line"><span class="comment"># raw numeric data</span></span><br><span class="line">measles_num_raw &lt;- data.matrix(measles[-<span class="number">1</span>])</span><br><span class="line"><span class="comment"># add state names</span></span><br><span class="line">rownames(measles_num_raw) &lt;- c(unlist(measles[<span class="number">1</span>]))</span><br><span class="line"><span class="comment"># show sample data</span></span><br><span class="line">head(measles_num_raw)</span><br><span class="line"></span><br><span class="line">               <span class="number">1888</span> <span class="number">1889</span> <span class="number">1890</span> <span class="number">1891</span> <span class="number">1892</span> <span class="number">1893</span> <span class="number">1894</span> <span class="number">1895</span> <span class="number">1896</span> <span class="number">1897</span> <span class="number">1898</span> <span class="number">1899</span> <span class="number">1900</span></span><br><span class="line">ALABAMA           <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">2</span></span><br><span class="line">ALASKA            <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA           <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARKANSAS          <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">CALIFORNIA        <span class="number">0</span>    <span class="number">3</span>    <span class="number">7</span>    <span class="number">6</span>   <span class="number">14</span>    <span class="number">1</span>    <span class="number">6</span>    <span class="number">2</span>    <span class="number">1</span>    <span class="number">5</span>    <span class="number">1</span>    <span class="number">3</span>    <span class="number">6</span></span><br><span class="line">               <span class="number">1901</span> <span class="number">1902</span> <span class="number">1903</span> <span class="number">1904</span> <span class="number">1905</span> <span class="number">1906</span> <span class="number">1907</span> <span class="number">1908</span> <span class="number">1909</span> <span class="number">1910</span> <span class="number">1911</span> <span class="number">1912</span> <span class="number">1913</span></span><br><span class="line">ALABAMA           <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">2</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">2</span>    <span class="number">4</span>    <span class="number">1</span>   <span class="number">24</span>   <span class="number">28</span>   <span class="number">19</span>    <span class="number">6</span></span><br><span class="line">ALASKA            <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA           <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARKANSAS          <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">3</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">2</span>    <span class="number">0</span>    <span class="number">1</span>    <span class="number">4</span></span><br><span class="line">CALIFORNIA       <span class="number">20</span>   <span class="number">16</span>   <span class="number">21</span>   <span class="number">11</span>    <span class="number">2</span>   <span class="number">24</span>  <span class="number">105</span>  <span class="number">139</span>  <span class="number">178</span>  <span class="number">144</span>  <span class="number">169</span>  <span class="number">175</span>  <span class="number">166</span></span><br><span class="line">               <span class="number">1914</span> <span class="number">1915</span> <span class="number">1916</span> <span class="number">1917</span> <span class="number">1918</span> <span class="number">1919</span> <span class="number">1920</span> <span class="number">1921</span> <span class="number">1922</span> <span class="number">1923</span> <span class="number">1924</span> <span class="number">1925</span> <span class="number">1926</span></span><br><span class="line">ALABAMA           <span class="number">3</span>    <span class="number">2</span>   <span class="number">35</span>  <span class="number">124</span>  <span class="number">137</span>   <span class="number">92</span>   <span class="number">61</span>   <span class="number">77</span>   <span class="number">40</span>  <span class="number">165</span>  <span class="number">153</span>  <span class="number">154</span>  <span class="number">155</span></span><br><span class="line">ALASKA            <span class="number">1</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA           <span class="number">2</span>    <span class="number">6</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">2</span>    <span class="number">2</span>    <span class="number">5</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">6</span>   <span class="number">46</span>   <span class="number">49</span></span><br><span class="line">ARKANSAS         <span class="number">30</span>   <span class="number">21</span>   <span class="number">18</span>   <span class="number">31</span>   <span class="number">62</span>   <span class="number">21</span>   <span class="number">70</span>   <span class="number">84</span>   <span class="number">19</span>   <span class="number">87</span>  <span class="number">101</span>  <span class="number">104</span>  <span class="number">102</span></span><br><span class="line">CALIFORNIA      <span class="number">281</span>  <span class="number">246</span>  <span class="number">203</span>  <span class="number">389</span>  <span class="number">452</span>  <span class="number">236</span>  <span class="number">407</span>  <span class="number">333</span>  <span class="number">222</span>  <span class="number">547</span>  <span class="number">146</span>  <span class="number">155</span>  <span class="number">156</span></span><br><span class="line">               <span class="number">1927</span> <span class="number">1928</span> <span class="number">1929</span> <span class="number">1930</span> <span class="number">1931</span> <span class="number">1932</span> <span class="number">1933</span> <span class="number">1934</span> <span class="number">1935</span> <span class="number">1936</span> <span class="number">1937</span> <span class="number">1938</span> <span class="number">1939</span></span><br><span class="line">ALABAMA         <span class="number">160</span>  <span class="number">204</span>  <span class="number">199</span>  <span class="number">207</span>  <span class="number">204</span>  <span class="number">196</span>  <span class="number">209</span>  <span class="number">208</span>  <span class="number">200</span>  <span class="number">193</span>  <span class="number">204</span>  <span class="number">202</span>  <span class="number">201</span></span><br><span class="line">ALASKA            <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA          <span class="number">16</span>   <span class="number">42</span>   <span class="number">36</span>   <span class="number">96</span>   <span class="number">89</span>   <span class="number">75</span>   <span class="number">56</span>   <span class="number">50</span>   <span class="number">42</span>   <span class="number">47</span>   <span class="number">40</span>   <span class="number">48</span>   <span class="number">47</span></span><br><span class="line">ARKANSAS        <span class="number">101</span>  <span class="number">150</span>  <span class="number">142</span>  <span class="number">137</span>  <span class="number">150</span>  <span class="number">136</span>  <span class="number">156</span>  <span class="number">125</span>  <span class="number">127</span>  <span class="number">111</span>  <span class="number">144</span>  <span class="number">145</span>  <span class="number">147</span></span><br><span class="line">CALIFORNIA      <span class="number">160</span>  <span class="number">204</span>  <span class="number">204</span>  <span class="number">201</span>  <span class="number">205</span>  <span class="number">201</span>  <span class="number">210</span>  <span class="number">207</span>  <span class="number">205</span>  <span class="number">206</span>  <span class="number">204</span>  <span class="number">201</span>  <span class="number">197</span></span><br><span class="line">               <span class="number">1940</span> <span class="number">1941</span> <span class="number">1942</span> <span class="number">1943</span> <span class="number">1944</span> <span class="number">1945</span> <span class="number">1946</span> <span class="number">1947</span> <span class="number">1948</span> <span class="number">1949</span> <span class="number">1950</span> <span class="number">1951</span> <span class="number">1952</span></span><br><span class="line">ALABAMA         <span class="number">204</span>  <span class="number">197</span>  <span class="number">152</span>  <span class="number">150</span>  <span class="number">154</span>  <span class="number">141</span>  <span class="number">101</span>  <span class="number">107</span>   <span class="number">62</span>   <span class="number">49</span>   <span class="number">49</span>   <span class="number">49</span>  <span class="number">145</span></span><br><span class="line">ALASKA            <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA          <span class="number">48</span>   <span class="number">81</span>   <span class="number">50</span>   <span class="number">47</span>   <span class="number">49</span>   <span class="number">47</span>   <span class="number">50</span>   <span class="number">49</span>   <span class="number">41</span>   <span class="number">51</span>   <span class="number">51</span>   <span class="number">50</span>  <span class="number">137</span></span><br><span class="line">ARKANSAS        <span class="number">147</span>  <span class="number">143</span>   <span class="number">97</span>   <span class="number">98</span>  <span class="number">100</span>   <span class="number">95</span>   <span class="number">85</span>   <span class="number">69</span>   <span class="number">64</span>   <span class="number">52</span>   <span class="number">52</span>   <span class="number">47</span>   <span class="number">66</span></span><br><span class="line">CALIFORNIA      <span class="number">203</span>  <span class="number">199</span>  <span class="number">202</span>  <span class="number">200</span>  <span class="number">206</span>  <span class="number">202</span>  <span class="number">176</span>  <span class="number">181</span>  <span class="number">116</span>   <span class="number">52</span>   <span class="number">52</span>   <span class="number">51</span>  <span class="number">264</span></span><br><span class="line">               <span class="number">1953</span> <span class="number">1954</span> <span class="number">1955</span> <span class="number">1956</span> <span class="number">1957</span> <span class="number">1958</span> <span class="number">1959</span> <span class="number">1960</span> <span class="number">1961</span> <span class="number">1962</span> <span class="number">1963</span> <span class="number">1964</span> <span class="number">1965</span></span><br><span class="line">ALABAMA         <span class="number">117</span>   <span class="number">51</span>   <span class="number">49</span>   <span class="number">53</span>   <span class="number">51</span>   <span class="number">48</span>   <span class="number">45</span>   <span class="number">48</span>   <span class="number">49</span>   <span class="number">49</span>   <span class="number">44</span>   <span class="number">50</span>   <span class="number">98</span></span><br><span class="line">ALASKA            <span class="number">0</span>   <span class="number">49</span>   <span class="number">45</span>   <span class="number">51</span>   <span class="number">47</span>   <span class="number">45</span>   <span class="number">48</span>   <span class="number">41</span>   <span class="number">46</span>   <span class="number">51</span>   <span class="number">46</span>   <span class="number">45</span>   <span class="number">95</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA         <span class="number">109</span>   <span class="number">52</span>   <span class="number">49</span>   <span class="number">51</span>   <span class="number">51</span>   <span class="number">48</span>   <span class="number">48</span>   <span class="number">46</span>   <span class="number">51</span>   <span class="number">52</span>   <span class="number">48</span>   <span class="number">50</span>  <span class="number">104</span></span><br><span class="line">ARKANSAS         <span class="number">66</span>   <span class="number">51</span>   <span class="number">48</span>   <span class="number">52</span>   <span class="number">42</span>   <span class="number">41</span>   <span class="number">39</span>   <span class="number">43</span>   <span class="number">39</span>   <span class="number">37</span>   <span class="number">35</span>   <span class="number">33</span>   <span class="number">84</span></span><br><span class="line">CALIFORNIA      <span class="number">276</span>   <span class="number">52</span>   <span class="number">49</span>   <span class="number">53</span>   <span class="number">51</span>   <span class="number">50</span>   <span class="number">48</span>   <span class="number">52</span>   <span class="number">52</span>   <span class="number">52</span>   <span class="number">47</span>   <span class="number">50</span>  <span class="number">104</span></span><br><span class="line">               <span class="number">1966</span> <span class="number">1967</span> <span class="number">1968</span> <span class="number">1969</span> <span class="number">1970</span> <span class="number">1971</span> <span class="number">1972</span> <span class="number">1973</span> <span class="number">1974</span> <span class="number">1975</span> <span class="number">1976</span> <span class="number">1977</span> <span class="number">1978</span></span><br><span class="line">ALABAMA          <span class="number">98</span>  <span class="number">143</span>   <span class="number">60</span>    <span class="number">7</span>   <span class="number">81</span>   <span class="number">95</span>  <span class="number">109</span>   <span class="number">46</span>   <span class="number">53</span>    <span class="number">3</span>    <span class="number">0</span>   <span class="number">51</span>  <span class="number">104</span></span><br><span class="line">ALASKA           <span class="number">91</span>  <span class="number">115</span>   <span class="number">53</span>   <span class="number">10</span>   <span class="number">62</span>   <span class="number">57</span>   <span class="number">79</span>    <span class="number">3</span>    <span class="number">1</span>    <span class="number">0</span>   <span class="number">24</span>   <span class="number">51</span>   <span class="number">73</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA         <span class="number">100</span>  <span class="number">155</span>   <span class="number">89</span>   <span class="number">48</span>   <span class="number">99</span>   <span class="number">98</span>  <span class="number">144</span>   <span class="number">52</span>   <span class="number">60</span>   <span class="number">25</span>   <span class="number">71</span>   <span class="number">87</span>  <span class="number">106</span></span><br><span class="line">ARKANSAS         <span class="number">79</span>  <span class="number">114</span>   <span class="number">49</span>    <span class="number">2</span>   <span class="number">59</span>   <span class="number">77</span>  <span class="number">107</span>   <span class="number">58</span>   <span class="number">13</span>    <span class="number">2</span>   <span class="number">15</span>   <span class="number">55</span>  <span class="number">105</span></span><br><span class="line">CALIFORNIA      <span class="number">102</span>  <span class="number">157</span>  <span class="number">102</span>   <span class="number">50</span>  <span class="number">102</span>  <span class="number">100</span>  <span class="number">149</span>   <span class="number">96</span>  <span class="number">100</span>   <span class="number">51</span>  <span class="number">103</span>   <span class="number">95</span>  <span class="number">151</span></span><br><span class="line">               <span class="number">1979</span> <span class="number">1980</span> <span class="number">1981</span> <span class="number">1982</span> <span class="number">1983</span> <span class="number">1984</span> <span class="number">1985</span> <span class="number">1986</span> <span class="number">1987</span> <span class="number">1988</span> <span class="number">1989</span> <span class="number">1990</span> <span class="number">1991</span></span><br><span class="line">ALABAMA          <span class="number">72</span>    <span class="number">7</span>   <span class="number">25</span>   <span class="number">12</span>   <span class="number">61</span>   <span class="number">13</span>   <span class="number">42</span>    <span class="number">2</span>   <span class="number">37</span>    <span class="number">8</span>  <span class="number">147</span>   <span class="number">42</span>    <span class="number">3</span></span><br><span class="line">ALASKA           <span class="number">47</span>    <span class="number">3</span>    <span class="number">0</span>   <span class="number">32</span>   <span class="number">26</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>   <span class="number">11</span>   <span class="number">15</span>   <span class="number">99</span>   <span class="number">59</span>   <span class="number">91</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>   <span class="number">29</span>    <span class="number">2</span>   <span class="number">13</span>    <span class="number">1</span>   <span class="number">28</span>    <span class="number">0</span>    <span class="number">1</span></span><br><span class="line">ARIZONA          <span class="number">72</span>   <span class="number">36</span>   <span class="number">47</span>   <span class="number">27</span>   <span class="number">30</span>   <span class="number">79</span>   <span class="number">92</span>   <span class="number">21</span>  <span class="number">101</span>    <span class="number">3</span>  <span class="number">178</span>   <span class="number">70</span>   <span class="number">33</span></span><br><span class="line">ARKANSAS         <span class="number">53</span>    <span class="number">6</span>   <span class="number">38</span>    <span class="number">0</span>   <span class="number">66</span>   <span class="number">19</span>   <span class="number">80</span>    <span class="number">5</span>    <span class="number">0</span>   <span class="number">27</span>  <span class="number">140</span>   <span class="number">62</span>    <span class="number">4</span></span><br><span class="line">CALIFORNIA       <span class="number">96</span>   <span class="number">45</span>   <span class="number">89</span>   <span class="number">93</span>  <span class="number">146</span>  <span class="number">255</span>  <span class="number">166</span>   <span class="number">56</span>  <span class="number">139</span>  <span class="number">152</span>  <span class="number">226</span>  <span class="number">142</span>  <span class="number">139</span></span><br><span class="line">               <span class="number">1992</span> <span class="number">1993</span> <span class="number">1994</span> <span class="number">1995</span> <span class="number">1996</span> <span class="number">1997</span> <span class="number">1998</span> <span class="number">1999</span> <span class="number">2000</span> <span class="number">2001</span></span><br><span class="line">ALABAMA           <span class="number">0</span>   <span class="number">31</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>   <span class="number">44</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">7</span></span><br><span class="line">ALASKA            <span class="number">0</span>   <span class="number">24</span>   <span class="number">28</span>   <span class="number">88</span>    <span class="number">3</span>    <span class="number">0</span>   <span class="number">49</span>    <span class="number">0</span>   <span class="number">65</span>    <span class="number">0</span></span><br><span class="line">AMERICAN SAMOA    <span class="number">0</span>   <span class="number">44</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">ARIZONA           <span class="number">0</span>   <span class="number">26</span>   <span class="number">52</span>  <span class="number">178</span>   <span class="number">74</span>    <span class="number">3</span>   <span class="number">31</span>   <span class="number">63</span>   <span class="number">29</span>    <span class="number">2</span></span><br><span class="line">ARKANSAS          <span class="number">0</span>    <span class="number">0</span>   <span class="number">33</span>   <span class="number">89</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>   <span class="number">23</span>   <span class="number">15</span>    <span class="number">0</span></span><br><span class="line">CALIFORNIA       <span class="number">24</span>   <span class="number">96</span>  <span class="number">110</span>  <span class="number">249</span>  <span class="number">141</span>    <span class="number">6</span>  <span class="number">113</span>  <span class="number">133</span>  <span class="number">234</span>   <span class="number">37</span></span><br></pre></td></tr></table></figure>
+<h2 id="Complex-Heatmap"><a href="#Complex-Heatmap" class="headerlink" title="Complex Heatmap"></a>Complex Heatmap</h2><p><code>ComplexHeatmap</code> package is developed by <em>Zuguang Gu</em>, it’s documentation (almost all of its information) can be found in its <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" target="_blank" rel="noopener">website</a>. </p>
+<p><img src="https://jokergoo.github.io/ComplexHeatmap-reference/book/complexheatmap-cover.jpg" alt="img" style="zoom: 25%;" /></p>
+<p>There is hardly any discussion outside. And the installation is a little bit different:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(devtools)</span><br><span class="line">install_github(<span class="string">"jokergoo/ComplexHeatmap"</span>)</span><br></pre></td></tr></table></figure>
+<p>Import the package like this:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(ComplexHeatmap)</span><br></pre></td></tr></table></figure>
+<h2 id="Raw-Heatmap"><a href="#Raw-Heatmap" class="headerlink" title="Raw Heatmap"></a>Raw Heatmap</h2><p>Using the default settings of <code>ComplexHeatmap</code>.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># default heatmap</span></span><br><span class="line">Heatmap(measles_num_raw)</span><br></pre></td></tr></table></figure>
+<p><img src="raw_heatmap.png" alt="raw_heatmap"></p>
+<p>Features of this heatmap:</p>
+<ul>
+<li>Colors: Used “blue-white-red” continuous color function to map to numeric values of patient count, each color block is the cases number of certain year in certain state; This is OK, since it can denote value changes of numeric value and overall speaking clear.</li>
+<li>Names: Columns are different years, year number are written as x-label, however blocks are small so that the labels are all overlapping and hard to read. But we can see that the years are not in the time order; Similar things happened to the rows, where state names are too large.</li>
+<li>Clustering: That is due to the clustering feature which we can on the top (this is why year order is rearranged to place “similar” columns together) as well as on the left, respectively for columns and rows. This feature will rearrange rows and columns so that similar rows or columns in clustering will be placed together. Sometimes we need this feature to have a better insight of the data and also to get better alignment of the figure as similar color blocks are stacked together (the top right red corner, other strip-like features). However, in other situations we want to keep the original order. For instance the year columns, original order of time would be better since it shows the change of case along with the change of time.</li>
+<li>Others: Fonts, Titles, gaps, annotations and other features to add to the heatmap.</li>
+</ul>
+<h2 id="Label-Adjustment"><a href="#Label-Adjustment" class="headerlink" title="Label Adjustment"></a>Label Adjustment</h2><p>Starting from the easiest part, our objective is to deal with the overlapping year label. The first attempt is to remove the x-labels.</p>
+<h3 id="Remove-Names"><a href="#Remove-Names" class="headerlink" title="Remove Names"></a>Remove Names</h3><p>Use <code>show_column_names = FALSE</code> to remove x-labels, similarly, another parameter is <code>show_row_names</code>.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># colname removed heatmap</span></span><br><span class="line">Heatmap(measles_num_raw, show_column_names = <span class="literal">FALSE</span>, show_row_names = <span class="literal">FALSE</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="label_removed_heatmap.png" alt="label_removed_heatmap"></p>
+<p>However, we do want to see the year information, just not every year. Maybe once a decade.</p>
+<h3 id="Modify-Column-Names"><a href="#Modify-Column-Names" class="headerlink" title="Modify  Column Names"></a>Modify  Column Names</h3><p>To modify column names so that we only see one year per decade, 9 other names should be set to empty string <code>&#39;&#39;</code>. This modification can be done on the original matrix.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># colname modified heatmap</span></span><br><span class="line">cnames &lt;- colnames(measles_num_raw)</span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> seq(length(cnames)))&#123;</span><br><span class="line">  <span class="keyword">if</span> (i%%<span class="number">10</span>!=<span class="number">1</span>)&#123;</span><br><span class="line">    cnames[i]=<span class="string">''</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">cnames</span><br><span class="line">colnames(measles_num_raw) &lt;- cnames</span><br></pre></td></tr></table></figure>
+<h2 id="Clustering-Adjustment"><a href="#Clustering-Adjustment" class="headerlink" title="Clustering Adjustment"></a>Clustering Adjustment</h2><h3 id="Remove-Clustering"><a href="#Remove-Clustering" class="headerlink" title="Remove Clustering"></a>Remove Clustering</h3><p>Column clustering should be removed since we want to show year chronologically instead of grouping them based on similarity. The syntax for this is just adding parameter <code>cluster_columns = FALSE</code> or for rows <code>cluster_rows = FALSE</code>. </p>
+<h3 id="Hide-Dendrogram"><a href="#Hide-Dendrogram" class="headerlink" title="Hide Dendrogram"></a>Hide Dendrogram</h3><p>Maybe we want to cluster the states so that the figure looks more organized, but we don’t need to show the dendrogram. Hiding dendrogram is controlled by the parameter: <code>show_row_dend</code> and <code>show_column_dend</code>.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Heatmap(measles_num_raw, cluster_columns = <span class="literal">FALSE</span>, show_row_dend = <span class="literal">FALSE</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="matrix_3.png" alt="matrix_3"></p>
+<h2 id="Color-Adjustment"><a href="#Color-Adjustment" class="headerlink" title="Color Adjustment"></a>Color Adjustment</h2><h2 id="Titles"><a href="#Titles" class="headerlink" title="Titles"></a>Titles</h2><h2 id="Annotations"><a href="#Annotations" class="headerlink" title="Annotations"></a>Annotations</h2><h2 id="Legend"><a href="#Legend" class="headerlink" title="Legend"></a>Legend</h2><h2 id="Other-Features"><a href="#Other-Features" class="headerlink" title="Other Features"></a>Other Features</h2><h3 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h3><h3 id="Fonts"><a href="#Fonts" class="headerlink" title="Fonts"></a>Fonts</h3><h3 id="Export"><a href="#Export" class="headerlink" title="Export"></a>Export</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/package/" rel="tag"># package</a>
+          
+            <a href="/tags/R/" rel="tag"># R</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/11/pyradiomics/" rel="next" title="Pyradiomics Simple Usage">
+                <i class="fa fa-chevron-left"></i> Pyradiomics Simple Usage
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/29/projects/" rel="prev" title="Projects Archive">
+                Projects Archive <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Data"><span class="nav-number">1.</span> <span class="nav-text">Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Complex-Heatmap"><span class="nav-number">2.</span> <span class="nav-text">Complex Heatmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raw-Heatmap"><span class="nav-number">3.</span> <span class="nav-text">Raw Heatmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Label-Adjustment"><span class="nav-number">4.</span> <span class="nav-text">Label Adjustment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Remove-Names"><span class="nav-number">4.1.</span> <span class="nav-text">Remove Names</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modify-Column-Names"><span class="nav-number">4.2.</span> <span class="nav-text">Modify  Column Names</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clustering-Adjustment"><span class="nav-number">5.</span> <span class="nav-text">Clustering Adjustment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Remove-Clustering"><span class="nav-number">5.1.</span> <span class="nav-text">Remove Clustering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hide-Dendrogram"><span class="nav-number">5.2.</span> <span class="nav-text">Hide Dendrogram</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Color-Adjustment"><span class="nav-number">6.</span> <span class="nav-text">Color Adjustment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Titles"><span class="nav-number">7.</span> <span class="nav-text">Titles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Annotations"><span class="nav-number">8.</span> <span class="nav-text">Annotations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Legend"><span class="nav-number">9.</span> <span class="nav-text">Legend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-Features"><span class="nav-number">10.</span> <span class="nav-text">Other Features</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Grid"><span class="nav-number">10.1.</span> <span class="nav-text">Grid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fonts"><span class="nav-number">10.2.</span> <span class="nav-text">Fonts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Export"><span class="nav-number">10.3.</span> <span class="nav-text">Export</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Complex Heatmap, flexible package for heatmap based on R'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Complex Heatmap, flexible package for heatmap based on R'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
