@@ -106,7 +106,7 @@
 
 
 
-  <meta name="keywords" content="machine learning,algorithm,loss function,logistic regression,Newton's method," />
+  <meta name="keywords" content="machine learning,algorithm,stats," />
 
 
 
@@ -117,26 +117,24 @@
 
 
 
-<meta name="description" content="Insight of logistic regression and Newton&#39;s method">
+<meta name="description" content="A summary following the development of tree-based methods, good for understanding the reasoning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Logistic Regression Updated with Newton&#39;s Method">
-<meta property="og:url" content="http://yoursite.com/2020/04/20/logsiticRegression/index.html">
+<meta property="og:title" content="Notes About the Logics Behind the Development of Tree-Based Models">
+<meta property="og:url" content="http://yoursite.com/2020/12/08/tree-based/index.html">
 <meta property="og:site_name" content="TERRY&#39;S BLOG">
-<meta property="og:description" content="Insight of logistic regression and Newton&#39;s method">
+<meta property="og:description" content="A summary following the development of tree-based methods, good for understanding the reasoning">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/8/88/Logistic-curve.svg">
-<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/e/e0/NewtonIteration_Ani.gif">
-<meta property="og:image" content="https://openstax.org/resources/03a495b2b2b3d4dfa2b027fccdae44d1aba527a1">
-<meta property="article:published_time" content="2020-04-20T16:44:06.000Z">
-<meta property="article:modified_time" content="2020-04-21T05:40:34.715Z">
+<meta property="og:image" content="https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f0499405-1197-4b43-b7c5-40548eeb9f34/Image/33d5d0072b0cc373ff21c4b4a43042ce/decision_tree_example.png">
+<meta property="og:image" content="https://miro.medium.com/max/537/1*KGUUGBvtT-bwFvt0jIe_Ug.png">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Ensemble_Bagging.svg/512px-Ensemble_Bagging.svg.png">
+<meta property="article:published_time" content="2020-12-08T19:29:22.000Z">
+<meta property="article:modified_time" content="2020-12-12T20:23:33.558Z">
 <meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
 <meta property="article:tag" content="machine learning">
 <meta property="article:tag" content="algorithm">
-<meta property="article:tag" content="loss function">
-<meta property="article:tag" content="logistic regression">
-<meta property="article:tag" content="Newton&#39;s method">
+<meta property="article:tag" content="stats">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/8/88/Logistic-curve.svg">
+<meta name="twitter:image" content="https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f0499405-1197-4b43-b7c5-40548eeb9f34/Image/33d5d0072b0cc373ff21c4b4a43042ce/decision_tree_example.png">
 
 
 
@@ -166,13 +164,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/20/logsiticRegression/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/12/08/tree-based/"/>
 
 
 
 
 
-  <title>Logistic Regression Updated with Newton's Method | TERRY'S BLOG</title>
+  <title>Notes About the Logics Behind the Development of Tree-Based Models | TERRY'S BLOG</title>
   
 
 
@@ -309,7 +307,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/20/logsiticRegression/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/08/tree-based/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yiheng 'Terry' Li">
@@ -326,7 +324,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Logistic Regression Updated with Newton's Method</h1>
+          <h1 class="post-title" itemprop="name headline">Notes About the Logics Behind the Development of Tree-Based Models</h1>
         
 
         <div class="post-meta">
@@ -338,8 +336,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-20T09:44:06-07:00">
-                2020-04-20
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-08T11:29:22-08:00">
+                2020-12-08
               </time>
             
 
@@ -379,8 +377,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/04/20/logsiticRegression/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/20/logsiticRegression/" itemprop="commentCount"></span>
+                <a href="/2020/12/08/tree-based/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/12/08/tree-based/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -395,7 +393,7 @@
 
           
               <div class="post-description">
-                  Insight of logistic regression and Newton's method
+                  A summary following the development of tree-based methods, good for understanding the reasoning
               </div>
           
 
@@ -412,78 +410,58 @@
       
 
       
-        <p>Logistic regression is a very important binary classification algorithm, in this article, some essential details inside the algorithm will be discussed. Plain language will be used to discuss the most detail aspects so that beginners of machine learning can easily get the idea.</p>
-<h2 id="Assumptions-of-Logistic-Regression"><a href="#Assumptions-of-Logistic-Regression" class="headerlink" title="Assumptions of Logistic Regression"></a>Assumptions of Logistic Regression</h2><p>Logistic regression does not require as many assumptions as linear regression. There are a few that are interested and we will shortly discussed about.</p>
-<ol>
-<li>The error terms are independent to each other.<ul>
-<li>In the experiment design, each sample should be “equivalent” to each other, no paired/match samples or before/after experiment samples.</li>
+        <p>Tree-based methods contains a lot of tricks that are easily tested in data/machine learning related interviews, but very often mixed up. Go through these tricks while knowing the reasons behind could be very helpful in understanding + memorization.</p>
+<h2 id="Overview-of-Tree-based-Methods"><a href="#Overview-of-Tree-based-Methods" class="headerlink" title="Overview of Tree-based Methods"></a>Overview of Tree-based Methods</h2><p>Overall speaking, simple decision/regression trees are for better interpretation (as they can be visualized), with some loss of performance (when compared to regression with regularization and non-linear regression methods, e.g. splines and generalized additive models). But with ideas including bagging, boosting and decorrelating, tree methods can be comparable with any other models in a lot of questions, but this, of course, reduce its interpretability.</p>
+<p>The idea of tree-based models is very simple — using different criteria to split training samples, so that in each bundle of separation, the samples are as “pure” as possible. This idea mimics the decision charts where we make two or more decisions for each question, and it finally leads to an outcome.</p>
+<p>Below are 2 examples for decision tree in machine learning and decision tree in daily life respectively. The first figure is a case of binary classification, from the node to the leaves, the nodes are less and less “balance” (more “pure”). For the nodes in the final layer, Node 14, 13 and 22 contain just 1 class, which is considered good since the classification is perfect (on training set, this will be discussed later).</p>
+<p><img src="https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f0499405-1197-4b43-b7c5-40548eeb9f34/Image/33d5d0072b0cc373ff21c4b4a43042ce/decision_tree_example.png" alt="Decision Trees in Machine Learning, Simplified | Oracle Big Data Blog"></p>
+<p><img src="https://miro.medium.com/max/537/1*KGUUGBvtT-bwFvt0jIe_Ug.png" alt="Decision Tree Regression. A Decision Tree is a predictive model… | by Chaya  Bakshi | Level Up Coding"></p>
+<h2 id="Growth-of-a-Simple-Tree"><a href="#Growth-of-a-Simple-Tree" class="headerlink" title="Growth of a Simple Tree"></a>Growth of a Simple Tree</h2><p>The growing algorithm is trying to achieve one thing: given a node with multiple samples inside, split them so that the resulting two nodes becomes as “pure” as possible. Here, “pure” means that for classification problem, the classes are less diverse; for regression problem, the dependent variable values in a single node should be as closed to each other as possible. For these two cases, there are respectively math representations to denote how “pure” the data is. Here are two examples:</p>
+<ul>
+<li><p><a href="https://en.wikipedia.org/wiki/Decision_tree_learning#Gini_impurity" target="_blank" rel="noopener">Gini Index</a> (classification problem):</p>
+<script type="math/tex; mode=display">G = \sum_{c=1}^{C}\pi_c(1 - \pi_c)</script><p>$\pi_c$ is the fraction of samples in the node that belongs to class $c$, and $C$ is all of the classes. Materials and references of Gini index is very abundant, so here I just want to make several side notes. </p>
+<ul>
+<li><p>Gini index (or Gini impurity) is different from <a href="https://en.wikipedia.org/wiki/Gini_coefficient" target="_blank" rel="noopener">Gini coefficient</a> in economics (which can also be called as Gini index, or Gini ratio)</p>
+</li>
+<li><p>Gini index in decision tree is similar (when taking $\log$) to a loss function in multi-class classification, cross-entropy loss:</p>
+<script type="math/tex; mode=display">L(\theta) = -\frac{1}{n}\sum_{i=1}^{n}\sum_{c=1}^{C}y_{ic}\log(p_{ic})</script></li>
 </ul>
 </li>
-<li>There is no high correlations between the features (multicollinearity).<ul>
-<li>The model might not converge in this case by MLE estimate</li>
-</ul>
+<li><p><a href="https://en.wikipedia.org/wiki/Residual_sum_of_squares" target="_blank" rel="noopener">Residual Sum of Squares</a> (RSS):</p>
+<script type="math/tex; mode=display">RSS = \sum_{i\in R_m}(y_i - \hat y_{R_m})^2</script><p>where $R<em>m$ a partition of tree (a node). And the prediction of a node $\hat y</em>{R_m}$ is determined by the average of values from all samples in the node.</p>
 </li>
-<li>The log odds has linear relationship with the independent variables.<ul>
-<li>While we underlyingly assuming this, it would not hold true in most cases. There is no extra step to test this assumption. And if it fails, logistic regression just won’t work. So in practice, we try logistic regression to “test” this assumption.</li>
 </ul>
-</li>
-<li>The dependent variable follows a Bernoulli distribution.<ul>
-<li>By this we assume that $Y \sim \text{Bernoulli}(\phi)$, and automatically independent to each other.</li>
+<h2 id="1-Tree-Pruning"><a href="#1-Tree-Pruning" class="headerlink" title="1. Tree Pruning"></a>1. Tree Pruning</h2><p>Imaginably, if using the method described above for each node in the tree without limitation, finally one can easily get a perfect classification/regression tree (i.e. each node is “100% pure”). Even for the most difficult tasks, the tree can keep growing until there is only one data in each node, which is also a pure node. </p>
+<p>But the problem for this is also obvious, the tree is too specific about the data, meaning that it’s over-fitting. </p>
+<p>And to deal with this, some regularizations can be applied. And that includes specifying where the tree should stop growing. For example, it could be specifying:</p>
+<ul>
+<li>The maximum depth of the tree;</li>
+<li>The minimum number of samples in a node: e.g. stop splitting when there are only 10 samples in a node;</li>
+<li>etc… (can refer to <a href="https://scikit-learn.org/stable/modules/classes.html#module-sklearn.tree" target="_blank" rel="noopener"><code>sklearn.tree</code></a>.<a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html" target="_blank" rel="noopener">DecisionTreeClassifier</a>)</li>
 </ul>
+<p>Another thinking can be to add regularization weight after Gini/RSS loss in the growing algorithm. For example:</p>
+<ul>
+<li><p><em>Cost complexity pruning</em>, also known as <em>weakest link pruning</em></p>
+<script type="math/tex; mode=display">\sum_{m=1}^{\mid T \mid}\sum_{}^{}(y_i - \hat y_{R_m})^2 + \alpha \mid T \mid</script><p>where $\alpha$ is a regularization hyperparameter and $\mid T \mid$ is the number of nodes in the tree. So this methods uses number of nodes to regularize the tree growing process.</p>
 </li>
+</ul>
+<h2 id="Characteristics-of-Simple-Decision-Classification-Trees"><a href="#Characteristics-of-Simple-Decision-Classification-Trees" class="headerlink" title="Characteristics of Simple Decision/Classification Trees"></a>Characteristics of Simple Decision/Classification Trees</h2><ol>
+<li>Very intuitive results and good interpretability with nice visualization.</li>
+<li>Intrinsic feature importance results. Presumably, if a feature is used closed to the root and divided a large amount of data, then the model considers the feature to be more important.</li>
+<li>There is a bias/variance trade-off. As described above, the more complex the tree is, the more flexible and better the tree would be in training set, but higher the risk of over-fitting.</li>
+<li>In most cases, simple tree performs worse than most other methods.</li>
 </ol>
-<h2 id="Insight-of-Logistic-Regression"><a href="#Insight-of-Logistic-Regression" class="headerlink" title="Insight of Logistic Regression"></a>Insight of Logistic Regression</h2><h4 id="Constructing-the-Model"><a href="#Constructing-the-Model" class="headerlink" title="Constructing the Model"></a>Constructing the Model</h4><p>In practice, assuming we have our features $X \in \mathbb{R}^{n \times d}$, and we want to predict a binary response $Y<em>i \in {0,1}$ for each sample of features. What we do is creating model that outputs $p(y=1) = \phi = h</em>\theta(x)$. According to the assumption, the <strong>log odds</strong> </p>
-<script type="math/tex; mode=display">
-\text{logit}(\phi) = \log(\frac{\phi}{1-\phi})</script><p>has a linear relationship with the features. We use a vector $\theta \in \mathbb{R}^{d}$ to denote this linear relationship:</p>
-<script type="math/tex; mode=display">
-\log(\frac{\phi}{1-\phi}) = \theta^Tx</script><p>So, we get the model’s predictions will be:</p>
-<script type="math/tex; mode=display">
-h_\theta(x)= g(\theta^Tx) = \frac{1}{1+e^{-\theta^Tx}}</script><p>where $g(z)$ is called <strong><a href="https://en.wikipedia.org/wiki/Sigmoid_function" target="_blank" rel="noopener">sigmoid function</a></strong>, which is an important function in machine learning.</p>
-<script type="math/tex; mode=display">
-g(z) = \frac{1}{1+e^{z}}</script><p><img src="https://upload.wikimedia.org/wikipedia/commons/8/88/Logistic-curve.svg" alt="sigmoid" title="Shape of Sigmoid Function"></p>
-<p>The model’s goal is trying to learn the parameters $\theta$.</p>
-<h2 id="Loss-function"><a href="#Loss-function" class="headerlink" title="Loss function"></a>Loss function</h2><h4 id="Define-Loss"><a href="#Define-Loss" class="headerlink" title="Define Loss"></a>Define Loss</h4><p>To find the “best” $\theta$, we should first define what is “better”. The <strong>loss function</strong> of a model denotes how well the model fits the data (the better the model, the fewer the loss). Thus the process of finding the best $\theta$ is concretized to minimizing the loss function of a model. we define the loss function of logistic regression as follows:</p>
-<script type="math/tex; mode=display">
-L(y, \hat y) = -(y^{(i)}\log(\hat y^{(i)}) + (1-y^{(i)})\log(1-\hat y^{(i)}))</script><p>This function is binary form of <a href="https://en.wikipedia.org/wiki/Cross_entropy" target="_blank" rel="noopener"><strong>cross entropy loss</strong></a>, which is widely used in classification models.</p>
-<h4 id="Intuition-of-Loss-function"><a href="#Intuition-of-Loss-function" class="headerlink" title="Intuition of Loss function"></a>Intuition of Loss function</h4><p>Here provides an intuition of why this loss function is chosen. As we mentioned in assumptions we made, $y \sim \text{Bernoulli}(\phi)$. So the pdf of $y$ can be written as</p>
-<script type="math/tex; mode=display">
-p(y|x) = \Phi^{y}(1 - \Phi)^{(1-y)}</script><p>In our model, $\phi$ is estimated by $h_\theta(x)$. To make this probability model to resemble $y$ the most, it is a natural thing to maximize it’s likelihood. The following two step resembles the process of calculating MLE of $\phi$. We have the likelihood is:</p>
-<script type="math/tex; mode=display">
-L(y^{(i)}|x^{(i)};\theta) = h_\theta(x)^{y}(1-h_\theta(x))^{(1-y)}</script><p>The log-likelihood is:</p>
-<script type="math/tex; mode=display">
-l(y^{(i)}|x^{(i)};\theta) = y^{(i)}\log(h_\theta(x)) + (1 - y^{(i)})\log(1-h_\theta(x))</script><p>Noticing that log-likelihood is negative of loss function of the model. <u>Minimizing the loss function is equivalent to maximizing the likelihood of the parameter in Bernoulli distribution of $y$.</u> </p>
-<h2 id="Fit-the-Model"><a href="#Fit-the-Model" class="headerlink" title="Fit the Model"></a>Fit the Model</h2><p>With the assumptions about the distribution of $y$ and the relationship between the response and the features, we constructed the model and defined the parameters that requires optimizing. We defined that the better the parameters, the larger the likelihood of $y$ comes from the distribution that we assumed. Now, in order to optimize $\theta$, instead of trying out every single combination of possible values of $\theta$, we need a parameter searching technique. </p>
-<h4 id="Newton’s-Method"><a href="#Newton’s-Method" class="headerlink" title="Newton’s Method"></a>Newton’s Method</h4><p>Apart from gradient descent, we have a another technique that sometimes (this “sometimes” includes logistic regression) run much faster, called Newton’s method. Which is a method used for recursively looking for root of a function. Here is the idea of Newton’s method:</p>
-<ol>
-<li>Start with an initial guess which is reasonably close to the true root $x_0$;</li>
-<li>Then to approximate the function using the first derivative of this point $f’(x_0)$, and draw a tangent line;</li>
-<li>And finally to compute the x-intercept of this tangent line. This x-intercept will typically be a better approximation to the original function’s root than the first guess;</li>
-<li>Iterated.</li>
-</ol>
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/NewtonIteration_Ani.gif" alt="newton’s method gif" title="GIF Illustration of Newton's Method" style="zoom:80%;" /></p>
-<p><img src="https://openstax.org/resources/03a495b2b2b3d4dfa2b027fccdae44d1aba527a1" alt="newtons method png" title="Newton's Method: How to Get Next Guesses of Root of a Function" style="zoom: 80%;" /></p>
-<p>The update rule for Newton’s method is as follows (not hard to get):</p>
-<script type="math/tex; mode=display">
-x_{n+1} = x_{n} - \frac{f(x_n)}{f'(x_n)}</script><p>For our problem, we want to maximize the likelihood function, if this function is convex (in fact it is), then our mission is equivalent to <strong>find the root of the first derivative of log-likelihood</strong>. Using Newton’s method to do this, our update rule is:</p>
-<script type="math/tex; mode=display">
-\theta := \theta - \frac{l'(\theta)}{l''(\theta)}</script><p>where, as $\theta$ is a vector instead of a real value in most practical cases. Using the linear algebra form of first derivatives looks like this:</p>
-<script type="math/tex; mode=display">
-\nabla_\theta l = 
-\begin{bmatrix}
-    \frac{\partial}{\partial\theta_1}l(\theta) \\\\
-    \frac{\partial}{\partial\theta_2}l(\theta) \\\\
-    \vdots \\\\
-    \frac{\partial}{\partial\theta_d}l(\theta) \\\\
-\end{bmatrix}</script><p>And second derivative is called Hessian matrix $\textbf{H} = \nabla^2 l(\theta) \in \mathbb{R}^{d \times d}$.</p>
-<script type="math/tex; mode=display">
-\textbf{H}_{ij} = \frac{\partial^2l(\theta)}{\partial\theta_i\partial\theta_j}</script><h4 id="Trade-off-between-Newton’s-Method-and-Gradient-Descent"><a href="#Trade-off-between-Newton’s-Method-and-Gradient-Descent" class="headerlink" title="Trade-off between Newton’s Method and Gradient Descent"></a>Trade-off between Newton’s Method and Gradient Descent</h4><p>Though Newton’s method typically takes much shorter iterations of update to converge compared to gradient descent. It requires the calculation of first and the secondary derivative of the loss function, while gradient descent only requires the first derivative. So in each iteration, the calculation cost for Newton’s method is higher, especially when we cannot trace back the function and explicitly calculate the second derivative. Thus though we can implement Newton’s method here and achieve a faster convergence. This case might not be true for most of other algorithms, typically the more complicated ones. That is why gradient descent is still the most handy option for many other machine learning applications.</p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
-<li><a href="https://en.wikipedia.org/wiki/Newton%27s_method" target="_blank" rel="noopener">WIKIPEDIA</a></li>
-<li><p><a href="https://openstax.org/books/calculus-volume-1/pages/4-9-newtons-method" target="_blank" rel="noopener">OPENSTAX</a></p>
-</li>
-<li><p><a href="http://cs229.stanford.edu/notes/cs229-notes1.pdf" target="_blank" rel="noopener">STANFORD CS229</a></p>
-</li>
-</ol>
+<h2 id="Other-Tricks"><a href="#Other-Tricks" class="headerlink" title="Other Tricks"></a>Other Tricks</h2><p>So it comes to another topic: how to improve the performance of tree.</p>
+<h3 id="2-Bootstrapping-aggregating-Bagging"><a href="#2-Bootstrapping-aggregating-Bagging" class="headerlink" title="2. Bootstrapping aggregating (Bagging)"></a>2. Bootstrapping aggregating (Bagging)</h3><p>In most cases, tree’s can do well in training set but suffers in validation process. That is due to sometimes, a tree would accidentally  think that one feature is important while that is actually an artifact in training set. To summarize, <strong>simple tree is too sensitive to data thus has high variance</strong>. For published models, it’s typical that an editor would ask the researches to include a sensitivity test for the models to ensure that the model is generalizable. This test is usually done based on the idea of <strong>bootstrapping</strong>.</p>
+<p>So similarly here, if we want to make the tree to be more stable and less sensitive to data, we can consider the idea of bootstrapping, and that is adapted as bagging, which is also called <em>bootstrapping aggregating.</em> </p>
+<p> The idea is pretty simple: bootstrap the training data, and build an independent tree based on each bootstrapped data. When predicting, use majority vote (classification) or average of predictions from all the trees built.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Ensemble_Bagging.svg/512px-Ensemble_Bagging.svg.png" alt="img"></p>
+<p><strong>Out-of-Bag Error Estimation</strong> or <strong>OOB</strong> comes with the idea that for each tree, there are some samples are not included in bootstrapped samples (out of bag) thus can be used to evaluate the performance. The out-of-bag samples would averagely  be $\frac{1}{3}$ of all data.</p>
+<h3 id="3-Limiting-the-number-of-predictors-Random-Forest"><a href="#3-Limiting-the-number-of-predictors-Random-Forest" class="headerlink" title="3. Limiting the number of predictors (Random Forest)"></a>3. Limiting the number of predictors (Random Forest)</h3><p>The idea of <a href="https://en.wikipedia.org/wiki/Random_forest" target="_blank" rel="noopener">Random Forest</a> (RF) is adding one more thing upon bagging: limiting the number of predictors. In doing so, random forest <strong>decorrelates</strong> the trees more. Typically, a tree is allow to randomly select $m$ features out of total $P$ features, where $m = \sqrt{P}$ or $m = \log_2{P}$ (refer to <a href="https://scikit-learn.org/stable/modules/classes.html#module-sklearn.ensemble" target="_blank" rel="noopener"><code>sklearn.ensemble</code></a>).</p>
+<h3 id="4-Boosting"><a href="#4-Boosting" class="headerlink" title="4. Boosting"></a>4. Boosting</h3><p>Boosting is another idea that share some common points with bagging but there are also differences. Similarly, boosting also seek to build multiple trees and use all of them to make predictions, and boosting is also very general idea that can be applied not only on tree methods but also some other ML methods as well.</p>
+<p>Boosting is based on the idea of “<strong>fitting the residual</strong>“. It grows trees <strong>sequentially</strong>, and each tree is fitting the residual of current predictions and true values, in stead of fitting the response directly. To ensure generalizability, the model deliberately to let itself converge “slowly”, this is controlled by adding a parameter: shrinkage parameter $\lambda$. Typically selected between 0.01 and 0.001. Consider the <em>bth</em> tree to be a mapping of $\hat f^b$, and the total number of trees is $B$.  Then, with the shrinkage parameter $lambda$, the prediction made by this boosting model can be expressed as:</p>
+<script type="math/tex; mode=display">\begin{align}\hat f(x) = \sum_{b = 1}^{B} \lambda \hat f^b(x)\end{align}</script><h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://d1wqtxts1xzle7.cloudfront.net/60707896/An_Introduction_to_Statistical_Learning_with_Applications_in_R-Springer_201320190925-63943-2cqzhk.pdf?1569478040=&amp;response-content-disposition=inline%3B+filename%3DAn_Introduction_to_Statistical_Learning.pdf&amp;Expires=1607808139&amp;Signature=I3lkkys7NukxsGfaLZFlRnUw9eHCtNeN0F28hjlePCFUNHD45Rt4EQygHL5us90QlUua9TYfBBvG2Ozn5oViSo2rdHZad2EAyuL5AcDpUr2pn7kbeqKtPRr99di0GZk4KOn~gIUR8dmiDtGKW~wiRDjAikgH9Nr8pIt3Q4CJozmiYkQBa0OlMFCyVEHwBubzWPERTqyhxupWDEo-Nbc2oYic~dI1t6SgF8-TTrG0BTl3gLZD3HDxxmm7macTshvesO7Kqh7NDXYChcGe880-lSGQIVIXFV-M-0JFfs2F5A6jK5m-EEixP6NT2WJ2ryM0AvknEJjr9ZeTyhjDGiFG9Q__&amp;Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA" target="_blank" rel="noopener">An Introduction to Statistical Learning</a></p>
+<p><a href="https://scikit-learn.org/stable/" target="_blank" rel="noopener">scikit-learn</a></p>
 
       
     </div>
@@ -505,11 +483,7 @@ x_{n+1} = x_{n} - \frac{f(x_n)}{f'(x_n)}</script><p>For our problem, we want to 
           
             <a href="/tags/algorithm/" rel="tag"># algorithm</a>
           
-            <a href="/tags/loss-function/" rel="tag"># loss function</a>
-          
-            <a href="/tags/logistic-regression/" rel="tag"># logistic regression</a>
-          
-            <a href="/tags/Newton-s-method/" rel="tag"># Newton's method</a>
+            <a href="/tags/stats/" rel="tag"># stats</a>
           
         </div>
       
@@ -522,8 +496,8 @@ x_{n+1} = x_{n} - \frac{f(x_n)}{f'(x_n)}</script><p>For our problem, we want to 
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/15/pickle/" rel="next" title="Store Almost Any Objects of Python in Files">
-                <i class="fa fa-chevron-left"></i> Store Almost Any Objects of Python in Files
+              <a href="/2020/11/29/projects/" rel="next" title="Projects Archive">
+                <i class="fa fa-chevron-left"></i> Projects Archive
               </a>
             
           </div>
@@ -531,10 +505,6 @@ x_{n+1} = x_{n} - \frac{f(x_n)}{f'(x_n)}</script><p>For our problem, we want to 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/04/24/generative-models/" rel="prev" title="Generative Models -- Gaussian Discriminant Analysis">
-                Generative Models -- Gaussian Discriminant Analysis <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -695,7 +665,7 @@ x_{n+1} = x_{n} - \frac{f(x_n)}{f'(x_n)}</script><p>For our problem, we want to 
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Assumptions-of-Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Assumptions of Logistic Regression</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Insight-of-Logistic-Regression"><span class="nav-number">2.</span> <span class="nav-text">Insight of Logistic Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Constructing-the-Model"><span class="nav-number">2.0.1.</span> <span class="nav-text">Constructing the Model</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Loss-function"><span class="nav-number">3.</span> <span class="nav-text">Loss function</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Define-Loss"><span class="nav-number">3.0.1.</span> <span class="nav-text">Define Loss</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Intuition-of-Loss-function"><span class="nav-number">3.0.2.</span> <span class="nav-text">Intuition of Loss function</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fit-the-Model"><span class="nav-number">4.</span> <span class="nav-text">Fit the Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Newton’s-Method"><span class="nav-number">4.0.1.</span> <span class="nav-text">Newton’s Method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Trade-off-between-Newton’s-Method-and-Gradient-Descent"><span class="nav-number">4.0.2.</span> <span class="nav-text">Trade-off between Newton’s Method and Gradient Descent</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview-of-Tree-based-Methods"><span class="nav-number">1.</span> <span class="nav-text">Overview of Tree-based Methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Growth-of-a-Simple-Tree"><span class="nav-number">2.</span> <span class="nav-text">Growth of a Simple Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Tree-Pruning"><span class="nav-number">3.</span> <span class="nav-text">1. Tree Pruning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Characteristics-of-Simple-Decision-Classification-Trees"><span class="nav-number">4.</span> <span class="nav-text">Characteristics of Simple Decision&#x2F;Classification Trees</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-Tricks"><span class="nav-number">5.</span> <span class="nav-text">Other Tricks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Bootstrapping-aggregating-Bagging"><span class="nav-number">5.1.</span> <span class="nav-text">2. Bootstrapping aggregating (Bagging)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Limiting-the-number-of-predictors-Random-Forest"><span class="nav-number">5.2.</span> <span class="nav-text">3. Limiting the number of predictors (Random Forest)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Boosting"><span class="nav-number">5.3.</span> <span class="nav-text">4. Boosting</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
             
 
           </div>
@@ -971,13 +941,13 @@ x_{n+1} = x_{n} - \frac{f(x_n)}{f'(x_n)}</script><p>For our problem, we want to 
       var articles = db.collection('articles')
 
       //https://hexo.io/zh-tw/docs/variables.html
-      var isPost = 'Logistic Regression Updated with Newton's Method'.length > 0
+      var isPost = 'Notes About the Logics Behind the Development of Tree-Based Models'.length > 0
       var isArchive = '' === 'true'
       var isCategory = ''.length > 0
       var isTag = ''.length > 0
 
       if (isPost) { //is article page
-        var title = 'Logistic Regression Updated with Newton's Method'
+        var title = 'Notes About the Logics Behind the Development of Tree-Based Models'
         var doc = articles.doc(title)
 
         getCount(doc, true).then(appendCountTo($('.post-meta')))
