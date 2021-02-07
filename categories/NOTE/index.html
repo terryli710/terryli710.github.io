@@ -72,13 +72,25 @@
   
 
   
+    
+      
+    
 
+    
+  
+
+  
+    
+      
+    
+
+    
   
 
   
     
     
-    <link href="//fonts.googleapis.com/css?family=PT Serif:300,300italic,400,400italic,700,700italic|Abril Fatface:300,300italic,400,400italic,700,700italic|PT Serif:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Playfair Display:300,300italic,400,400italic,700,700italic|Playfair Display:300,300italic,400,400italic,700,700italic|Source Serif Pro:300,300italic,400,400italic,700,700italic|Playfair Display:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   
 
 
@@ -292,6 +304,34 @@
         <h1>NOTE<small>Category</small>
         </h1>
       </div>
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2021/02/06/lstm/" itemprop="url">
+              
+                <span itemprop="name">LSTM Walk Through</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2021-02-06T16:06:16-08:00"
+              content="2021-02-06" >
+          02-06
+        </time>
+      </div>
+
+    </header>
+  </article>
+
 
       
         
@@ -546,34 +586,6 @@
 
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2020/04/20/logsiticRegression/" itemprop="url">
-              
-                <span itemprop="name">Logistic Regression Updated with Newton's Method</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-04-20T09:44:06-07:00"
-              content="2020-04-20" >
-          04-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
     </div>
 
   </div>
@@ -634,7 +646,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -656,7 +668,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -670,15 +682,21 @@
             <div class="links-of-author motion-element">
                 
                   <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
                     <a href="https://github.com/terryli710" target="_blank" title="GitHub">
                       
                         <i class="fa fa-fw fa-github"></i>GitHub</a>
                   </span>
                 
                   <span class="links-of-author-item">
-                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                    <a href="https://www.linkedin.com/in/yiheng-li/" target="_blank" title="Linkedin">
                       
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                        <i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
                   </span>
                 
                   <span class="links-of-author-item">
@@ -715,7 +733,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -981,7 +999,7 @@
       else if (!isArchive && !isCategory && !isTag) { //is index page
         var titles = [] //array to titles
 
-        var postsstr = 'titles.push("Notes About the Logics Behind the Development of Tree-Based Models");titles.push("Complex Heatmap, flexible package for heatmap based on R");titles.push("Pyradiomics Simple Usage");titles.push("Further Discussion of Relative Importance");titles.push("Multivariate Linear Regression -- Collinearity and Feature Importance");titles.push("Survival Analysis -- the Basics");titles.push("EM Algorithm Notes");titles.push("Kernel Method Note");titles.push("Generative Models -- Gaussian Discriminant Analysis");titles.push("Logistic Regression Updated with Newton's Method");' //if you have a better way to get titles of posts, please change it
+        var postsstr = 'titles.push("LSTM Walk Through");titles.push("Notes About the Logics Behind the Development of Tree-Based Models");titles.push("Complex Heatmap, flexible package for heatmap based on R");titles.push("Pyradiomics Simple Usage");titles.push("Further Discussion of Relative Importance");titles.push("Multivariate Linear Regression -- Collinearity and Feature Importance");titles.push("Survival Analysis -- the Basics");titles.push("EM Algorithm Notes");titles.push("Kernel Method Note");titles.push("Generative Models -- Gaussian Discriminant Analysis");' //if you have a better way to get titles of posts, please change it
         eval(postsstr)
 
         var promises = titles.map(function (title) {
