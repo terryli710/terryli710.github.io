@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Playfair Display:300,300italic,400,400italic,700,700italic|Playfair Display:300,300italic,400,400italic,700,700italic|Source Serif Pro:300,300italic,400,400italic,700,700italic|Playfair Display:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon%2032x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon%2016x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="machine learning,image net," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Briefly introduce the most famous&#x2F;widely used image nets over the years">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Brief Walkthrough of Famous ImageNet Contenders">
+<meta property="og:url" content="http://yoursite.com/2021/07/24/image-net/index.html">
+<meta property="og:site_name" content="TERRY&#39;S BLOG">
+<meta property="og:description" content="Briefly introduce the most famous&#x2F;widely used image nets over the years">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://theaisummer.com/static/4690fef2d8149b10c72af46aca0710be/c1b63/image-classification-plot-imagenet.png">
+<meta property="og:image" content="https://miro.medium.com/max/2000/1*eBDriuBwa5O8HPFUgerklA.png">
+<meta property="og:image" content="https://neurohive.io/wp-content/uploads/2018/11/vgg16-1-e1542731207177.png">
+<meta property="og:image" content="https://miro.medium.com/max/2000/1*6hF97Upuqg_LdsqWY6n_wg.png">
+<meta property="og:image" content="https://miro.medium.com/max/612/0*fRYbrOU_YhS6oMf-">
+<meta property="og:image" content="https://d2l.ai/_images/resnet-block.svg">
+<meta property="og:image" content="https://miro.medium.com/max/700/1*DKjGRDd_lJeUfVlY50ojOA.png">
+<meta property="og:image" content="https://miro.medium.com/max/700/1*U_McJnp7Fnif-lw9iIC5Bw.png">
+<meta property="og:image" content="https://miro.medium.com/max/598/1*hTwo-hy9BUZ1bYkzisL1KA.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-Cdtb97FtgdA/XO3BHsB7oEI/AAAAAAAAEKE/bmtkonwgs8cmWyI5esVo8wJPnhPLQ5bGQCLcBGAs/s1600/image4.png">
+<meta property="article:published_time" content="2021-07-25T00:53:00.000Z">
+<meta property="article:modified_time" content="2021-08-10T00:44:03.353Z">
+<meta property="article:author" content="Yiheng &#39;Terry&#39; Li">
+<meta property="article:tag" content="machine learning">
+<meta property="article:tag" content="image net">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theaisummer.com/static/4690fef2d8149b10c72af46aca0710be/c1b63/image-classification-plot-imagenet.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/07/24/image-net/"/>
+
+
+
+
+
+  <title>Brief Walkthrough of Famous ImageNet Contenders | TERRY'S BLOG</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TERRY'S BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Footprints, Thoughts and Accumulation</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/07/24/image-net/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yiheng 'Terry' Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_img.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TERRY'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Brief Walkthrough of Famous ImageNet Contenders</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-24T17:53:00-07:00">
+                2021-07-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NOTE/" itemprop="url" rel="index">
+                    <span itemprop="name">NOTE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/24/image-net/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2021/07/24/image-net/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Briefly introduce the most famous/widely used image nets over the years
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Image nets are often refer to neural networks that takes in one image (usually RGB image) and are supposed to output the class of the object shown in the image. There are a lot of famous and published image nets. They were pre-trained on slightly different datasets, developed by different teams in different time, but all widely used in not only object classification, but also many other applications. This article will go through several famous image neural networks (AlexNet, VGG, ResNet, InceptionNet, EfficientNet). And talk about their development background, the tricks introduced and differences between them. To talk about all of them, it all starts with a dataset and a competition.</p>
+<h2 id="ImageNet-and-Image-Nets"><a href="#ImageNet-and-Image-Nets" class="headerlink" title="ImageNet and Image Nets"></a>ImageNet and Image Nets</h2><p>I will start by talking about the main teaching staff of CS231N of Stanford, also  director of the Artificial Intelligence Lab at Stanford, <a href="https://profiles.stanford.edu/fei-fei-li" target="_blank" rel="noopener">Li Fei-Fei</a>, who, back in 2003, realized the limitations to achieve the concept: “a better algorithm would make better decisions, regardless of the data[1]”. That’s the lack of a large public dataset that enables ML algorithm teams to test their models on. With this in mind, she started to build a dataset.</p>
+<blockquote>
+<p>“We decided we wanted to do something that was completely historically unprecedented. We’re going to map out the entire world of objects.”</p>
+</blockquote>
+<p>And in 2009, Li and her team published the first <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=5206848" target="_blank" rel="noopener">ImageNet paper</a> to CVPR. That was a time when people are still very skeptical of how large scale datasets would help in building better algorithms. But later this data becomes much more famous and popular, partially because of the success and stunning results of the ImageNet Large Scale Visual Recognition Challenge (<a href="https://www.image-net.org/challenges/LSVRC/" target="_blank" rel="noopener">ILSVRC</a>), which is a competition/challenge using the ImageNet data to test the models’ classification accuracy.</p>
+<p>And this challenge is also the reason why we have mention ImageNet as an intro chapter: the popular image net models that I wanna about to talk about pretty much were the candidates of ILSVRC initially (e.g. 2012: AlexNet; 2014: VGG; 2014: InceptionNet (v1); 2015: ResNet; 2019: EfficientNet).</p>
+<p><img src="https://theaisummer.com/static/4690fef2d8149b10c72af46aca0710be/c1b63/image-classification-plot-imagenet.png" alt="image-classification-plot-imagenet"></p>
+<h3 id="AlexNet"><a href="#AlexNet" class="headerlink" title="AlexNet"></a>AlexNet</h3><p>AlexNet achieved a top-5 error of 15.3% in the 2012 ILSVRC, more than 10.8 percentage points lower than that of the runner up. The original paper’s primary result was that the depth of the model was essential for its high performance (though today, we may not think it’s that deep anymore), which was computationally expensive, but made feasible due to the utilization of GPUs [3]. The architecture of the model looks like the following:</p>
+<p><img src="https://miro.medium.com/max/2000/1*eBDriuBwa5O8HPFUgerklA.png" alt="img"></p>
+<p>The <strong>features</strong> of this network is that:</p>
+<ul>
+<li>Firstly, it introduced ReLU into the model as activation function for non-linearity. </li>
+<li>And secondly, as mentioned above, trained in multiple GPUs, which was not that convenient as today, when we have more comprehensive deep learning packages that can do a lot of things under the hood. </li>
+<li>Finally, overlapping pooling is another trick that they used during training. Overlapping pooling offers about 0.5% of error rate drop, and makes the model harder to overfit. But the reasons of these benefits is not easy to summarize, refer to <a href="https://arxiv.org/abs/1412.6071" target="_blank" rel="noopener">this article</a> for detail.</li>
+</ul>
+<p>To <strong>reduce overfitting</strong>, they took 2 main methods:</p>
+<ul>
+<li>Data augmentation: including extracting random 224 $\times$​ 224 patches horizontal reflections, and altering RGB intensities.</li>
+<li><p>Dropout: it was a “recently-introduced technique” at the time, and they set the dropout rate to be 0.5. Dropout layers were added in the first two FC layers in the model.</p>
+<h3 id="VGG"><a href="#VGG" class="headerlink" title="VGG"></a>VGG</h3></li>
+</ul>
+<p>VGG was the 1st runner-up of the 2014 ILSVRC, and was invented by Simonyan and Zisserman from Visual Geometry Group (VGG) at University of Oxford. The data trained and tested was much larger: 1.3 million training images from 1000 classes; 100,000 test images. The model finally achieved 92.7% test accuracy and has successful applications in many real world problems. The architecture looks like this:</p>
+<p><img src="https://neurohive.io/wp-content/uploads/2018/11/vgg16-1-e1542731207177.png" alt="vgg16"></p>
+<blockquote>
+<p>VGGNet consists of 16 convolutional layers and is very appealing because of its very uniform architecture. Similar to AlexNet, only 3x3 convolutions, but lots of filters. Trained on 4 GPUs for 2–3 weeks. It is currently the most preferred choice in the community for extracting features from images. The weight configuration of the VGGNet is publicly available and has been used in many other applications and challenges as a baseline feature extractor. However, VGGNet consists of 138 million parameters, which can be a bit challenging to handle.</p>
+<p>— <a href="https://iq.opengenus.org/vgg16/#:~:text=VGGNet%2D16%20consists%20of%2016,for%20extracting%20features%20from%20images%20." target="_blank" rel="noopener">VGG16 architecture, iq.opengenus.org</a></p>
+</blockquote>
+<p>It’s noted in their <a href="https://arxiv.org/pdf/1409.1556.pdf(2014.pdf" target="_blank" rel="noopener">paper</a> that they used “multi-scale training” training + testing, which means for generalizability and practical applicability, they would scaled the images into various sizes and crop them to expected size.</p>
+<p>It’s simply convolutional layers and max pooling layers,  with three fully connected layers at the end. But the fact that it actually improved the performance and accuracy of the classification task hinders that by scaling the model: increasing the parameter size (width and depth), would give the model more power to solve complex problems, without any algorithmic innovations. This “theory”, though haven’t been fully understood even today, more or less triggers the invention of <a href="https://arxiv.org/pdf/1905.11946.pdf" target="_blank" rel="noopener">EfficientNet</a> and one of this year’s highlight — <a href="https://openai.com/blog/gpt-3-apps/" target="_blank" rel="noopener">GPT-3</a>.</p>
+<h3 id="ResNet"><a href="#ResNet" class="headerlink" title="ResNet"></a>ResNet</h3><blockquote>
+<p>At last, at the ILSVRC 2015, the so-called Residual Neural Network (ResNet) by Kaiming He et al introduced a novel architecture with “skip connections” and features heavy batch normalization. Such skip connections are also known as gated units or gated recurrent units and have a strong similarity to recent successful elements applied in RNNs. Thanks to this technique they were able to train a NN with 152 layers while still having lower complexity than VGGNet. It achieves a top-5 error rate of 3.57% which beats human-level performance on this dataset. </p>
+</blockquote>
+<p>ResNet introduced a new structure — make direct data connection between every two convolutional layers, which can be interpreted as let the model to learn the function of $f(x) = x$​​ (identity function) more easily, or only learning the residual, or make the model to adjust its layer number according to the complexity of the problem, make deep model more trainable etc.</p>
+<p><img src="https://miro.medium.com/max/2000/1*6hF97Upuqg_LdsqWY6n_wg.png" alt="img"></p>
+<p>In ResNet paper, they discovered that the depth of the network is a very important factor for better performance. So they designed a deeper network than VGG. However, they controlled the dimensions of the convolutional kernels so that the total parameter size is smaller than VGG (ResNet18: ~11 million vs. VGG16: ~128 million).</p>
+<p><img src="https://miro.medium.com/max/612/0*fRYbrOU_YhS6oMf-" alt="img"></p>
+<p>Batchnorm is vastly applied in ResNet, because obviously, the Residuals should not be in the same scale as the result, while the result from each layer should be in the similar scale. The residual block (the substructure of every two conv layers) is vividly shown below:</p>
+<p><img src="https://d2l.ai/_images/resnet-block.svg" alt="../_images/resnet-block.svg"></p>
+<blockquote>
+<p>— Dive into Deep Learning</p>
+</blockquote>
+<h3 id="InceptionNet"><a href="#InceptionNet" class="headerlink" title="InceptionNet"></a>InceptionNet</h3><p>Inception net is actually a series of networks, from V1 to V4. Starting from 2014 and v4 was introduced in 2018.</p>
+<h4 id="InceptionNet-v1-GoogLeNet"><a href="#InceptionNet-v1-GoogLeNet" class="headerlink" title="InceptionNet v1 (GoogLeNet)"></a>InceptionNet v1 (GoogLeNet)</h4><p>The problem is similar to VGG’s multi-scale training: pictures in real life can vary and the object of interest is different in sizes. Instead of changing the training images, inception net changes the kernel sizes. This is done by using multiple kernel sizes for each step, which is called <a href="https://arxiv.org/pdf/1409.4842v1.pdf" target="_blank" rel="noopener">inception module</a>.</p>
+<p><img src="https://miro.medium.com/max/700/1*DKjGRDd_lJeUfVlY50ojOA.png" alt="img"></p>
+<p><img src="https://miro.medium.com/max/700/1*U_McJnp7Fnif-lw9iIC5Bw.png" alt="img"></p>
+<p>Note that these modules arWe chosen for some reason. The team wanted to make inception net to be very deep so that it handles more complex problems. That requires convolutional layers to be computationally cheap in a sense. So size of 1, 3, 5 were chosen. Plus, the simple kernels and max pooling layer, also adds some sort of convenience for modeling the identity function, which was recommended by ResNet. </p>
+<h4 id="InceptionNet-v2-v3"><a href="#InceptionNet-v2-v3" class="headerlink" title="InceptionNet v2 + v3"></a>InceptionNet v2 + v3</h4><p>These two versions are introduced in the same papar, they are also focused on reduce the computational complexity even more. They factorized an $n \times n$ convolutional layer into a combination of $1 \times n$ and $n \times 1$​ layers. So the new inception module looks like the following:</p>
+<p><img src="https://miro.medium.com/max/598/1*hTwo-hy9BUZ1bYkzisL1KA.png" alt="img" style="zoom:50%;" /></p>
+<h4 id="InceptionNet-v4"><a href="#InceptionNet-v4" class="headerlink" title="InceptionNet v4"></a>InceptionNet v4</h4><p>Version 4 followed a new trend: making the module to be more uniformed — the reduced the implementation of the network; cut some of the unnecessarily complicated modules; make the whole module to be more customizable (think of LEGO).</p>
+<h3 id="EfficientNet"><a href="#EfficientNet" class="headerlink" title="EfficientNet"></a>EfficientNet</h3><p>An brief introduction by themselves for the EffecientNet paper:</p>
+<blockquote>
+<p> In our <a href="https://icml.cc/Conferences/2019" target="_blank" rel="noopener">ICML 2019</a> paper, “<a href="https://arxiv.org/abs/1905.11946" target="_blank" rel="noopener">EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks</a>”, we propose a novel model scaling method that uses a simple yet highly effective <em>compound coefficient</em> to scale up CNNs in a more structured manner. Unlike conventional approaches that arbitrarily scale network dimensions, such as width, depth and resolution, our method uniformly scales each dimension with a fixed set of scaling coefficients. Powered by this novel scaling method and recent progress on <a href="http://ai.googleblog.com/2018/08/mnasnet-towards-automating-design-of.html" target="_blank" rel="noopener">AutoML</a>, we have developed a family of models, called EfficientNets, which superpass state-of-the-art accuracy with up to 10x better efficiency (smaller and faster).</p>
+</blockquote>
+<p>Efficient net started with a very good baseline model (EfficientNet B0), which uses a small amount of parameters to achieve an OK performance. Simply scaling that model gives them better and better results. They are taking scaling in two dimensions (width and depth) and through experimentations, they discovered the best efficiency of scaling is obtained by simultaneously increase both depth and width, which they called compound scaling.</p>
+<p> <img src="https://1.bp.blogspot.com/-Cdtb97FtgdA/XO3BHsB7oEI/AAAAAAAAEKE/bmtkonwgs8cmWyI5esVo8wJPnhPLQ5bGQCLcBGAs/s1600/image4.png" alt="img"></p>
+<h2 id="Other-References"><a href="#Other-References" class="headerlink" title="Other References"></a>Other References</h2><p>[1] <a href="https://qz.com/1034972/the-data-that-changed-the-direction-of-ai-research-and-possibly-the-world/" target="_blank" rel="noopener">Quartz | Dave Gershgorn</a></p>
+<p>[2] <a href="https://theaisummer.com/cnn-architectures/" target="_blank" rel="noopener">Best deep CNN architectures and their principles: from AlexNet to EfficientNet</a> | <a href="https://theaisummer.com/author/Nikolas-Adaloglou/" target="_blank" rel="noopener">Nikolas Adaloglou</a> | AI SUMMER</p>
+<p>[3] <a href="https://en.wikipedia.org/wiki/AlexNet" target="_blank" rel="noopener">AlexNet - Wikipedia</a></p>
+<p>[4] <a href="https://medium.com/@pechyonkin/key-deep-learning-architectures-alexnet-30bf607595f1" target="_blank" rel="noopener">Key Deep Learning Architectures: AlexNet | Max Pechyonkin | Median</a></p>
+<p>[5] <a href="https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf" target="_blank" rel="noopener">ImageNet Classification with Deep Convolutional Neural Networks</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+            <a href="/tags/image-net/" rel="tag"># image net</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/21/hdf5/" rel="next" title="Using HDF5 format for python file saving and loading">
+                <i class="fa fa-chevron-left"></i> Using HDF5 format for python file saving and loading
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar_img.png"
+                alt="Yiheng 'Terry' Li" />
+            
+              <p class="site-author-name" itemprop="name">Yiheng 'Terry' Li</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="li.terry710@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/terryli710" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.linkedin.com/in/yiheng-li/" target="_blank" title="Linkedin">
+                      
+                        <i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.instagram.com/_unone__/" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ImageNet-and-Image-Nets"><span class="nav-number">1.</span> <span class="nav-text">ImageNet and Image Nets</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet"><span class="nav-number">1.1.</span> <span class="nav-text">AlexNet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VGG"><span class="nav-number">1.2.</span> <span class="nav-text">VGG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResNet"><span class="nav-number">1.3.</span> <span class="nav-text">ResNet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InceptionNet"><span class="nav-number">1.4.</span> <span class="nav-text">InceptionNet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#InceptionNet-v1-GoogLeNet"><span class="nav-number">1.4.1.</span> <span class="nav-text">InceptionNet v1 (GoogLeNet)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InceptionNet-v2-v3"><span class="nav-number">1.4.2.</span> <span class="nav-text">InceptionNet v2 + v3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InceptionNet-v4"><span class="nav-number">1.4.3.</span> <span class="nav-text">InceptionNet v4</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EfficientNet"><span class="nav-number">1.5.</span> <span class="nav-text">EfficientNet</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-References"><span class="nav-number">2.</span> <span class="nav-text">Other References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yiheng 'Terry' Li</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'nA0z6t6V440lRv0XQbFpR129-MdYXbMMI',
+        appKey: '4YKR5znQYtCiWJjA47hoohhE',
+		lang: 'en',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBlUlNsFB6908AmwkUrSvvzG3g7D64rTiQ',
+        projectId: 'count-d29fd'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('Visitors ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Brief Walkthrough of Famous ImageNet Contenders'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Brief Walkthrough of Famous ImageNet Contenders'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
