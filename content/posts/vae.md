@@ -5,6 +5,7 @@ date: 2022-03-27 17:50:15
 tags: [machine learning, algorithm, deep learning, variational auto-encoders]
 categories: NOTE
 description: Generally summarizes the category of auto-encoders, based on my experience working with them.
+draft: true
 ---
 
 ## 

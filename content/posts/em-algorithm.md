@@ -193,9 +193,6 @@ $$
 $$
 
 
-
-
-
 ## References
 
 1. [CS229 Lecture Notes](http://cs229.stanford.edu/notes/cs229-notes8.pdf)
