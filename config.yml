@@ -1,5 +1,5 @@
 baseURL: "https://terryli710.github.io" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
-title: Terr's Blog
+title: TERRY'S BLOG
 paginate: 7 # number of posts per page
 theme: PaperMod
 
@@ -80,18 +80,24 @@ params:
 
     homeInfoParams:
         Title: "Terry's Blog"
-        Content: >
+        Content: |
             Hello there! I'm Yiheng "Terry" Li, a deep learning research scientist with a passion for unraveling the mysteries of the human mind and body. I've spent my days (and many nights) diving deep into the world of Biomedical Informatics, earning my MSc from Stanford University. 🎓
 
             But life isn't all about work, right? When I'm not crunching numbers or developing algorithms, you'll find me strumming my guitar 🎸, belting out a tune 🎤, or exploring the world one city at a time 🌍. And if you're up for a challenge, we can always hit the badminton court 🏸!
-
+            
             Welcome to my blog, a digital space where I delve into the intricacies of deep learning, share my latest research findings, and explore the fascinating world of Biomedical Informatics. Whether you're a fellow scientist, a tech enthusiast, or simply curious, I hope you'll find something here to pique your interest. Let's embark on this technical adventure together!
+
+            Know more about me: [About](/about/), and links below.
 
     socialIcons:
         - name: github
           url: "https://github.com/terryli710"
         - name: Linkedin
           url: "https://www.linkedin.com/in/yiheng-li/"
+        - name: Email
+          url: "yh.li@yihengli.me"
+        - name: Instagram
+          url: "https://www.instagram.com/_unone__/"
         - name: Rss
           url: "index.xml"
 
