@@ -1,0 +1,336 @@
+---
+// writing.astro — WRITING · 写作.
+//
+// "Titles at scale + tags; hovering a row develops its frame in the pane."
+// Ported from the WRITING block of Ink Darkroom.dc.html. Filtering, search and
+// the plate swap are client-side over the fully rendered list, so the page is
+// complete without JavaScript.
+//
+// The plate shows the note's OWN first figure — never a stand-in photograph.
+// A note with no figure gets no ◼ marker, and hovering it empties the plate to
+// a bare frame captioned "NO FIGURE" rather than leaving the previous note's
+// figure up under this note's title.
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import T from "../components/T.astro";
+import { ui, t } from "../config/i18n";
+import { readingTime, firstFigure } from "../utils/post";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+// Alt text is the caption, but plenty of it is boilerplate from the original
+// Hugo posts ("img", "png") — fall back to the bare figure number rather than
+// captioning a plate "IMG".
+const JUNK = /^(img|image|png|jpg|jpeg|fig|figure|photo|pic|screenshot)$/i;
+function caption(alt: string) {
+  const clean = alt.replace(/\[\^\d+\]/g, "").trim(); // strip footnote refs
+  const useful = clean.length > 2 && !JUNK.test(clean);
+  // The caption itself is the note's own words and stays as written; only the
+  // "FIG. 1" label in front of it translates.
+  const tail = useful ? ` · ${clean.toUpperCase()}` : "";
+  return t(`${ui.writing.fig.en}${tail}`, `${ui.writing.fig.zh}${tail}`);
+}
+
+const entries = posts.map((p) => {
+  const fig = firstFigure(p.body);
+  return {
+    slug: p.slug,
+    title: p.data.title,
+    year: String(p.data.date.getUTCFullYear()),
+    tags: p.data.tags ?? [],
+    read: readingTime(p.body),
+    fig: fig ? { src: fig.src, meta: caption(fig.alt) } : null,
+  };
+});
+
+const years = [...new Set(entries.map((e) => e.year))].sort((a, b) => Number(b) - Number(a));
+
+const counts = new Map<string, number>();
+for (const e of entries) for (const t of e.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+const tags = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+
+const first = entries.find((e) => e.fig);
+---
+
+<BaseLayout title={t("Writing · Yiheng Li", "文章 · 李易恒")}>
+  <main class="wr">
+    <div class="wr-top">
+      <label class="wr-search">
+        <span class="slash">/</span>
+        <input
+          id="wr-q"
+          type="search"
+          data-t-placeholder-en={ui.writing.search.en}
+          data-t-placeholder-zh={ui.writing.search.zh}
+          placeholder={ui.writing.search.en}
+          autocomplete="off"
+        />
+      </label>
+    </div>
+
+    <div class="wr-tags" id="wr-tags">
+      <button type="button" data-tag="ALL" aria-pressed="true">
+        <T t={ui.writing.all} /> {entries.length}
+      </button>
+      {tags.map(([tag, n]) => <button type="button" data-tag={tag}>{tag} {n}</button>)}
+      <span class="spacer"></span>
+      <span class="wr-count" id="wr-count">{entries.length} / {entries.length}</span>
+    </div>
+
+    <div class="wr-body">
+      <div class="wr-list" id="wr-list">
+        {
+          years.map((year) => (
+            <div data-year-group={year}>
+              <div class="wr-year">
+                <span class="y">{year}</span>
+                <span class="line" />
+                <span data-year-count>{entries.filter((e) => e.year === year).length}</span>
+              </div>
+              {entries
+                .filter((e) => e.year === year)
+                .map((e) => (
+                  <a
+                    class="wr-item"
+                    href={`/posts/${e.slug}/`}
+                    data-tags={e.tags.join("|")}
+                    data-title={e.title.toLowerCase()}
+                    data-fig={e.fig?.src}
+                    data-fig-meta-en={e.fig?.meta.en}
+                    data-fig-meta-zh={e.fig?.meta.zh}
+                  >
+                    <span class="head">
+                      <span class="title">{e.title}</span>
+                      <span class="read">
+                        <T t={ui.writing.min(e.read)} />
+                      </span>
+                    </span>
+                    <span class="meta">
+                      {e.tags.map((t) => (
+                        <span>{t}</span>
+                      ))}
+                      {e.fig && <span class="frame">◼</span>}
+                    </span>
+                  </a>
+                ))}
+            </div>
+          ))
+        }
+      </div>
+
+      {/* The "no figure" caption is written by script on hover, so like the
+          per-figure captions it travels as a both-languages pair. */}
+      <aside
+        class="wr-plate"
+        data-empty={first ? undefined : ""}
+        data-nofig-en={ui.writing.noFig.en}
+        data-nofig-zh={ui.writing.noFig.zh}
+        data-dev-en={ui.writing.developing.en}
+        data-dev-zh={ui.writing.developing.zh}
+        data-gone-en={ui.writing.figGone.en}
+        data-gone-zh={ui.writing.figGone.zh}
+      >
+        {/* Two layers: the incoming figure loads on the hidden one, then the
+            pair cross-fades. Only what is hovered is ever fetched.
+
+            `no-referrer` because a good share of these figures are hotlinked
+            to third-party hosts, several of which serve a 403 to anything
+            arriving with a foreign Referer. */}
+        <div class="well">
+          <img
+            data-layer="a"
+            src={first?.fig?.src}
+            alt=""
+            data-on
+            referrerpolicy="no-referrer"
+            decoding="async"
+          />
+          <img data-layer="b" alt="" referrerpolicy="no-referrer" decoding="async" />
+          <span class="tl"></span>
+          <span class="br"></span>
+        </div>
+        <div class="cap">
+          <span id="wr-plate-label">{first?.title}</span>
+          <span id="wr-plate-meta">{first?.fig && <T t={first.fig.meta} />}</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { bi } from "../scripts/bilingual";
+
+  const list = document.getElementById("wr-list")!;
+  const query = document.getElementById("wr-q") as HTMLInputElement;
+  const count = document.getElementById("wr-count")!;
+  const tagBar = document.getElementById("wr-tags")!;
+  const items = Array.from(list.querySelectorAll<HTMLElement>(".wr-item"));
+  const groups = Array.from(list.querySelectorAll<HTMLElement>("[data-year-group]"));
+
+  let tag = "ALL";
+
+  function apply() {
+    const q = query.value.trim().toLowerCase();
+    let hits = 0;
+
+    for (const item of items) {
+      const tags = (item.dataset.tags || "").split("|").filter(Boolean);
+      const matchTag = tag === "ALL" || tags.includes(tag);
+      const matchQuery =
+        !q || (item.dataset.title || "").includes(q) || tags.some((t) => t.toLowerCase().includes(q));
+      const on = matchTag && matchQuery;
+      item.hidden = !on;
+      if (on) hits++;
+    }
+
+    // A year rule with nothing under it is noise, so the whole group goes.
+    for (const group of groups) {
+      const shown = group.querySelectorAll<HTMLElement>(".wr-item:not([hidden])").length;
+      group.hidden = shown === 0;
+      const n = group.querySelector("[data-year-count]");
+      if (n) n.textContent = String(shown);
+    }
+
+    count.textContent = `${hits} / ${items.length}`;
+  }
+
+  tagBar.addEventListener("click", (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>("[data-tag]");
+    if (!button) return;
+    tag = button.dataset.tag!;
+    tagBar.querySelectorAll("[data-tag]").forEach((b) => b.removeAttribute("aria-pressed"));
+    button.setAttribute("aria-pressed", "true");
+    apply();
+  });
+
+  query.addEventListener("input", apply);
+
+  // ── plate ─────────────────────────────────────────────────────────────────
+  const plate = document.querySelector<HTMLElement>(".wr-plate")!;
+  const a = document.querySelector<HTMLImageElement>('[data-layer="a"]')!;
+  const b = document.querySelector<HTMLImageElement>('[data-layer="b"]')!;
+  const label = document.getElementById("wr-plate-label")!;
+  const meta = document.getElementById("wr-plate-meta")!;
+  // The plate's caption is written by script, so it carries both languages as
+  // markup rather than as text — see src/scripts/bilingual.ts.
+  const home = { src: a.getAttribute("src"), label: label.textContent, meta: meta.innerHTML };
+
+  const nofig = () => bi(plate.dataset.nofigEn, plate.dataset.nofigZh);
+  const pending = () => bi(plate.dataset.devEn, plate.dataset.devZh);
+  const gone = () => bi(plate.dataset.goneEn, plate.dataset.goneZh);
+
+  /**
+   * How long the outgoing figure may stay up while the next one loads.
+   *
+   * The caption changes the instant you move onto a row, so anything still in
+   * the well after that belongs to a note you are no longer pointing at. A
+   * cached or local figure swaps in well inside this window and still gets its
+   * cross-fade; a slow or dead hotlink does not, and the well goes dark rather
+   * than sitting under someone else's title — which is what made hovering down
+   * the list look like several notes shared one preview.
+   */
+  const HOLD = 200;
+
+  let showing = a;
+  let token = 0;
+  let hold = 0;
+
+  /** Both layers dark, well shows as a bare frame, `why` captions the absence. */
+  function empty(title: string, why: string) {
+    plate.setAttribute("data-empty", "");
+    a.removeAttribute("data-on");
+    b.removeAttribute("data-on");
+    label.textContent = title;
+    meta.innerHTML = why;
+  }
+
+  /**
+   * Empty the plate for a note that has no figure. Leaving the last note's
+   * figure up would caption it with this note's title, which reads as a claim
+   * that the figure belongs to it — so both layers go dark and the well shows
+   * as an empty frame, captioned so the absence is legible as a state.
+   */
+  function blank(title: string) {
+    token++; // outrun any hover still loading, so it cannot flip in behind us
+    window.clearTimeout(hold);
+    empty(title, nofig());
+  }
+
+  function develop(src: string | null, title: string, metaHtml: string) {
+    if (!src) return;
+    const mine = ++token;
+    window.clearTimeout(hold);
+    label.textContent = title;
+
+    // Already in the well and known good — nothing to fetch, nothing to hide.
+    if (showing.getAttribute("src") === src && showing.complete && showing.naturalWidth) {
+      plate.removeAttribute("data-empty");
+      showing.setAttribute("data-on", ""); // may have been cleared by blank()
+      meta.innerHTML = metaHtml;
+      return;
+    }
+
+    const incoming = showing === a ? b : a;
+
+    const flip = () => {
+      if (mine !== token) return; // a later hover already won
+      window.clearTimeout(hold);
+      plate.removeAttribute("data-empty");
+      meta.innerHTML = metaHtml;
+      incoming.setAttribute("data-on", "");
+      showing.removeAttribute("data-on");
+      showing = incoming;
+    };
+
+    // A dead hotlink is a fact about this note, so this note's plate says it.
+    const fail = () => {
+      if (mine !== token) return;
+      window.clearTimeout(hold);
+      empty(title, gone());
+    };
+
+    incoming.onload = flip;
+    incoming.onerror = fail;
+    hold = window.setTimeout(() => {
+      if (mine === token) empty(title, pending());
+    }, HOLD);
+
+    if (incoming.getAttribute("src") !== src) incoming.setAttribute("src", src);
+    else if (incoming.complete) (incoming.naturalWidth ? flip : fail)();
+  }
+
+  // The plate ships server-rendered with the newest figured note already in it.
+  // If that figure is one of the dead hotlinks, say so rather than leaving a
+  // broken image in the well — this is the "nothing shows up on arrival" case.
+  const homeFail = () => {
+    if (token === 0) empty(home.label ?? "", gone());
+  };
+  a.addEventListener("error", homeFail);
+  if (a.getAttribute("src") && a.complete && !a.naturalWidth) homeFail();
+
+  for (const item of items) {
+    item.addEventListener("mouseenter", () => {
+      // `data-hovering` dims the siblings either way: which row you are on
+      // should not depend on whether that row happens to have a figure.
+      list.setAttribute("data-hovering", "");
+      const src = item.dataset.fig;
+      const title = item.querySelector(".title")?.textContent ?? "";
+      if (!src) {
+        blank(title);
+        return;
+      }
+      develop(src, title, bi(item.dataset.figMetaEn, item.dataset.figMetaZh));
+    });
+  }
+
+  list.addEventListener("mouseleave", () => {
+    list.removeAttribute("data-hovering");
+    if (home.src) develop(home.src, home.label ?? "", home.meta ?? "");
+    else blank(home.label ?? ""); // nothing published carries a figure
+  });
+
+  apply();
+</script>

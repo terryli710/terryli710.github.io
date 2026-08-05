@@ -1,0 +1,31 @@
+---
+// 404.astro — ported from the 404 block of the design canvas
+// (Ink Darkroom.dc.html). GitHub Pages serves this as 404.html, so the
+// filename must stay exactly `404.astro`.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import T from "../components/T.astro";
+import { ui, t } from "../config/i18n";
+---
+
+<BaseLayout title={t("404 · Yiheng Li", "404 · 李易恒")} description="Page not found.">
+  <main class="nf">
+    <div class="nf-plate">
+      <img src="/img/hero.jpg" alt="" />
+      <span class="nf-glow"></span>
+      <span class="nf-mid">
+        <span class="nf-num">404</span>
+        <span class="nf-sub"><T t={ui.notFound.plate} /></span>
+      </span>
+    </div>
+    <div class="nf-body">
+      <div>
+        <h1><T t={ui.notFound.h1} /></h1>
+        <p><T t={ui.notFound.body} /></p>
+      </div>
+      <div class="nf-acts">
+        <a class="is-seal" href="/"><T t={ui.notFound.reload} /></a>
+        <a href="/photographs/"><T t={ui.notFound.photographs} /></a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

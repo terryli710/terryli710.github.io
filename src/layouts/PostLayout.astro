@@ -1,0 +1,237 @@
+---
+// PostLayout.astro — POST · 阅读, the reading room.
+//
+// Ported from the POST block of Ink Darkroom.dc.html: a 64ch measure with a
+// sticky contents rail on the right, the kicker above the title, a
+// rule-bounded meta strip, the 大象無形 chop closing the article, and the
+// previous/next pair.
+//
+// The kicker used to read `NOTE · 2021 · FRAME 03`, numbering each note as if
+// it were an exposure on a roll of film. It was a position in an array wearing
+// a costume, so it is gone; category and year are both simply true.
+//
+// The posts are monolingual English, so the body, title and tags render as
+// plain text — never inside `.lz`/`.le`, which would hide them outright when
+// the reader switches language. Everything *around* the post translates.
+import BaseLayout from "./BaseLayout.astro";
+import Seal from "../components/Seal.astro";
+import T from "../components/T.astro";
+import { seals } from "../config/site";
+import { ui, t as tr } from "../config/i18n";
+import { readingTime, stamp, categoryOf } from "../utils/post";
+
+interface Props {
+  post: any;
+  prev?: any;
+  next?: any;
+  toc: { slug: string; text: string; depth: number }[];
+}
+
+const { post, prev, next, toc } = Astro.props;
+const { title, date, description, tags = [] } = post.data;
+
+const category = ui.post.category(categoryOf(post.data.categories));
+const year = date.getUTCFullYear();
+const kicker = tr(`${category.en} · ${year}`, `${category.zh} · ${year}`);
+---
+
+<BaseLayout
+  title={tr(`${title} · Yiheng Li`, `${title} · 李易恒`)}
+  description={description}
+>
+  <main class="po">
+    <article class="po-art">
+      <p class="po-kicker"><T t={kicker} /></p>
+      <h1>{title}</h1>
+      {description && <p class="po-lead">{description}</p>}
+
+      <div class="po-meta">
+        <span>{stamp(date)}</span>
+        <span><T t={ui.post.min(readingTime(post.body))} /></span>
+        <span class="spacer"></span>
+        {tags.map((t: string) => <span>#{t.toUpperCase().replace(/\s+/g, "-")}</span>)}
+      </div>
+
+      <slot />
+
+      <div class="po-foot">
+        {tags.map((t: string) => <span class="tag">{t}</span>)}
+        <span class="spacer"></span>
+        <Seal text={seals.articleEnd} />
+      </div>
+
+      <nav class="po-pn">
+        {
+          prev ? (
+            <a href={`/posts/${prev.slug}/`}>
+              <span class="k">
+                <T t={ui.post.prev} />
+              </span>
+              <span class="t">{prev.data.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next && (
+            <a class="next" href={`/posts/${next.slug}/`}>
+              <span class="k">
+                <T t={ui.post.next} />
+              </span>
+              <span class="t">{next.data.title}</span>
+            </a>
+          )
+        }
+      </nav>
+    </article>
+
+    {
+      toc.length > 0 && (
+        <aside class="po-toc" id="po-toc">
+          <p class="k">
+            <T t={ui.post.contents} />
+          </p>
+          {toc.map((h) => (
+            <a href={`#${h.slug}`} data-toc={h.slug}>
+              <span class="bar" />
+              <span>{h.text}</span>
+            </a>
+          ))}
+        </aside>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<script>
+  import { bi } from "../scripts/bilingual";
+
+  // These four are the only strings this file says out loud. They are built by
+  // script, so they go in as `.le`/`.lz` pairs and the language toggle keeps
+  // working on them — keep them in step with `ui.post` in src/config/i18n.ts.
+  const COPY = { en: "COPY", zh: "复制" };
+  const COPIED = { en: "COPIED", zh: "已复制" };
+  const COPY_LABEL = { en: "Copy code", zh: "复制代码" };
+
+  // ── code frames ───────────────────────────────────────────────────────────
+  // Shiki emits a bare <pre class="astro-code">; the design wraps it in a
+  // bordered frame with the language on the left and a COPY button on the right.
+  document.querySelectorAll<HTMLPreElement>("pre.astro-code").forEach((pre) => {
+    if (pre.parentElement?.classList.contains("po-code")) return;
+
+    const frame = document.createElement("div");
+    const head = document.createElement("div");
+    const lang = document.createElement("span");
+    const copy = document.createElement("button");
+
+    frame.className = "po-code";
+    head.className = "head";
+    lang.textContent = pre.dataset.language || "text";
+    copy.type = "button";
+    copy.innerHTML = bi(COPY.en, COPY.zh);
+    // BaseLayout repaints translated attributes on every toggle.
+    copy.dataset.tAriaLabelEn = COPY_LABEL.en;
+    copy.dataset.tAriaLabelZh = COPY_LABEL.zh;
+    copy.setAttribute(
+      "aria-label",
+      document.querySelector(".scene")?.getAttribute("data-lang") === "zh"
+        ? COPY_LABEL.zh
+        : COPY_LABEL.en,
+    );
+    copy.setAttribute("aria-live", "polite");
+
+    pre.before(frame);
+    head.append(lang, copy);
+    frame.append(head, pre);
+  });
+
+  const timers = new WeakMap<HTMLButtonElement, number>();
+  document.addEventListener("click", async (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>(".po-code button");
+    if (!button) return;
+    const pre = button.closest(".po-code")?.querySelector("pre");
+    if (!pre) return;
+    try {
+      await navigator.clipboard.writeText(pre.textContent || "");
+      button.innerHTML = bi(COPIED.en, COPIED.zh);
+      const running = timers.get(button);
+      if (running) window.clearTimeout(running);
+      timers.set(
+        button,
+        window.setTimeout(() => {
+          button.innerHTML = bi(COPY.en, COPY.zh);
+          timers.delete(button);
+        }, 1600),
+      );
+    } catch (error) {
+      console.warn("Unable to copy code block", error);
+    }
+  });
+
+  // ── contents rail ─────────────────────────────────────────────────────────
+  // The bar next to the current section grows from 13px to 28px; that and the
+  // seal-red colour are the only state, both driven by [data-on].
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-toc]"));
+  if (links.length) {
+    const targets = links
+      .map((a) => document.getElementById(a.dataset.toc!))
+      .filter((el): el is HTMLElement => !!el);
+
+    const mark = () => {
+      const line = window.scrollY + window.innerHeight * 0.28;
+      let current = targets[0];
+      for (const el of targets) {
+        if (el.offsetTop <= line) current = el;
+      }
+      links.forEach((a) => {
+        if (current && a.dataset.toc === current.id) a.setAttribute("data-on", "");
+        else a.removeAttribute("data-on");
+      });
+    };
+
+    window.addEventListener("ink:scroll", mark);
+    mark();
+  }
+
+  // ── math ──────────────────────────────────────────────────────────────────
+  // MathJax 4 with the Pagella (Palatino) math font, matching the body serif.
+  // Formulas sit as data-tex on nodes the typesetter fills in place, so the
+  // raw TeX stays readable if the CDN never answers.
+  async function setMath() {
+    if (!document.querySelector("[data-tex]:not([data-tex-set])")) return;
+
+    (window as any).MathJax = {
+      loader: { load: ["input/tex", "output/chtml"] },
+      output: { font: "mathjax-pagella" },
+      startup: { typeset: false },
+    };
+
+    await new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml-nofont.js";
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.append(s);
+    });
+
+    const MJ = (window as any).MathJax;
+    await MJ.startup.promise;
+
+    for (const el of document.querySelectorAll("[data-tex]:not([data-tex-set])")) {
+      const node = await MJ.tex2chtmlPromise(el.getAttribute("data-tex"), {
+        display: el.hasAttribute("data-tex-display"),
+      });
+      el.setAttribute("data-tex-set", "");
+      el.replaceChildren(node);
+    }
+
+    document.getElementById("MJX-CHTML-styles")?.remove();
+    document.head.append(MJ.chtmlStylesheet());
+  }
+
+  setMath().catch(() => {
+    /* CDN unreachable — the raw TeX stays on the page */
+  });
+</script>

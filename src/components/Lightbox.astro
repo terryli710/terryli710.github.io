@@ -1,0 +1,57 @@
+---
+// Lightbox.astro — one photograph, full screen. Included by any page that wants
+// to zoom one: /photographs and the home page both do.
+//
+// The complete set travels with it as JSON, so ← → keep working past whatever
+// subset the host page happens to show. Behaviour lives in
+// src/scripts/lightbox.ts, which both this component and photographs.astro
+// import — Vite hands them the same module instance.
+import { reel } from "../data/frames";
+import { srcset, SIZES } from "../utils/img";
+import { ui } from "../config/i18n";
+import T from "./T.astro";
+
+const payload = reel.map((f) => ({
+  src: f.src,
+  srcset: srcset(f.src),
+  frame: f.frame,
+  place: f.place,
+}));
+---
+
+<div class="dk-lb" data-lb hidden>
+  <div class="back" data-lb-el="back"></div>
+  {/* No `src` until a frame is opened: an empty src resolves to the page URL
+      and fires a spurious request for the document itself. */}
+  <img data-lb-el="img" alt="" sizes={SIZES.full} />
+  <div class="meta" data-lb-el="meta">
+    <span class="frame" data-lb="frame"></span>
+    <span class="exif" data-lb="place"></span>
+    <span class="line"></span>
+    <span class="nav">
+      <button
+        type="button"
+        data-lb-step="-1"
+        data-t-aria-label-en={ui.photographs.prevFrame.en}
+        data-t-aria-label-zh={ui.photographs.prevFrame.zh}
+        aria-label={ui.photographs.prevFrame.en}>←</button
+      >
+      <span class="n" data-lb="n"></span>
+      <button
+        type="button"
+        data-lb-step="1"
+        data-t-aria-label-en={ui.photographs.nextFrame.en}
+        data-t-aria-label-zh={ui.photographs.nextFrame.zh}
+        aria-label={ui.photographs.nextFrame.en}>→</button
+      >
+    </span>
+    <button type="button" class="close" data-lb-close><T t={ui.photographs.close} /></button>
+  </div>
+</div>
+
+<script id="ink-frames" type="application/json" is:inline set:html={JSON.stringify(payload)}></script>
+
+<script>
+  import { initLightbox } from "../scripts/lightbox";
+  initLightbox();
+</script>

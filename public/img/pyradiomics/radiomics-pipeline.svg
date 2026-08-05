@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 674" width="900" height="674" role="img">
+<style>
+  text{fill:#101c26;}
+  .m{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;}
+  .mn{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.01em;}
+  .s{font-family:Spectral,'Iowan Old Style',Georgia,'Times New Roman',serif;font-style:italic;}
+  .sr{font-family:Spectral,'Iowan Old Style',Georgia,'Times New Roman',serif;}
+  .lbl{font-size:16px;fill:#788999;}
+  .ttl{font-size:16px;fill:#1f6b9e;}
+  .ax{stroke:rgba(16,28,38,.26);stroke-width:1.4;fill:none;}
+  .hair{stroke:rgba(16,28,38,.14);stroke-width:1.4;fill:none;}
+</style>
+<rect width="900" height="674" fill="#eaeff4"/>
+<text class="m lbl" x="58" y="40">the three sections of features.yaml, over the stage each configures</text>
+<line x1="58" y1="90" x2="842" y2="90" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<text class="m lbl" x="58" y="80">input</text>
+<rect x="58" y="116" width="92" height="76" fill="none" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<line x1="65" y1="125.0" x2="143" y2="125.0" stroke="#788999" stroke-width="1" stroke-opacity="0.28"/>
+<line x1="65" y1="133.5" x2="143" y2="133.5" stroke="#788999" stroke-width="1" stroke-opacity="0.28"/>
+<line x1="65" y1="142.0" x2="143" y2="142.0" stroke="#788999" stroke-width="2" stroke-opacity="0.5"/>
+<line x1="65" y1="150.5" x2="143" y2="150.5" stroke="#788999" stroke-width="2" stroke-opacity="0.5"/>
+<line x1="65" y1="159.0" x2="143" y2="159.0" stroke="#788999" stroke-width="2" stroke-opacity="0.5"/>
+<line x1="65" y1="167.5" x2="143" y2="167.5" stroke="#788999" stroke-width="2" stroke-opacity="0.5"/>
+<line x1="65" y1="176.0" x2="143" y2="176.0" stroke="#788999" stroke-width="1" stroke-opacity="0.28"/>
+<line x1="65" y1="184.5" x2="143" y2="184.5" stroke="#788999" stroke-width="1" stroke-opacity="0.28"/>
+<path d="M94 141 q 22 -7 29 12 q 6 21 -17 25 q -23 4 -24 -16 q -1 -17 12 -21 Z" fill="#101c26" fill-opacity=".14"/>
+<text class="mn" font-size="17" x="164" y="160" fill="#101c26">image.nrrd</text>
+<rect x="308" y="116" width="92" height="76" fill="none" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<path d="M344 141 q 22 -7 29 12 q 6 21 -17 25 q -23 4 -24 -16 q -1 -17 12 -21 Z" fill="#1f6b9e" fill-opacity=".16" stroke="#1f6b9e" stroke-width="1.6"/>
+<text class="mn" font-size="17" x="414" y="160" fill="#101c26">mask.nrrd</text>
+<path d="M834 180 V198 M827 190 L834 200 L841 190" fill="none" stroke="#475666" stroke-width="1.4"/>
+<line x1="58" y1="230" x2="842" y2="230" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<text class="m ttl" x="58" y="220">setting:</text>
+<text class="m lbl" text-anchor="end" x="842" y="220">preprocess</text>
+<rect x="58" y="256" width="255" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="71" y="278" fill="#101c26">resample · sitkBSpline</text>
+<rect x="324.8" y="256" width="276" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="337.8" y="278" fill="#101c26">discretise · binWidth 25</text>
+<rect x="58" y="296" width="265" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="71" y="318" fill="#101c26">shift · voxelArrayShift</text>
+<path d="M834 334 V352 M827 344 L834 354 L841 344" fill="none" stroke="#475666" stroke-width="1.4"/>
+<line x1="58" y1="384" x2="842" y2="384" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<text class="m ttl" x="58" y="374">imageType:</text>
+<text class="m lbl" text-anchor="end" x="842" y="374">filter</text>
+<rect x="58" y="410" width="109" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="71" y="432" fill="#101c26">Original</text>
+<rect x="179.2" y="410" width="182" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="192.2" y="432" fill="#101c26">LoG σ = 0.5 1 2</text>
+<rect x="373.2" y="410" width="99" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="386.2" y="432" fill="#101c26">Wavelet</text>
+<rect x="484.0" y="410" width="78" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="497.0" y="432" fill="#101c26">LBP3D</text>
+<rect x="574.0" y="410" width="88" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="587.0" y="432" fill="#101c26">Square</text>
+<rect x="674.4" y="410" width="120" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="687.4" y="432" fill="#101c26">Logarithm</text>
+<rect x="58" y="450" width="109" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="71" y="472" fill="#101c26">Gradient</text>
+<path d="M834 488 V506 M827 498 L834 508 L841 498" fill="none" stroke="#475666" stroke-width="1.4"/>
+<line x1="58" y1="538" x2="842" y2="538" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<text class="m ttl" x="58" y="528">featureClass:</text>
+<text class="m lbl" text-anchor="end" x="842" y="528">describe</text>
+<rect x="58" y="564" width="78" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="71" y="586" fill="#101c26">shape</text>
+<rect x="148.0" y="564" width="130" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="161.0" y="586" fill="#101c26">firstorder</text>
+<rect x="290.0" y="564" width="68" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="303.0" y="586" fill="#101c26">glcm</text>
+<rect x="369.6" y="564" width="78" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="382.6" y="586" fill="#101c26">glrlm</text>
+<rect x="459.6" y="564" width="78" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="472.6" y="586" fill="#101c26">glszm</text>
+<rect x="549.6" y="564" width="68" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="562.6" y="586" fill="#101c26">gldm</text>
+<rect x="629.2" y="564" width="78" height="32" fill="none" stroke="rgba(16,28,38,.14)" stroke-width="1.4"/>
+<text class="mn" font-size="17" x="642.2" y="586" fill="#101c26">ngtdm</text>
+<line class="hair" x1="58" y1="616" x2="842" y2="616"/>
+<text class="m lbl" x="58" y="646">each image type × each class</text>
+<text class="m" font-size="16" x="418" y="646" fill="#1f6b9e">→</text>
+<text class="m" font-size="16" x="458" y="646" fill="#101c26">one row per case · features.csv</text>
+</svg>

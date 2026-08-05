@@ -1,13 +1,17 @@
-# Sample workflow for building and deploying a Hugo site to GitHub Pages
-name: Deploy Hugo site to Pages
+# RETIRED — the site is built by astro-deploy.yml.
+#
+# This workflow built the old Hugo + PaperMod site. It is kept only so the
+# previous site can be rebuilt on demand if the Astro rollout has to be backed
+# out. The `push` trigger is deliberately removed: with it, both this and
+# astro-deploy.yml deployed to Pages on every push to main and raced each
+# other for the same environment.
+#
+# To retire it for good, delete this file along with the Hugo tree
+# (config.yml, configTaxo.yml, content/, layouts/, assets/, themes/).
+name: Deploy Hugo site to Pages (retired)
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches:
-      - main
-
-  # Allows you to run this workflow manually from the Actions tab
+  # Manual only. Do not re-add a push trigger while astro-deploy.yml is live.
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

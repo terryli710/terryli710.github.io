@@ -1,0 +1,58 @@
+---
+// Chrome.astro — the top bar. Every page, home included.
+//
+// Two variants of one bar, so there is a single place where the nav lives:
+//   default — sticky under the top edge, page colours.
+//   home    — in flow at the top of the hero, transparent and light-on-dark
+//             over the photograph, and it scrolls away with the photograph.
+//             Home is rendered by the page itself, not by BaseLayout.
+import { nav } from "../config/site";
+import { ui } from "../config/i18n";
+import T from "./T.astro";
+
+interface Props {
+  /** Draw the bar inside the home hero: in flow, transparent, light on dark. */
+  home?: boolean;
+}
+
+const { home = false } = Astro.props;
+
+const path = Astro.url.pathname;
+const isOn = (item: (typeof nav)[number]) =>
+  item.exact ? path === item.href : item.match.some((p) => path.startsWith(p));
+---
+
+<header class="ch" data-home={home ? "" : undefined} data-chrome>
+  <a class="ch-brand" href="/">
+    <span class="ch-name">
+      <T t={ui.brand.name} class="ch-n" />
+    </span>
+    <span class="ch-sub"><T t={ui.brand.sub} /></span>
+  </a>
+  <span class="ch-right">
+    <nav class="ch-nav">
+      {
+        nav.map((item) => (
+          <a href={item.href} aria-current={isOn(item) ? "page" : undefined}>
+            <T t={item.label} />
+          </a>
+        ))
+      }
+    </nav>
+    {/* Both toggles name their destination, not the current state, and both
+        say it in the language you are about to leave — so every label they
+        can show is in the markup and CSS picks. Nothing is written by script,
+        so there is no first-paint flash of the wrong word. */}
+    <span class="ch-tog">
+      <span class="bar"></span>
+      <button type="button" data-toggle="lang">
+        <span class="le">中</span><span class="lz">EN</span>
+      </button>
+      <button type="button" data-toggle="mode">
+        <span class="to-day"><T t={ui.toggle.day} /></span><span class="to-night"
+          ><T t={ui.toggle.night} /></span
+        >
+      </button>
+    </span>
+  </span>
+</header>

@@ -1,0 +1,16 @@
+---
+// Seal.astro — 印章 (chop). Four TRADITIONAL glyphs in a 2x2 grid, read
+// right-to-left, top-to-bottom. `.chop4{flex-direction:row-reverse}` puts the
+// first column on the right, so do not reorder these pairs.
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: className } = Astro.props;
+---
+
+<span class:list={["chop4", className]} aria-label={text}>
+  <span class="col"><span>{text[0]}</span><span>{text[1]}</span></span>
+  <span class="col"><span>{text[2]}</span><span>{text[3]}</span></span>
+</span>

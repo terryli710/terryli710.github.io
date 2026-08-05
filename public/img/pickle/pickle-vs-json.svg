@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" role="img">
+<style>
+  text{fill:#101c26;}
+  .m{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;}
+  .mn{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.01em;}
+  .s{font-family:Spectral,'Iowan Old Style',Georgia,'Times New Roman',serif;font-style:italic;}
+  .sr{font-family:Spectral,'Iowan Old Style',Georgia,'Times New Roman',serif;}
+  .lbl{font-size:16px;fill:#788999;}
+  .ttl{font-size:16px;fill:#1f6b9e;}
+  .ax{stroke:rgba(16,28,38,.26);stroke-width:1.4;fill:none;}
+  .hair{stroke:rgba(16,28,38,.14);stroke-width:1.4;fill:none;}
+</style>
+<rect width="900" height="470" fill="#eaeff4"/>
+<text class="m" font-size="15" x="58" y="46" fill="#788999">in memory</text>
+<rect x="58" y="60" width="276" height="108" fill="none" stroke="rgba(16,28,38,.26)" stroke-opacity="1" stroke-width="1.4"/>
+<text class="mn" font-size="16" x="74" y="96" fill="#101c26">{&#39;itemA&#39;: [&#39;item&#39;, &#39;A&#39;],</text>
+<text class="mn" font-size="16" x="74" y="122" fill="#101c26">&#160;&#39;itemB&#39;: [1, 3]}</text>
+<text class="m" font-size="15" x="74" y="152" fill="#788999">built-in types</text>
+<rect x="58" y="216" width="276" height="86" fill="none" stroke="#1f6b9e" stroke-opacity=".55" stroke-width="1.4"/>
+<text class="mn" font-size="16" x="74" y="252" fill="#101c26">Carseats(pd.DataFrame)</text>
+<text class="m" font-size="15" x="74" y="284" fill="#1f6b9e">a class of your own</text>
+<path d="M334 114 H356 V259 H334" fill="none" stroke="rgba(16,28,38,.26)" stroke-width="1.4"/>
+<line x1="356" y1="114" x2="490" y2="114" stroke="#475666" stroke-width="1.4"/><path d="M490 109 L504 114 L490 119 Z" fill="#475666"/><text class="mn" font-size="16" text-anchor="middle" x="434" y="100" fill="#101c26">pickle.dump()</text>
+<line x1="356" y1="259" x2="490" y2="259" stroke="#475666" stroke-width="1.4"/><path d="M490 254 L504 259 L490 264 Z" fill="#475666"/><text class="mn" font-size="16" text-anchor="middle" x="434" y="245" fill="#101c26">json.dump()</text>
+<text class="m" font-size="15" x="512" y="46" fill="#788999">obj.pickle · binary</text>
+<rect x="512" y="60" width="330" height="108" fill="none" stroke="rgba(16,28,38,.26)" stroke-opacity="1" stroke-width="1.4"/>
+<text class="mn" font-size="16" x="528" y="96" fill="#475666">\x80\x04\x95(\x00\x00\x00</text>
+<text class="mn" font-size="16" x="528" y="122" fill="#475666">\x00\x00}\x94\x8c\x05itemA</text>
+<text class="m" font-size="15" x="528" y="152" fill="#788999">python only · <tspan fill="#1f6b9e">keeps the class</tspan></text>
+<text class="m" font-size="15" x="512" y="202" fill="#788999">obj.json · text</text>
+<rect x="512" y="216" width="330" height="108" fill="none" stroke="rgba(16,28,38,.26)" stroke-opacity="1" stroke-width="1.4"/>
+<text class="mn" font-size="16" x="528" y="252" fill="#101c26">{&quot;itemA&quot;: [&quot;item&quot;, &quot;A&quot;],</text>
+<text class="mn" font-size="16" x="528" y="278" fill="#101c26">&#160;&quot;itemB&quot;: [1, 3]}</text>
+<text class="m" font-size="15" x="528" y="308" fill="#788999">portable · <tspan fill="#1f6b9e">drops the class</tspan></text>
+<line class="hair" x1="58" y1="362" x2="842" y2="362"/>
+<text class="m lbl" x="58" y="396">must a human read the file?</text>
+<text class="m lbl" x="58" y="430">is every object a built-in?</text>
+<text class="m" font-size="16" x="512" y="396" fill="#475666">yes to both → <tspan fill="#101c26">json</tspan></text>
+<text class="m" font-size="16" x="512" y="430" fill="#475666">otherwise → <tspan fill="#1f6b9e">pickle</tspan></text>
+</svg>

@@ -1,0 +1,26 @@
+---
+// PdfReader.astro — inline PDF embed for post-bundle PDFs, mirroring the
+// existing Hugo shortcode (layouts/shortcodes/pdfReader.html:
+//   <embed src="{{ .Get 0 }}" width="100%" height="1000px" type="application/pdf">
+// ) but using <object> so browsers that can't render the PDF inline fall
+// back to a visible download link instead of a blank box.
+//
+// Prop is `src` (not `file`) and is the fully-resolved public path (e.g.
+// `/img/<postname>/<file>.pdf`) — path resolution is the caller's
+// responsibility (the migrated .mdx post), not this component's.
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+---
+
+<object data={src} type="application/pdf" width="100%" height="1000px">
+  <p>
+    <span class="lz">PDF 无法预览 — </span><span class="le">Unable to preview the PDF — </span>
+    <a href={src} download>
+      <span class="lz">点击下载</span>
+      <span class="le">click to download</span>
+    </a>
+  </p>
+</object>

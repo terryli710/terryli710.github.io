@@ -1,0 +1,177 @@
+---
+// index.astro — HOME.
+//
+// A full-viewport photograph that is sharp at rest and develops (blurs, dims,
+// desaturates) as the content scrolls over it, then four flat index bands:
+// Links & contact, Research & news, Notes, Photographs. The work comes before
+// the pictures — a reader who came here for the research should not have to
+// scroll past a contact sheet to reach it.
+//
+// Nothing is pinned over those bands. The top bar is the shared Chrome in its
+// `home` variant, rendered in flow at the top of the hero so it leaves with the
+// photograph, and there is no footer — the page ends on Photographs. That keeps
+// the whole scroll one uninterrupted field of developing photograph, which is
+// the point of the band layout.
+//
+// Photographs is a four-up preview and a way into /photographs, not a lightbox
+// of its own.
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Chrome from "../components/Chrome.astro";
+import Icon from "../components/Icon.astro";
+import T from "../components/T.astro";
+import { site, links, news } from "../config/site";
+import { ui } from "../config/i18n";
+import { preview } from "../data/frames";
+import { readingTime, stamp } from "../utils/post";
+import { srcset, SIZES } from "../utils/img";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const recent = posts.slice(0, 5);
+---
+
+<BaseLayout title={site.name} chrome={false} footer={false}>
+  <div class="hm-bg">
+    <img id="hm-photo" src="/img/hero.jpg" alt="" fetchpriority="high" />
+    <div class="hm-vig"></div>
+    <div class="hm-scrim" id="hm-scrim"></div>
+  </div>
+
+  <main class="hm-main">
+    <section class="hm-top">
+      <Chrome home />
+      <span class="hm-cue" id="hm-cue">
+        <span class="dot"></span>
+        <T t={ui.home.cue} />
+      </span>
+    </section>
+
+    {/* `hm-elsewhere` is the band's CSS name from the design canvas; the band
+        itself now says what it holds. */}
+    <section class="hm-elsewhere">
+      <p class="hm-rule">
+        <span class="k"><T t={ui.home.links} /></span>
+        <span class="line"></span>
+      </p>
+      <div class="hm-links">
+        {
+          links.map((l) => (
+            <a href={l.href}>
+              <Icon name={l.icon} size={14} />
+              <span class="k">
+                <T t={l.k} />
+              </span>
+              <span class="v">
+                <T t={l.v} />
+              </span>
+              <span class="go">↗</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="hm-news">
+      <p class="hm-rule">
+        <span class="k"><T t={ui.home.news} /></span>
+        <span class="line"></span>
+        <a href="/profile/"><T t={ui.home.toWork} /></a>
+      </p>
+      {
+        news.map((w) => (
+          <a class="hm-row" href="/profile/">
+            <span class="date">{w.year}</span>
+            <span class="title">
+              <T t={w.title} />
+            </span>
+            <span class="venue">
+              <T t={w.venue} />
+            </span>
+          </a>
+        ))
+      }
+    </section>
+
+    <section class="hm-notes">
+      <p class="hm-rule">
+        <span class="k"><T t={ui.home.notes} /></span>
+        <span class="line"></span>
+        <a href="/writing/"><T t={ui.home.allNotes(posts.length)} /></a>
+      </p>
+      {
+        recent.map((p) => (
+          <a class="hm-row" href={`/posts/${p.slug}/`}>
+            <span class="date">{stamp(p.data.date)}</span>
+            <span class="title">{p.data.title}</span>
+            <span class="read">
+              <T t={ui.home.min(readingTime(p.body))} />
+            </span>
+          </a>
+        ))
+      }
+    </section>
+
+    <section class="hm-photos">
+      <p class="hm-rule">
+        <span class="k"><T t={ui.home.photographs} /></span>
+        <span class="line"></span>
+        <a href="/photographs/"><T t={ui.home.toPhotographs} /></a>
+      </p>
+
+      {/* Four photographs, each at its own aspect ratio. The whole set lives at
+          /photographs, which is where every one of these leads. */}
+      <div class="hm-grid">
+        {
+          preview.map((f) => (
+            <a class="hm-shot" href="/photographs/">
+              <img
+                src={f.src}
+                srcset={srcset(f.src)}
+                sizes={SIZES.preview}
+                width={f.width}
+                height={f.height}
+                alt=""
+              />
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // ── the hero develops as the page scrolls over it ────────────────────────
+  // "Sharp at rest, blurs + dims as content scrolls over it (no transform — no
+  // jank)." Filter and opacity only, driven off the shared ink:scroll tick.
+  const scene = document.querySelector(".scene") as HTMLElement;
+  const photo = document.getElementById("hm-photo");
+  const scrim = document.getElementById("hm-scrim");
+  const cue = document.getElementById("hm-cue");
+
+  function develop() {
+    if (!photo) return;
+    const span = Math.max(window.innerHeight * 1.05, 1);
+    const t = Math.min(1, Math.max(0, window.scrollY / span));
+    const e = t * t * (3 - 2 * t); // smoothstep
+    const day = scene.dataset.mode === "day";
+    photo.style.filter =
+      "blur(" +
+      (e * 26).toFixed(2) +
+      "px) saturate(" +
+      (1 - e * 0.45).toFixed(3) +
+      ")" +
+      (day ? "" : " brightness(" + (0.9 - e * 0.22).toFixed(3) + ") contrast(1.02)");
+    // The scrim never goes fully opaque: the photograph stays faintly readable
+    // behind the index bands rather than disappearing under a flat ground.
+    if (scrim) scrim.style.opacity = (e * (day ? 0.82 : 0.68)).toFixed(3);
+    if (cue) cue.style.opacity = Math.max(0, 1 - t * 4).toFixed(3);
+  }
+
+  window.addEventListener("ink:scroll", develop);
+  // The mode toggle changes the resting filter, so repaint on attribute change.
+  new MutationObserver(develop).observe(scene, { attributes: true, attributeFilter: ["data-mode"] });
+  develop();
+</script>

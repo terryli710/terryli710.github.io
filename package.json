@@ -1,0 +1,24 @@
+{
+  "name": "terryli710-github-io",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "post": "node scripts/new-post.mjs",
+    "photos": "node scripts/add-photos.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^2.3.0",
+    "@astrojs/sitemap": "3.2.1",
+    "astro": "^4.16.0",
+    "remark-math": "^6.0.0"
+  }
+}

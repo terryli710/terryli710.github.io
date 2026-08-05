@@ -1,0 +1,54 @@
+---
+// FillIn.astro — "here is what is still waiting on you", in the corner of the
+// page while you are developing.
+//
+// DEV ONLY. BaseLayout renders it under `import.meta.env.DEV`, so it is not in
+// the built site at all — not hidden, not present. The same checklist is
+// printed to the terminal by src/config/blanks.ts.
+import { blanks, required } from "../config/blanks";
+---
+
+{
+  blanks.length > 0 && (
+    <aside class="fill" data-fill>
+      <button type="button" class="tab" data-fill-toggle>
+        <span class="dot" />
+        {required.length > 0
+          ? `${required.length} to fill in`
+          : `${blanks.length} suggestion${blanks.length === 1 ? "" : "s"}`}
+      </button>
+      <div class="body" hidden>
+        <p class="head">
+          Development only — this panel is not in the built site.
+          <br />
+          Everything below is edited in one or two files.
+        </p>
+        <ol>
+          {blanks.map((b) => (
+            <li data-optional={b.optional ? "" : undefined}>
+              <span class="what">
+                {b.what}
+                {b.optional && <em> · optional</em>}
+              </span>
+              <span class="where">{b.where}</span>
+              <code>{b.fix}</code>
+            </li>
+          ))}
+        </ol>
+      </div>
+      {/* `is:inline` on purpose: a bundled component script would be emitted
+          into the production build even though this component never renders
+          there. Inline, it exists only where the panel does. */}
+      <script is:inline>
+        (function () {
+          var panel = document.currentScript.closest("[data-fill]");
+          var body = panel.querySelector(".body");
+          panel.querySelector("[data-fill-toggle]").addEventListener("click", function () {
+            body.hidden = !body.hidden;
+            panel.toggleAttribute("data-open", !body.hidden);
+          });
+        })();
+      </script>
+    </aside>
+  )
+}

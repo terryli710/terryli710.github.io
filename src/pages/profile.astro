@@ -1,0 +1,277 @@
+---
+// profile.astro — 履历 · Profile (CV + work + about + projects) on one page.
+//
+// Ported verbatim from the PROFILE block of the design canvas
+// (Ink Darkroom.dc.html): portrait + identity + links first (visible without
+// scrolling), then CV, selected work, publications, education, skills, other
+// projects, and finally About. Chrome (header, progress rule, footer) is
+// drawn by BaseLayout — not duplicated here.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import T from "../components/T.astro";
+import {
+  focus,
+  cv,
+  work,
+  pubs,
+  edu,
+  skills,
+  others,
+  profileLinks,
+  IDENTITY_ICONS,
+} from "../config/site";
+import { ui, t } from "../config/i18n";
+import { reel } from "../data/frames";
+import { srcset, SIZES } from "../utils/img";
+
+// The three frames shown beside About. Named by frame number so a reordered
+// reel does not silently change which photographs appear here.
+const byNumber = (n: string) => reel.find((f) => f.frame === n) ?? reel[0];
+const wide = byNumber("6862");
+const pair = [byNumber("7125"), byNumber("3921")];
+---
+
+<BaseLayout
+  title={t("Profile · Yiheng Li", "履历 · 李易恒")}
+  description="Yiheng Li — deep learning research scientist: experience, education, and projects."
+>
+  <section class="pf-head">
+    <div class="pf-portrait">
+      <img src="/img/portrait-a.jpg" alt="" />
+      <div class="cap">
+        <span><T t={ui.profile.portraitPlace} /></span>
+      </div>
+    </div>
+    <div class="pf-id">
+      <p class="pf-kicker"><T t={ui.profile.kicker} /></p>
+      <h1><T t={ui.brand.name} /></h1>
+      <p class="pf-meta">
+        <T t={ui.profile.metaRole} /><br />
+        <T t={ui.profile.metaPlace} />
+      </p>
+      <p class="pf-lead"><T t={ui.profile.lead} /></p>
+
+      <nav class="pf-btns">
+        {
+          profileLinks.map((l) => (
+            <a
+              class={"seal" in l && l.seal ? "is-seal" : undefined}
+              href={l.href}
+              rel={IDENTITY_ICONS.has(l.icon) ? "me" : undefined}
+            >
+              <Icon name={l.icon} />
+              <T t={l.label} />
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="pf-focus">
+        <span class="k"><T t={ui.profile.focus} /></span>
+        <div class="chips">
+          {
+            focus.map((f) => (
+              <span>
+                <T t={f} />
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="pf-main">
+    <p class="pf-sec"><T t={ui.profile.experience} /></p>
+    {
+      cv.map((c) => (
+        <div class="pf-cv">
+          <span class="pf-when">{c.when}</span>
+          <div>
+            <h3>
+              <T t={c.title} />
+            </h3>
+            <p class="org">
+              <T t={c.org} />
+            </p>
+            <p class="body">
+              <T t={c.body} />
+            </p>
+          </div>
+        </div>
+      ))
+    }
+
+    <p class="pf-sec gap"><T t={ui.profile.selectedWork} /></p>
+    {
+      work.map((w) => (
+        <div class="pf-work">
+          <span class="pf-when">{w.year}</span>
+          <div>
+            <h3>
+              <T t={w.title} />
+            </h3>
+            <p class="note">
+              <T t={w.note} />
+            </p>
+            <p class="stack">
+              <T t={w.stack} />
+            </p>
+            {/* A plate from the paper, where the paper is open access. */}
+            {w.figure && (
+              <figure class="pf-plate">
+                <img
+                  src={`/img/work/${w.figure.src}`}
+                  alt={t(w.figure.alt.en, w.figure.alt.zh)}
+                  style={w.figure.pos ? `object-position:${w.figure.pos}` : undefined}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>
+                  <T t={w.figure.credit} />
+                </figcaption>
+              </figure>
+            )}
+          </div>
+          {/* One row can cover several papers, so each venue links separately.
+              No link until there is somewhere to go — see src/config/me.ts. */}
+          <div class="venue">
+            {w.venues.map((v) =>
+              v.href ? (
+                <a href={v.href}>
+                  <T t={v.label} /> ↗
+                </a>
+              ) : (
+                <span>
+                  <T t={v.label} />
+                </span>
+              ),
+            )}
+          </div>
+        </div>
+      ))
+    }
+
+    <p class="pf-sec gap"><T t={ui.profile.abstracts} /></p>
+    {
+      pubs.map((p) => (
+        <div class="pf-pub">
+          <span class="venue">
+            <T t={p.venue} />
+          </span>
+          {/* Linked only where the meeting publishes the abstract — see site.ts. */}
+          {p.href ? (
+            <a class="title" href={p.href}>
+              <T t={p.title} /> ↗
+            </a>
+          ) : (
+            <span class="title">
+              <T t={p.title} />
+            </span>
+          )}
+        </div>
+      ))
+    }
+
+    <p class="pf-sec gap"><T t={ui.profile.education} /></p>
+    {
+      edu.map((e) => (
+        <div class="pf-edu">
+          <span class="pf-when">{e.when}</span>
+          <div>
+            <span class="school">
+              <T t={e.school} />
+            </span>
+            <span class="degree">
+              <T t={e.degree} />
+            </span>
+          </div>
+        </div>
+      ))
+    }
+
+    <p class="pf-sec gap"><T t={ui.profile.skills} /></p>
+    {
+      skills.map((s) => (
+        <div class="pf-skill">
+          <span class="k">
+            <T t={s.k} />
+          </span>
+          <span class="v">
+            <T t={s.v} />
+          </span>
+        </div>
+      ))
+    }
+  </main>
+
+  <section class="pf-others">
+    <p class="pf-sec"><T t={ui.profile.otherProjects} /></p>
+    {
+      others.map((o) => (
+        <a class="pf-row" href="/posts/projects/">
+          <span class="n">{o.n}</span>
+          <span>
+            <span class="t">
+              <T t={o.title} />
+            </span>
+            <span class="course">
+              <T t={o.course} />
+            </span>
+          </span>
+          <span class="when">
+            <T t={o.when} />
+          </span>
+          <span class="go">→</span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="pf-band">
+    <img src="/img/hero.jpg" alt="" />
+    <div class="cap">
+      <p class="pf-kicker"><T t={ui.profile.about} /></p>
+    </div>
+  </section>
+
+  <main class="pf-about">
+    <div class="prose">
+      <p><T t={ui.profile.about1} /></p>
+
+      <p class="made"><T t={ui.profile.made} /></p>
+      <p><T t={ui.profile.made1} /></p>
+    </div>
+    <div class="pf-frames">
+      <div class="head">
+        <p><T t={ui.profile.moreFrames} /></p>
+        <a href="/photographs/"><T t={ui.profile.toPhotographs} /></a>
+      </div>
+      {/* Captions come from the set itself, so they are already in both
+          languages and cannot drift from what /photographs says. */}
+      <div class="stack">
+        <figure class="wide">
+          <img src={wide.src} srcset={srcset(wide.src)} sizes={SIZES.frames} alt="" />
+          <figcaption>
+            <span>{wide.frame}</span><span><T t={wide.place} /></span>
+          </figcaption>
+        </figure>
+        <div class="pair">
+          {
+            pair.map((f) => (
+              <figure>
+                <img src={f.src} srcset={srcset(f.src)} sizes={SIZES.frames} alt="" />
+                <figcaption>
+                  <span>{f.frame}</span>
+                  <span>
+                    <T t={f.place} />
+                  </span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

@@ -24,3 +24,31 @@ _testmain.go
 
 /public
 .DS_Store
+
+# Astro
+node_modules
+dist
+.astro
+
+# NOTE: Hugo's build output also lands in /public (ignored above), but Astro
+# conventionally keeps *source* static assets (committed to git) in a
+# directory of the same name. Un-ignore Astro's public/ source assets
+# specifically so they don't get swallowed by the Hugo rule above. This repo
+# has no static/ dir, so Hugo has nothing that would collide with public/img
+# or public/pdf (page-bundle PDFs, e.g. content/posts/cs229/*.pdf, migrated
+# into public/pdf/<postslug>/ for PdfReader.astro to serve).
+!/public/
+/public/*
+!/public/img/
+!/public/pdf/
+# The RÉSUMÉ button on /profile points at me.resume = "/resume.pdf". The file
+# is a source asset, not build output, so it has to survive `/public/*` above —
+# otherwise the button ships as a 404 on the deployed site while still working
+# locally, which is exactly the failure that hides until launch.
+!/public/resume.pdf
+
+# Camera originals staged for `npm run photos`. Full-size and EXIF-bearing —
+# never committed, never published. The optimized, EXIF-stripped copies the
+# script writes to public/img/g/ are what ship.
+/photos-inbox/
+

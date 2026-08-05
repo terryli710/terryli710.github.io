@@ -1,0 +1,201 @@
+---
+// BaseLayout.astro — <html>/<head>, the `.scene` root wrapper, the fixed
+// reading-progress rule, the chrome, the footer, and the global mode/lang
+// wiring.
+//
+// Language is a client-side switch over one build: both copies of every string
+// are in the HTML and `.scene[data-lang]` hides one. That covers every text
+// node (via T.astro). Two things live outside a text node and so are repainted
+// here instead: the document title, and translated attributes written as
+// `data-t-<attr>-en` / `-zh`.
+import "../styles/global.css";
+import Chrome from "../components/Chrome.astro";
+import Footer from "../components/Footer.astro";
+import FillIn from "../components/FillIn.astro";
+import { site, person } from "../config/site";
+import { type L } from "../config/i18n";
+
+interface Props {
+  /** Page title in both languages. A bare string is used for both. */
+  title: L | string;
+  description?: string;
+  chrome?: boolean;
+  /** Draw the chrome over the hero photograph — the home page. */
+  homeChrome?: boolean;
+  /** Home renders no footer: its last band is Research & news. */
+  footer?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  chrome = true,
+  homeChrome = false,
+  footer = true,
+} = Astro.props;
+
+const pageTitle: L = typeof title === "string" ? { en: title, zh: title } : title;
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+// schema.org Person — the one place every profile is stated together, so a
+// search engine can tell that this site, that ORCID and that Scholar page are
+// one person. Built from src/config/me.ts; nothing blank reaches it.
+const identity = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: person.name.en,
+  alternateName: person.name.zh,
+  url: person.url,
+  jobTitle: person.jobTitle,
+  affiliation: { "@type": "Organization", name: person.affiliation },
+  ...(person.email ? { email: `mailto:${person.email}` } : {}),
+  sameAs: person.sameAs,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{pageTitle.en}</title>
+    <meta name="title:zh" content={pageTitle.zh} />
+    <link rel="canonical" href={canonical} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(identity)} />
+  </head>
+  <body>
+    <div class="scene" data-mode="night" data-lang="en">
+      <script is:inline>
+        // No-flash: resolve mode/lang before any visible descendant of `.scene`
+        // is parsed. Must stay a plain synchronous script and the first child.
+        (function () {
+          var el = document.currentScript.parentElement;
+          var m = null,
+            l = null;
+          try {
+            m = localStorage.getItem("ink-mode");
+            l = localStorage.getItem("ink-lang");
+          } catch (e) {}
+          if (m !== "night" && m !== "day") {
+            m = window.matchMedia("(prefers-color-scheme: light)").matches ? "day" : "night";
+          }
+          if (l !== "zh" && l !== "en") l = "en";
+          el.setAttribute("data-mode", m);
+          el.setAttribute("data-lang", l);
+          document.documentElement.lang = l === "zh" ? "zh-Hans" : "en";
+          document.documentElement.style.background = m === "day" ? "#dfe8f1" : "#08131d";
+        })();
+      </script>
+
+      <div class="prog" id="prog"></div>
+      {chrome && <Chrome home={homeChrome} />}
+      <slot />
+      {footer && <Footer />}
+      {import.meta.env.DEV && <FillIn />}
+    </div>
+
+    <script>
+      const scene = document.querySelector(".scene") as HTMLElement;
+
+      // The page title, both ways round.
+      const titleEn = document.title;
+      const titleZh =
+        document.querySelector<HTMLMetaElement>('meta[name="title:zh"]')?.content || titleEn;
+
+      // Attributes that carry translated text: `data-t-placeholder-en` and so
+      // on. Text nodes are handled by CSS (T.astro); these cannot be.
+      const ATTRS = ["placeholder", "aria-label", "title", "alt"];
+
+      function paintAttrs(lang: string) {
+        for (const attr of ATTRS) {
+          const key = `data-t-${attr}-`;
+          document.querySelectorAll(`[${key}en]`).forEach((el) => {
+            const value = el.getAttribute(key + lang);
+            if (value !== null) el.setAttribute(attr, value);
+          });
+        }
+      }
+
+      // The toggle labels themselves are handled by CSS (see `.to-day` /
+      // `.to-night` and `.le` / `.lz`). What is left are the things CSS cannot
+      // reach: the document language, the page ground, the title, attributes.
+      function paint() {
+        const night = scene.dataset.mode === "night";
+        const en = scene.dataset.lang === "en";
+        const lang = en ? "en" : "zh";
+
+        document.documentElement.lang = en ? "en" : "zh-Hans";
+        document.documentElement.style.background = night ? "#08131d" : "#dfe8f1";
+        document.title = en ? titleEn : titleZh;
+
+        paintAttrs(lang);
+      }
+
+      function store(key: string, value: string) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {
+          /* private mode — the toggle still works for this page */
+        }
+      }
+
+      document.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest<HTMLElement>("[data-toggle]");
+        if (!button) return;
+        event.preventDefault();
+        if (button.dataset.toggle === "mode") {
+          const next = scene.dataset.mode === "night" ? "day" : "night";
+          scene.dataset.mode = next;
+          store("ink-mode", next);
+        } else {
+          const next = scene.dataset.lang === "en" ? "zh" : "en";
+          scene.dataset.lang = next;
+          store("ink-lang", next);
+        }
+        paint();
+      });
+
+      // Follow the OS while the reader has not chosen for themselves.
+      const media = window.matchMedia("(prefers-color-scheme: light)");
+      media.addEventListener("change", (e) => {
+        try {
+          if (localStorage.getItem("ink-mode")) return;
+        } catch (err) {
+          /* fall through and follow the OS */
+        }
+        scene.dataset.mode = e.matches ? "day" : "night";
+        paint();
+      });
+
+      paint();
+
+      // ── reading-progress rule ────────────────────────────────────────────
+      const prog = document.getElementById("prog");
+      let raf = 0;
+      function onScroll() {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          if (prog)
+            prog.style.width =
+              (max > 40 ? Math.min(100, (window.scrollY / max) * 100) : 0).toFixed(2) + "%";
+          window.dispatchEvent(new CustomEvent("ink:scroll"));
+        });
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      onScroll();
+    </script>
+  </body>
+</html>

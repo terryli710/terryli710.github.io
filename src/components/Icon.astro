@@ -1,0 +1,53 @@
+---
+// Icon.astro — the monoline glyph set, in one place.
+//
+// Hairline strokes on a 16-unit grid, `stroke="currentColor"` throughout, so a
+// glyph takes the colour of whatever it sits in and nothing here ever needs a
+// second definition per size. Two callers: the profile buttons (12px) and the
+// home "Elsewhere" rows (14px).
+//
+// `name` is looked up in GLYPHS; an unknown name renders nothing rather than an
+// empty box, which is the same policy site.ts uses for an unfilled link.
+interface Props {
+  name: string;
+  size?: number;
+}
+
+const { name, size = 12 } = Astro.props;
+
+const GLYPHS: Record<string, string> = {
+  // a downward arrow onto a baseline — a document coming to you
+  resume: '<path d="M8 1.5v9"/><path d="M4.5 7.5 8 11l3.5-3.5"/><path d="M2 13.5h12"/>',
+  // angle brackets
+  github: '<path d="M5.5 4.5 2 8l3.5 3.5"/><path d="M10.5 4.5 14 8l-3.5 3.5"/>',
+  linkedin:
+    '<rect x="1.8" y="2.8" width="12.4" height="10.4"/><path d="M4.6 7.4v3.2"/><path d="M7.4 10.6V7.4"/><path d="M7.4 8.4a1.6 1.6 0 0 1 3.2 0v2.2"/><path d="M4.6 5.1v.1"/>',
+  // mortarboard
+  scholar:
+    '<path d="M1.5 6 8 2.5 14.5 6 8 9.5 1.5 6Z"/><path d="M4.2 7.6v3.1c0 .9 1.7 1.6 3.8 1.6s3.8-.7 3.8-1.6V7.6"/>',
+  orcid:
+    '<circle cx="8" cy="8" r="6.2"/><path d="M6.1 7v4.1"/><path d="M6.1 4.7v.1"/><path d="M8.9 11.1V7h1.1a2.05 2.05 0 0 1 0 4.1H8.9Z"/>',
+  // a colonnade — the quad
+  stanford:
+    '<path d="M1.5 5.5 8 2l6.5 3.5"/><path d="M3.6 7.2v5.1"/><path d="M6.5 7.2v5.1"/><path d="M9.5 7.2v5.1"/><path d="M12.4 7.2v5.1"/><path d="M1.8 13.8h12.4"/>',
+  email: '<rect x="1.5" y="3.5" width="13" height="9"/><path d="m1.5 4.5 6.5 4.5 6.5-4.5"/>',
+};
+
+const glyph = GLYPHS[name];
+---
+
+{
+  glyph && (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.3"
+      stroke-linecap="square"
+      aria-hidden="true"
+      set:html={glyph}
+    />
+  )
+}

@@ -1,0 +1,24 @@
+---
+// T.astro — one label, both languages.
+//
+// Both copies ship in the HTML and `.scene[data-lang]` hides one (`.le`/`.lz`
+// in global.css), so switching language is instant and needs no second build.
+//
+// Use it for every user-visible string. For text that lands in an *attribute*
+// (placeholder, aria-label) use `data-t-<attr>-en` / `-zh` instead — BaseLayout
+// repaints those on toggle.
+//
+// The two spans are deliberately written with no whitespace between them: a
+// newline here would survive as a stray space beside whichever copy is showing.
+import type { L } from "../config/i18n";
+
+interface Props {
+  t: L;
+  /** Applied to whichever copy is showing, so callers can style once. */
+  class?: string;
+}
+
+const { t, class: className } = Astro.props;
+---
+
+<span class:list={["le", className]}>{t.en}</span><span class:list={["lz", className]}>{t.zh}</span>
