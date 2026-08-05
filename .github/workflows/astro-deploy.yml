@@ -31,6 +31,13 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
+        with:
+          # Pages had never been enabled on this repo, so the first run of this
+          # workflow would otherwise fail here with "Get Pages site failed".
+          # `enablement` makes the workflow create the Pages site itself (the
+          # `pages: write` permission above is what allows it). Harmless once
+          # Pages exists — it reads the existing config instead of recreating.
+          enablement: true
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
