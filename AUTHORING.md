@@ -268,8 +268,25 @@ showing when it was written.
 
 ## 4. Deploying
 
-Push to `main`. `.github/workflows/astro-deploy.yml` builds and publishes to
-GitHub Pages.
+**`main` is the live site. Nothing else is.**
+`.github/workflows/astro-deploy.yml` triggers on `push:` to `main` and on manual
+`workflow_dispatch` — those are the only two things that can change what is
+served at https://terryli710.github.io.
+
+So: work on a branch, push it as often as you like, and the published site does
+not move.
+
+```bash
+git switch -c some-change     # anything but main
+```
+
+`npm run dev` and `npm run build` are local only — neither one can reach the
+live site, no matter what they produce. Merging to `main` is the single moment
+the site changes, and it is deliberate.
+
+Worth doing once, if you want the guarantee enforced rather than remembered:
+turn on branch protection for `main` in the repo settings (Settings → Branches),
+so a stray `git push` cannot go straight to production.
 
 `.github/workflows/hugo.yaml` is **retired** — it used to deploy the old Hugo
 site on every push to `main` and raced the Astro workflow for the same Pages

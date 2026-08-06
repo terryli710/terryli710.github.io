@@ -78,9 +78,6 @@ export const ui = {
   photographs: {
     kicker: t("Photographs", "摄影"),
     camera: both("FUJIFILM X-T · 2022—2023"),
-    /** The two arrangements: side by side, or one under the next. */
-    viewRow: t("ROW", "横排"),
-    viewColumn: t("COLUMN", "竖排"),
     close: t("CLOSE ✕", "关闭 ✕"),
     prevFrame: t("Previous photograph", "上一张"),
     nextFrame: t("Next photograph", "下一张"),

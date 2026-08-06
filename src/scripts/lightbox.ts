@@ -1,17 +1,18 @@
-// lightbox.ts — one full-screen frame, shared by /photographs and the home page.
+// lightbox.ts — one full-screen frame, for any page that includes
+// components/Lightbox.astro. Today that is /photographs alone (the home page's
+// four-up is a link into it, not a lightbox); the behaviour lives here rather
+// than inside photographs.astro so a second page can open a frame without
+// duplicating it.
 //
-// The behaviour used to live inside photographs.astro. It moved here so the home
-// page can open a frame directly, at exactly the frame that was clicked, with
-// the same flight: a copy of the clicked image flies from its place on the page
-// to the middle of the screen (FLIP), and the source is hidden for exactly as
-// long as the copy is in the air.
+// A copy of the clicked image flies from its place on the page to the middle of
+// the screen (FLIP), and the source is hidden for exactly as long as the copy is
+// in the air.
 //
-// The whole reel is embedded once as JSON by Lightbox.astro, so stepping ← →
-// works past the frames a given page happens to show — the home strip and the
-// photographs row step through the same 16.
+// The whole set is embedded once as JSON by Lightbox.astro, so stepping ← →
+// works past the frames a given page happens to show.
 //
-// Both callers import this module, and Vite gives them one shared instance, so
-// there is exactly one lightbox and one open index per page.
+// Callers import this module and Vite gives them one shared instance, so there
+// is exactly one lightbox and one open index per page.
 
 import { bi } from "./bilingual";
 
@@ -58,9 +59,8 @@ function num(i: number): string {
 
 /**
  * The on-page element for a frame — the FLIP takeoff point. A page may show a
- * frame more than once (/photographs keeps both views in the DOM) or not at all
- * (stepping past the end of the home strip), so take the first one that is
- * actually laid out.
+ * frame more than once, or not at all (stepping onto a frame the page does not
+ * itself show), so take the first one that is actually laid out.
  */
 function frameEl(i: number): HTMLElement | null {
   const all = document.querySelectorAll<HTMLElement>(`[data-frame][data-index="${i}"]`);

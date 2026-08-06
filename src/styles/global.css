@@ -88,7 +88,7 @@ mjx-container svg a{color:inherit;}
 .lz{font-family:'Noto Serif SC','Songti SC',serif;}
 /* Mono UI labels are tracked out for Latin small-caps; that spacing reads as
    gaps between 汉字, so Chinese takes it back down. */
-.ch-nav .lz,.ch-sub .lz,.hm-rule .lz,.dk-bar .lz,.dk-views .lz,.dk-count .lz,
+.ch-nav .lz,.ch-sub .lz,.hm-rule .lz,.dk-bar .lz,.dk-count .lz,
 .pf-sec .lz,.pf-kicker .lz,.po-kicker .lz,.po-meta .lz,.po-toc .lz,
 .wr-item .read .lz,.hm-row .read .lz,.hm-news .venue .lz,.foot .lz{letter-spacing:.06em;}
 
@@ -395,21 +395,28 @@ mjx-container svg a{color:inherit;}
   text-transform:uppercase;color:var(--seal);margin:0 0 1rem;}
 .dk-head h1{margin:0;font-weight:300;font-size:clamp(1.5rem,1rem + 1.6vw,2.4rem);line-height:1.14;
   letter-spacing:-.015em;max-width:28ch;text-wrap:pretty;}
-.dk-headr{display:flex;align-items:flex-end;gap:clamp(1rem,3vw,2.2rem);flex-wrap:wrap;}
 .dk-count{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.16em;
   color:var(--faint);line-height:2;text-align:right;}
-.dk-views{display:flex;gap:1px;padding:2px;border:1px solid var(--line2);
-  font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.18em;}
-.dk-views button{border:0;cursor:pointer;padding:.62em 1.15em;font:inherit;letter-spacing:.18em;
-  background:transparent;color:var(--faint);}
-.dk-views button[aria-pressed="true"]{background:var(--seal);color:var(--onseal);}
-
 .dk-reel-wrap{border-top:1px solid var(--line);}
+/* No `scroll-snap-type` here, deliberately. photographs.astro drives this
+   element's scrollLeft, and mandatory snap swallows programmatic writes — the
+   two steering the same value is where every bug this view has had came from.
+   The script lands on a frame itself. Keep it that way. */
 .dk-reel{display:flex;align-items:center;gap:clamp(1.6rem,4.5vw,5rem);overflow-x:auto;overflow-y:hidden;
-  scroll-snap-type:x mandatory;padding:clamp(1rem,3vh,2.2rem) max(1.4rem,44vw);
-  height:58vh;min-height:340px;}
+  padding:clamp(1rem,3vh,2.2rem) max(1.4rem,44vw);
+  height:58vh;min-height:340px;scrollbar-width:none;}
+.dk-reel::-webkit-scrollbar{display:none;}
+/* Without snap the row starts at scrollLeft 0 — 44vw of empty padding — until
+   the script centres the first frame. `data-hold` is set by an inline script
+   immediately after the markup, i.e. during parse and before first paint, and
+   cleared once the row is centred: the reader never sees the jump. It is set
+   by script rather than written into the HTML so that with JavaScript off the
+   row is simply visible and uncentred, not invisible. Hidden outright, with no
+   transition — a fade would put the whole gallery behind an animation clock,
+   and that clock is frozen in a background tab. */
+.dk-reel[data-hold]{opacity:0;}
 .dk-reel figure{margin:0;flex:none;height:100%;display:flex;align-items:center;
-  scroll-snap-align:center;cursor:zoom-in;will-change:transform,opacity;}
+  cursor:zoom-in;will-change:transform,opacity;}
 .dk-reel img{height:100%;width:auto;max-width:none;display:block;background:#000;filter:var(--imgf);}
 .dk-bar{display:flex;align-items:center;gap:clamp(.8rem,2.4vw,2rem);flex-wrap:wrap;
   padding:.95rem clamp(1.4rem,5vw,4.5rem);border-top:1px solid var(--line);
@@ -422,19 +429,6 @@ mjx-container svg a{color:inherit;}
 .dk-bar .nav button{border:0;background:transparent;color:var(--soft);font:inherit;cursor:pointer;padding:0 .2em;}
 .dk-bar .nav button:hover{color:var(--seal);}
 .dk-bar .nav .n{color:var(--soft);}
-
-.dk-col{padding:0 clamp(1.4rem,5vw,4.5rem) clamp(3rem,9vh,6rem);}
-.dk-col figure{margin:0;border-top:1px solid var(--line);padding:clamp(1.6rem,5vh,3.4rem) 0;}
-.dk-col .plate{display:flex;justify-content:center;}
-.dk-col img{max-height:80vh;max-width:100%;width:auto;height:auto;cursor:zoom-in;background:#000;
-  filter:var(--imgf);transition:filter .8s ease;}
-.dk-col img:hover{filter:none;}
-.dk-col figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
-  margin-top:.95rem;font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--faint);}
-.dk-col figcaption .l{display:flex;gap:.9rem;}
-.dk-col figcaption .frame{color:var(--seal);}
-.dk-col figcaption .exif{color:var(--soft);}
 
 /* lightbox — single frame, full screen */
 .dk-lb{position:fixed;inset:0;z-index:220;display:flex;flex-direction:column;align-items:center;

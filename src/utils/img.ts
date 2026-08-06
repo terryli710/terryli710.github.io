@@ -24,8 +24,6 @@ export const SIZES = {
   preview: "(max-width:640px) 45vw, 22vw",
   /** photographs row — height-driven, so this is a working estimate */
   reel: "(max-width:820px) 90vw, 60vw",
-  /** darkroom scroll column */
-  column: "(max-width:820px) 100vw, 80vw",
   /** lightbox */
   full: "94vw",
   /** writing hover plate */

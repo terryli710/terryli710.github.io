@@ -1,11 +1,9 @@
 ---
 // photographs.astro — PHOTOGRAPHS · 摄影.
 //
-// Two ways through the same 16 photographs: ROW (centre one at full height,
-// neighbours only half in view, scroll-snapped) and COLUMN (one per band,
-// nothing cropped) — both render server-side, a client script toggles which one
-// is visible. Clicking (or Enter-ing) the centre one opens the shared
-// full-screen lightbox (src/scripts/lightbox.ts), which the home page uses too.
+// One row of photographs: the centre one at full height, its neighbours only
+// half in view. Wheel or arrow through it; clicking (or Enter-ing) the centre
+// one opens the full-screen lightbox (src/scripts/lightbox.ts).
 //
 // Each photograph is captioned with its camera number, where it was made, and
 // its position in the set. Nothing else: there are no rolls, no film stock and
@@ -22,8 +20,8 @@ const num = (i: number) => `${String(i + 1).padStart(2, "0")} / ${reel.length}`;
 const first = reel[0];
 
 // Every frame's intrinsic size, so a lazy frame reserves its final width before
-// its bytes arrive. Without this the reel measured 3531px on load and 8543px
-// once loaded — every snap point moving under the reader mid-scroll. See
+// its bytes arrive. Without this the row measured 3531px on load and 8543px
+// once loaded — every resting position moving under the reader mid-scroll. See
 // src/utils/dims.ts.
 const size = reel.map((f) => dims(f.src));
 ---
@@ -32,24 +30,13 @@ const size = reel.map((f) => dims(f.src));
   <main>
     <section class="dk-head">
       <p class="dk-kicker"><T t={ui.photographs.kicker} /></p>
-      <div class="dk-headr">
-        <div class="dk-count">
-          <div><T t={gcount} /></div>
-          <div><T t={ui.photographs.camera} /></div>
-        </div>
-        <div class="dk-views">
-          <button type="button" data-view-btn="reel" aria-pressed="true">
-            <T t={ui.photographs.viewRow} />
-          </button>
-          <button type="button" data-view-btn="scroll" aria-pressed="false">
-            <T t={ui.photographs.viewColumn} />
-          </button>
-        </div>
+      <div class="dk-count">
+        <div><T t={gcount} /></div>
+        <div><T t={ui.photographs.camera} /></div>
       </div>
     </section>
 
-    <!-- ROW — centre photograph at full size, neighbours only half in view -->
-    <section class="dk-reel-wrap" data-view-panel="reel">
+    <section class="dk-reel-wrap">
       <div class="dk-reel" data-reel>
         {
           reel.map((f, i) => (
@@ -62,7 +49,6 @@ const size = reel.map((f) => dims(f.src));
             >
               <img
                 data-frame
-                data-view="reel"
                 data-index={i}
                 src={f.src}
                 srcset={srcset(f.src)}
@@ -76,6 +62,20 @@ const size = reel.map((f) => dims(f.src));
           ))
         }
       </div>
+      {/* Runs during parse, before the first paint, so the row is held back
+          until the module script below has centred frame 01. See .dk-reel
+          [data-hold] in global.css. The timeout fails open: if that module is
+          blocked or throws, an uncentred row beats an invisible one. */}
+      <script is:inline>
+        (function () {
+          var r = document.querySelector("[data-reel]");
+          if (!r) return;
+          r.dataset.hold = "";
+          setTimeout(function () {
+            r.removeAttribute("data-hold");
+          }, 1500);
+        })();
+      </script>
       <div class="dk-bar">
         <span class="frame" data-bar="frame">{first.frame}</span>
         <span class="exif" data-bar="place"><T t={first.place} /></span>
@@ -99,75 +99,82 @@ const size = reel.map((f) => dims(f.src));
         </span>
       </div>
     </section>
-
-    <!-- COLUMN — one photograph per band, nothing cropped -->
-    <section class="dk-col" data-view-panel="scroll" hidden>
-      {
-        reel.map((f, i) => (
-          <figure>
-            <div class="plate">
-              <img
-                data-frame
-                data-view="scroll"
-                data-index={i}
-                src={f.src}
-                srcset={srcset(f.src)}
-                sizes={SIZES.column}
-                width={size[i]?.width}
-                height={size[i]?.height}
-                alt=""
-                loading="lazy"
-              />
-            </div>
-            <figcaption>
-              <span class="l">
-                <span class="frame">{f.frame}</span>
-                <span class="exif">
-                  <T t={f.place} />
-                </span>
-              </span>
-              <span>{num(i)}</span>
-            </figcaption>
-          </figure>
-        ))
-      }
-    </section>
   </main>
 
   <Lightbox />
 </BaseLayout>
 
 <script>
-  // ══ Darkroom: reel + scroll ══
+  // ══ Photographs — the row ══
   //
-  // Both views are already in the DOM (server-rendered); only visibility
-  // toggles client-side. Layout never changes while scrolling the reel:
-  // distance-from-centre drives each frame's opacity/scale/saturation
-  // imperatively, and the status bar underneath is repainted from the frame
-  // nearest the centre.
+  // This script owns the row's horizontal position outright. There is no CSS
+  // scroll-snap on the container, deliberately.
+  //
+  // Why: a vertical wheel does not scroll a horizontal container natively, so
+  // deltaY has to be turned into a `scrollLeft` write by hand — and on a
+  // `scroll-snap-type: x mandatory` container the browser re-snaps programmatic
+  // writes immediately, swallowing any write smaller than half the gap between
+  // frames. Measured on this row with snap armed: a 12-unit trackpad event asked
+  // for 14px and moved 0, a 100-unit mouse notch asked for 115px and moved 0,
+  // and only past ~170 units did anything happen — a whole 328px frame at once.
+  //
+  // So snap had to come off for the duration of a gesture and go back on after,
+  // and *that* is where scrolling backwards kept breaking. Two faults, both in
+  // the re-arming:
+  //
+  //   1. Every landing scheduled an un-tracked `setTimeout` to re-arm snap and
+  //      nothing ever cancelled it. Interrupting a landing — which is exactly
+  //      what reversing does — left the old timer pending, and it re-armed
+  //      mandatory snap while the *new* landing was still in the air, so the
+  //      browser yanked the row to whatever snap point was nearest.
+  //   2. Even alone, the re-arm fired on a fixed 320ms guess while the landing
+  //      was a `scrollTo({behavior:"smooth"})` whose duration the browser picks
+  //      from the distance and never reports. Reversing produces the long
+  //      landings, so the guess expired mid-glide there first.
+  //
+  // Owning the position removes the whole class. Nothing can move the row except
+  // `glideTo` and the wheel handler; the wheel handler cancels any glide before
+  // it writes; and the landing is a rAF tween this file starts, can cancel on
+  // the next event, and knows the end of. Forwards and backwards are the same
+  // code path with the sign flipped.
   //
   // Zooming a frame is not this page's job — src/scripts/lightbox.ts owns it,
   // and `onFrameChange` keeps this page's idea of "the current frame" in step
-  // while the reader steps through the reel full screen.
-  import { openLightbox, closeLightbox, isOpen, onFrameChange } from "../scripts/lightbox";
+  // while the reader steps through the set full screen.
+  import { openLightbox, isOpen, onFrameChange } from "../scripts/lightbox";
   import { bi } from "../scripts/bilingual";
 
   const reelEl = document.querySelector<HTMLElement>("[data-reel]");
-  const reelPanel = document.querySelector<HTMLElement>('[data-view-panel="reel"]');
-  const scrollPanel = document.querySelector<HTMLElement>('[data-view-panel="scroll"]');
-  const viewButtons = document.querySelectorAll<HTMLButtonElement>("[data-view-btn]");
-  const reelLen = reelPanel?.querySelectorAll("[data-reel-item]").length ?? 0;
+  const reelLen = document.querySelectorAll("[data-reel-item]").length;
 
   const bar = document.querySelector<HTMLElement>(".dk-bar");
   const barFrame = bar?.querySelector<HTMLElement>('[data-bar="frame"]');
   const barPlace = bar?.querySelector<HTMLElement>('[data-bar="place"]');
   const barN = bar?.querySelector<HTMLElement>('[data-bar="n"]');
 
-  let view: "reel" | "scroll" = "reel";
-  let gi = 0; // index nearest the reel's centre / last frame interacted with
+  const slow = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  /** How long a landing takes. */
+  const GLIDE = 340;
+  /** Scroll silence that counts as the end of a gesture, momentum included. */
+  const SETTLE = 140;
+
+  /** The frame at the centre — or the one a landing is on its way to. */
+  let gi = 0;
+  /** The reader has moved the row themselves, so nothing may re-centre it. */
+  let touched = false;
 
   function num(i: number) {
     return String(i + 1).padStart(2, "0") + " / " + reelLen;
+  }
+
+  /** The row is server-rendered and never rebuilt, so this is worth caching. */
+  let items: HTMLElement[] | null = null;
+  function reelItems(): HTMLElement[] {
+    if (!items && reelEl) {
+      items = Array.from(reelEl.querySelectorAll<HTMLElement>("[data-reel-item]"));
+    }
+    return items ?? [];
   }
 
   // The bar is repainted as the row moves. The place is bilingual, so both
@@ -181,148 +188,99 @@ const size = reel.map((f) => dims(f.src));
     if (barN) barN.textContent = num(gi);
   }
 
-  // ── reel ─────────────────────────────────────────────────────────────
-  /** The reel is server-rendered and never re-built, so this is worth caching —
-   *  it is read several times per wheel event. */
-  let items: HTMLElement[] | null = null;
-  function reelItems(): HTMLElement[] {
-    if (!items && reelEl) {
-      items = Array.from(reelEl.querySelectorAll<HTMLElement>("[data-reel-item]"));
-    }
-    return items ?? [];
+  /**
+   * Where the row has to sit for frame `i` to be dead centre, clamped to the
+   * travel that actually exists.
+   *
+   * Measured centre-to-centre deliberately. `paintReel` scales the side frames,
+   * so `getBoundingClientRect()` reports the *scaled* box while `offsetWidth`
+   * reports the unscaled one; mixing the two put every landing up to 43px off
+   * centre. A scale about the centre leaves the centre exactly where it was, so
+   * centres are the one transform-proof thing to read.
+   */
+  function centerOffset(i: number): number | null {
+    const k = reelItems()[i];
+    if (!reelEl || !k) return null;
+    const kr = k.getBoundingClientRect();
+    const rr = reelEl.getBoundingClientRect();
+    const left = reelEl.scrollLeft + (kr.left + kr.width / 2 - rr.left) - reelEl.clientWidth / 2;
+    return Math.max(0, Math.min(reelEl.scrollWidth - reelEl.clientWidth, left));
   }
 
-  // Wheel → the reel, one to one, with snap disarmed while the hand is on it.
-  //
-  // The wheel is not a stepper. It moves `scrollLeft` by whatever the reader
-  // turned, so the reel tracks the hand continuously and reverses the instant
-  // the hand reverses. When the wheel goes quiet the reel lands on the frame
-  // nearest the centre, and only then is snap re-armed — on a snap point, where
-  // re-arming cannot move anything.
-  //
-  // Snap has to come off for the duration, and this is not optional: on a
-  // `scroll-snap-type: x mandatory` container the browser re-snaps *programmatic*
-  // writes immediately, so a write smaller than half the gap between frames is
-  // swallowed whole. Measured on this reel, with snap armed: a 12-unit trackpad
-  // event asks for 14px and moves 0, a 100-unit mouse notch asks for 115px and
-  // moves 0, and only past ~170 units does anything happen — a full 328px frame
-  // at once. Driving `scrollLeft` against armed snap is therefore dead for
-  // trackpads and quantised for mice, which is why snap comes off first.
-  //
-  // What this replaces: a discrete stepper that banked delta up to a threshold,
-  // moved one frame, and then ignored the wheel for 320ms while the landing
-  // played. A trackpad flick is 30–60 events over about that long, so all but
-  // the first were dropped — the reel refusing the hand mid-flick. Backwards was
-  // worse: reversing also discarded the banked delta, and the same 320ms gated
-  // `paintReel` from updating the current frame, so the bar froze too.
-  const slow = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  /** How long a smooth landing owns the reel — see `goTo`. */
-  const STEP_HOLD = 320;
-  /** Wheel silence that counts as the end of a gesture, momentum included. */
-  const SETTLE = 140;
-
-  /** While `performance.now()` is under this, a `goTo` landing is still in flight. */
-  let held = 0;
-  /** The wheel currently owns the reel, and snap is off for the duration. */
-  let driving = false;
-  let settleT = 0;
-
   /**
-   * Where the reel comes to rest on its first and last frames.
+   * Where the row comes to rest on its first and last frames.
    *
-   * Not `0` and `scrollWidth - clientWidth`: the reel is padded by 44vw at each
+   * Not `0` and `scrollWidth - clientWidth`: the row is padded by 44vw at each
    * end so an outer frame can still reach the centre, and that padding leaves a
-   * band of travel at each end which snap will never rest in. Measured at a
-   * 1440px viewport, the first frame rests at 329 and the last at 8661 against a
-   * maximum of 8990 — 329px of dead travel at either end. An escape hatch tested
-   * against the raw bounds therefore never opens, and the reader wheels against a
-   * reel that will not move and a page that will not scroll. These are the snap
-   * positions themselves, so the test is exact at any width.
+   * band of travel at each end that no frame ever rests in. Measured at a 1280px
+   * viewport, the first frame rests at 256 and the last at 7007 against a
+   * maximum of 7263 — 256px of dead travel at either end. The escape hatch below
+   * has to be tested against these, not the raw bounds, or it never opens and
+   * the reader wheels against a row that will not move and a page that will not
+   * scroll.
    *
-   * Cached: four `getBoundingClientRect()` reads per wheel event is not free,
-   * and the answer only changes when the reel is re-laid-out.
+   * Cached: four `getBoundingClientRect()` reads per wheel event is not free.
    */
   let bounds: [number, number] | null = null;
   function travel(): [number, number] {
     if (!bounds) bounds = [centerOffset(0) ?? 0, centerOffset(reelLen - 1) ?? 0];
     return bounds;
   }
-
-  function bindReel() {
-    if (!reelEl) return;
-    const el = reelEl;
-
-    let raf = 0;
-    el.addEventListener(
-      "scroll",
-      () => {
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          paintReel();
-        });
-      },
-      { passive: true },
-    );
-
-    el.addEventListener(
-      "wheel",
-      (e) => {
-        // A genuine horizontal trackpad swipe scrolls the reel natively, and
-        // mandatory snap catches it at the end. Nothing to do.
-        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-
-        // Off either end the wheel belongs to the page again — the reel is 58vh
-        // and there is a bar and a footer below it, so the reader has to be able
-        // to leave.
-        const [lo, hi] = travel();
-        const back = e.deltaY < 0;
-        if ((back && el.scrollLeft <= lo + 1) || (!back && el.scrollLeft >= hi - 1)) return;
-
-        e.preventDefault();
-        // The hand takes the reel off any smooth landing still in flight. Writing
-        // `scrollLeft` cancels the landing, so `held` has to go with it — left
-        // standing it would keep `paintReel` from adopting the frame the reader
-        // is actually turning towards, and freeze the bar on the abandoned one.
-        held = 0;
-        if (!driving) {
-          driving = true;
-          el.style.scrollSnapType = "none";
-        }
-        // Clamped to the outer frames' own snap positions, so overshooting never
-        // exposes the 44vw of empty padding beyond them.
-        el.scrollLeft = Math.max(lo, Math.min(hi, el.scrollLeft + e.deltaY * 1.15));
-
-        clearTimeout(settleT);
-        settleT = window.setTimeout(land, SETTLE);
-      },
-      { passive: false },
-    );
-  }
-
-  /**
-   * The wheel has gone quiet. Glide to the frame nearest the centre — `gi` has
-   * been tracking it live, because nothing gates `paintReel` while `held` is 0 —
-   * and re-arm snap once that glide has arrived. Re-arming only ever happens on
-   * a snap point, so it is silent; re-arming mid-reel would jump the reel out
-   * from under the reader instead.
-   */
-  function land() {
-    driving = false;
-    goTo(gi);
-    window.setTimeout(() => {
-      if (!driving && reelEl) reelEl.style.scrollSnapType = "";
-    }, STEP_HOLD);
-  }
-
-  // A re-layout moves the snap positions, so the cached travel has to go.
-  window.addEventListener("resize", () => {
+  /** A re-layout moves the resting positions, so the cached travel has to go. */
+  const remeasure = () => {
     bounds = null;
-  });
+  };
 
-  /** Last distance-from-centre written per frame, so a still reel writes nothing. */
+  // ── landing ──────────────────────────────────────────────────────────
+  /** rAF id of the landing in flight; 0 when the row is not moving itself. */
+  let anim = 0;
+  /** Where that landing is going; -1 when idle. */
+  let animTo = -1;
+
+  function cancelGlide() {
+    if (anim) cancelAnimationFrame(anim);
+    anim = 0;
+    animTo = -1;
+  }
+
+  const ease = (p: number) => 1 - Math.pow(1 - p, 3);
+
+  /** Land on frame `i`, cancelling whatever landing was already in the air. */
+  function glideTo(i: number, smooth = true) {
+    cancelGlide();
+    if (!reelEl) return;
+    const to = centerOffset(i);
+    if (to === null) return;
+    if (gi !== i) {
+      gi = i;
+      paintBar();
+    }
+    const from = reelEl.scrollLeft;
+    const d = to - from;
+    if (!smooth || slow.matches || Math.abs(d) < 0.5) {
+      reelEl.scrollLeft = to;
+      return;
+    }
+    animTo = i;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - t0) / GLIDE);
+      reelEl.scrollLeft = from + d * ease(p);
+      if (p < 1) {
+        anim = requestAnimationFrame(tick);
+        return;
+      }
+      anim = 0;
+      animTo = -1;
+    };
+    anim = requestAnimationFrame(tick);
+  }
+
+  // ── painting ─────────────────────────────────────────────────────────
+  /** Last distance-from-centre written per frame, so a still row writes nothing. */
   const painted = new WeakMap<HTMLElement, string>();
+  /** Index nearest the middle as of the last paint. */
+  let centred = 0;
 
   function paintReel() {
     if (!reelEl) return;
@@ -333,7 +291,7 @@ const size = reel.map((f) => dims(f.src));
     const mid = rect.left + reelEl.clientWidth / 2;
     const span = reelEl.clientWidth * 0.42;
 
-    // Measure all sixteen first, then write. Interleaving reads and writes asks
+    // Measure all of them first, then write. Interleaving reads and writes asks
     // the browser to settle styles between every frame of a scroll.
     const ds = kids.map((k) => {
       const r = k.getBoundingClientRect();
@@ -348,6 +306,7 @@ const size = reel.map((f) => dims(f.src));
         best = i;
       }
     });
+    centred = best;
 
     kids.forEach((k, i) => {
       const d = ds[i];
@@ -360,66 +319,107 @@ const size = reel.map((f) => dims(f.src));
       k.style.cursor = d < 0.05 ? "zoom-in" : "pointer";
     });
 
-    // While a step is still landing, the frame nearest the centre is whatever
-    // the smooth scroll happens to be passing over. Adopting it would walk `gi`
-    // backwards through every frame in flight and flicker the bar with it, so
-    // the destination holds until it arrives.
-    if (best !== gi && performance.now() >= held) {
-      gi = best;
+    // The bar follows the middle of the row, except while a landing is in the
+    // air — then it shows where that landing is going, so it does not tick
+    // through every frame the row passes over on the way. No timer gates this,
+    // which is why the bar can no longer freeze on an abandoned frame.
+    const cur = animTo >= 0 ? animTo : best;
+    if (cur !== gi) {
+      gi = cur;
       paintBar();
     }
   }
 
-  /**
-   * Where the reel has to sit for frame `i` to be dead centre, clamped to the
-   * travel that actually exists.
-   *
-   * Measured centre-to-centre deliberately. `paintReel` scales the side frames,
-   * so `getBoundingClientRect()` reports the *scaled* box while `offsetWidth`
-   * reports the unscaled one; mixing the two (as this did) put every landing up
-   * to 43px off centre, and the snap engine then yanked it back — the lurch on
-   * the way back through the reel. A scale about the centre leaves the centre
-   * exactly where it was, so centres are the one transform-proof thing to read.
-   */
-  function centerOffset(i: number): number | null {
-    const k = reelItems()[i];
-    if (!reelEl || !k) return null;
-    const kr = k.getBoundingClientRect();
-    const rr = reelEl.getBoundingClientRect();
-    const left = reelEl.scrollLeft + (kr.left + kr.width / 2 - rr.left) - reelEl.clientWidth / 2;
-    return Math.max(0, Math.min(reelEl.scrollWidth - reelEl.clientWidth, left));
+  // ── input ────────────────────────────────────────────────────────────
+  let raf = 0;
+  let settleT = 0;
+
+  function scheduleSettle() {
+    clearTimeout(settleT);
+    settleT = window.setTimeout(() => glideTo(centred), SETTLE);
   }
 
-  // `behavior: "smooth"` wins over the CSS `scroll-behavior: auto !important`
-  // that the reduced-motion block sets, so the preference is checked here too.
-  function centerTo(i: number, smooth = true) {
-    const left = centerOffset(i);
-    if (reelEl && left !== null) {
-      reelEl.scrollTo({ left, behavior: smooth && !slow.matches ? "smooth" : "auto" });
-    }
+  function bindReel() {
+    if (!reelEl) return;
+    const el = reelEl;
+
+    el.addEventListener(
+      "scroll",
+      () => {
+        if (!raf) {
+          raf = requestAnimationFrame(() => {
+            raf = 0;
+            paintReel();
+          });
+        }
+        // A landing lands itself. Anything else that moved the row — a
+        // horizontal trackpad swipe, a scrollbar drag — settles onto the
+        // nearest frame once it goes quiet, exactly as the wheel does.
+        if (!anim) scheduleSettle();
+      },
+      { passive: true },
+    );
+
+    // Wheel → the row, one to one.
+    //
+    // The wheel is not a stepper. It moves `scrollLeft` by whatever the reader
+    // turned, so the row tracks the hand continuously and reverses the instant
+    // the hand reverses. When the wheel goes quiet the row lands on the frame
+    // nearest the centre.
+    //
+    // What this replaces: a discrete stepper that banked delta up to a
+    // threshold, moved one frame, then ignored the wheel for 320ms while the
+    // landing played. A trackpad flick is 30–60 events over about that long, so
+    // all but the first were dropped. Backwards was worse — reversing also
+    // discarded the banked delta.
+    el.addEventListener(
+      "wheel",
+      (e) => {
+        touched = true;
+        // A genuine horizontal trackpad swipe scrolls the row natively; the
+        // scroll listener above settles it.
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+        // Off either end the wheel belongs to the page again — the row is 58vh
+        // and there is a bar and a footer below it, so the reader has to be
+        // able to leave.
+        const [lo, hi] = travel();
+        const back = e.deltaY < 0;
+        if ((back && el.scrollLeft <= lo + 1) || (!back && el.scrollLeft >= hi - 1)) return;
+
+        e.preventDefault();
+        // The hand takes the row off any landing still in the air. This is the
+        // only way a landing is ever interrupted, and it happens before the
+        // write, so the two can never disagree about where the row is.
+        cancelGlide();
+        // Clamped to the outer frames' own resting positions, so overshooting
+        // never exposes the 44vw of empty padding beyond them.
+        el.scrollLeft = Math.max(lo, Math.min(hi, el.scrollLeft + e.deltaY * 1.15));
+        scheduleSettle();
+      },
+      { passive: false },
+    );
   }
 
   /**
-   * Centre frame `i` and hold it as the current frame until the scroll lands.
-   * Every way of moving the reel — wheel, arrows, buttons, clicking a side
-   * frame, the lightbox — goes through here, so they cannot disagree.
+   * Centre frame `i`. Every deliberate move — arrow keys, the ← → buttons,
+   * clicking a side frame, the lightbox — goes through here, so they cannot
+   * disagree with each other or with a gesture still settling.
    */
   function goTo(i: number, smooth = true) {
-    gi = i;
-    held = performance.now() + (smooth && !slow.matches ? STEP_HOLD : 0);
-    paintBar();
-    centerTo(i, smooth);
+    touched = true;
+    clearTimeout(settleT);
+    glideTo(i, smooth);
   }
 
-  // Clicking the centre frame opens the lightbox; a side frame centres it
-  // instead. In the scroll view every click opens the lightbox directly.
+  /** Clicking the centre frame opens the lightbox; a side frame centres it. */
   function frameClick(i: number, el: HTMLElement, e: Event) {
     e.preventDefault();
-    if (view === "scroll" || i === gi) return openLightbox(i, el);
+    if (i === gi) return openLightbox(i, el);
     goTo(i);
   }
 
-  /** Move the reel by ±1, wrapping. The lightbox does its own stepping when open. */
+  /** Move the row by ±1, wrapping. The lightbox does its own stepping when open. */
   function step(d: number, e?: Event) {
     if (e) {
       e.preventDefault?.();
@@ -430,7 +430,7 @@ const size = reel.map((f) => dims(f.src));
   }
 
   // Stepping inside the lightbox moves this page's current frame with it, so
-  // closing it leaves the reel centred on whatever was last looked at.
+  // closing it leaves the row centred on whatever was last looked at.
   onFrameChange((i) => goTo(i, false));
 
   window.addEventListener("keydown", (e) => {
@@ -443,32 +443,6 @@ const size = reel.map((f) => dims(f.src));
     }
   });
 
-  // ── view toggle ──────────────────────────────────────────────────────
-  function setView(next: "reel" | "scroll") {
-    if (view === next) return;
-    view = next;
-    closeLightbox();
-    if (reelPanel) reelPanel.hidden = next !== "reel";
-    if (scrollPanel) scrollPanel.hidden = next !== "scroll";
-    viewButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.viewBtn === next)));
-    window.scrollTo(0, 0);
-    // A hidden panel measures nothing, so anything cached off the reel's layout
-    // is stale the moment it comes back. A gesture in flight goes with it —
-    // otherwise the reel comes back with snap still disarmed.
-    bounds = null;
-    clearTimeout(settleT);
-    driving = false;
-    if (reelEl) reelEl.style.scrollSnapType = "";
-    requestAnimationFrame(() => {
-      centerTo(gi, false);
-      paintReel();
-    });
-  }
-
-  viewButtons.forEach((b) => {
-    b.addEventListener("click", () => setView(b.dataset.viewBtn === "scroll" ? "scroll" : "reel"));
-  });
-
   reelEl?.addEventListener("click", (e) => {
     const fig = (e.target as HTMLElement).closest<HTMLElement>("[data-reel-item]");
     if (!fig) return;
@@ -477,21 +451,60 @@ const size = reel.map((f) => dims(f.src));
     frameClick(i, img ?? fig, e);
   });
 
-  scrollPanel?.addEventListener("click", (e) => {
-    const img = (e.target as HTMLElement).closest<HTMLElement>("img[data-frame]");
-    if (!img) return;
-    const i = Number(img.dataset.index);
-    frameClick(i, img, e);
-  });
-
   document.querySelectorAll<HTMLButtonElement>("[data-step]").forEach((btn) => {
     btn.addEventListener("click", (e) => step(Number(btn.dataset.step), e));
   });
 
   bindReel();
-  requestAnimationFrame(() => {
-    centerTo(gi, false);
+
+  // Centre and reveal synchronously. Deliberately *not* inside
+  // `requestAnimationFrame`: rAF does not run in a background tab, and the row
+  // is held invisible until this line, so a page opened in a background tab
+  // stayed blank until it was focused. This module is deferred, so the document
+  // is parsed by now and `getBoundingClientRect()` forces the layout it needs.
+  glideTo(0, false);
+  paintReel();
+  paintBar();
+  reelEl?.removeAttribute("data-hold");
+
+  /**
+   * The row's geometry lands over time — thirteen of the sixteen frames are
+   * lazy, and each one that arrives can nudge the widths by a pixel or two.
+   * That is enough to leave the centre frame visibly off centre and keep it
+   * there, so re-measure and re-centre as they come in.
+   *
+   * Only while the reader has not taken hold: re-centring under a hand that is
+   * mid-gesture would be its own bug. `remeasure` still runs either way, since
+   * a stale `bounds` is what makes the escape hatch at the ends misfire.
+   */
+  function resettle() {
+    remeasure();
+    if (!touched && !anim) glideTo(gi, false);
     paintReel();
-    paintBar();
+  }
+
+  window.addEventListener("load", resettle);
+  reelEl?.querySelectorAll("img").forEach((im) => {
+    im.addEventListener("load", resettle, { once: true });
+  });
+
+  // A resize changes every frame's width — the row is 58vh tall and the images
+  // are height-driven — so whatever the reader was looking at drifts off
+  // centre. Put it back once the resizing has stopped; doing it live would
+  // fight a window drag. Unlike `resettle` this ignores `touched`: after a
+  // resize, re-centring the frame they are on is the point.
+  let resizeT = 0;
+  window.addEventListener("resize", () => {
+    remeasure();
+    clearTimeout(resizeT);
+    resizeT = window.setTimeout(() => {
+      // Unconditionally, and cancelling any settle still pending: a landing in
+      // flight was aimed at the geometry that existed before the resize, so it
+      // is stale by definition. Guarding this on `!anim` instead let the two
+      // race — the settle would win and the row would stay off centre.
+      clearTimeout(settleT);
+      glideTo(gi, false);
+      paintReel();
+    }, 120);
   });
 </script>
