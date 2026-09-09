@@ -16,9 +16,9 @@
     "photos": "node scripts/add-photos.mjs"
   },
   "dependencies": {
-    "@astrojs/mdx": "^2.3.0",
+    "@astrojs/mdx": "^8.0.1",
     "@astrojs/sitemap": "3.2.1",
-    "astro": "^4.16.0",
+    "astro": "^7.3.2",
     "remark-math": "^6.0.0"
   }
 }
