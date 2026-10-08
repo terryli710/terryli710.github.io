@@ -17,9 +17,9 @@ The idea of tree-based models is very simple -- using different criteria to spli
 
 Below are 2 examples for decision tree in machine learning and decision tree in daily life respectively. The first figure is a case of binary classification, from the node to the leaves, the nodes are less and less "balance" (more "pure"). For the nodes in the final layer, Node 14, 13 and 22 contain just 1 class, which is considered good since the classification is perfect (on training set, this will be discussed later).
 
-![Decision Trees in Machine Learning, Simplified | Oracle Big Data Blog](https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f0499405-1197-4b43-b7c5-40548eeb9f34/Image/33d5d0072b0cc373ff21c4b4a43042ce/decision_tree_example.png)
+![A classification tree with class counts](/img/fig/tree-based/decision-tree-example.svg)
 
-![Decision Tree Regression. A Decision Tree is a predictive model… | by Chaya  Bakshi | Level Up Coding](https://miro.medium.com/max/537/1*KGUUGBvtT-bwFvt0jIe_Ug.png)
+!['Should I write this blog post?'](/img/fig/tree-based/decision-tree-blog.svg)
 
 ## Growth of a Simple Tree
 
@@ -82,7 +82,7 @@ So similarly here, if we want to make the tree to be more stable and less sensit
 
  The idea is pretty simple: bootstrap the training data, and build an independent tree based on each bootstrapped data. When predicting, use majority vote (classification) or average of predictions from all the trees built.
 
-![img](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Ensemble_Bagging.svg/512px-Ensemble_Bagging.svg.png)
+![Bagging: bootstrap, train, aggregate](/img/fig/tree-based/bagging.svg)
 
 **Out-of-Bag Error Estimation** or **OOB** comes with the idea that for each tree, there are some samples are not included in bootstrapped samples (out of bag) thus can be used to evaluate the performance. The out-of-bag samples would averagely  be $\frac{1}{3}$ of all data.
 

@@ -1,0 +1,68 @@
+% Logistic-regression post, Newton's method: from a guess x_0, follow the
+% tangent at (x_0, f(x_0)) down to the x-axis to get x_1, then the tangent at
+% x_1 to get x_2, closing in on the root x*. Redraws the OpenStax Calculus
+% Vol. 1 figure (sec. 4.9, Newton's method; recovered via the Wayback Machine)
+% with an exact f: f(x) = x^2 - 4, x* = 2, x_0 = 8.5, so the iterates are the
+% real Newton steps x_1 = 4.485, x_2 = 2.689 (the original's are about the same).
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\begin{document}
+\pgfplotsset{
+  base/.style={
+    axis line style={draw=faint, line width=.5pt},
+    every tick/.style={draw=faint, line width=.5pt},
+    tick label style={font=\ttfamily\scriptsize, text=soft},
+    label style={font=\small, text=ink},
+  },
+}
+\tikzset{
+  drop/.style={draw=fd, line width=.5pt, dash pattern=on 2.5pt off 2pt},
+  dot/.style={circle, fill=#1, draw=#1, inner sep=0pt, minimum size=1.6mm},
+  pt/.style={font=\footnotesize, text=ink},
+  call/.style={draw=soft, line width=.5pt},
+}
+\begin{tikzpicture}[fig]
+  \begin{axis}[base, width=104mm, height=80mm, scale only axis, clip=false,
+      xmin=-1.6, xmax=10, ymin=-8, ymax=74,
+      axis lines=middle, axis line style={->, >={Stealth[length=1.6mm,width=1.2mm]}},
+      xtick=\empty, ytick=\empty,
+      xlabel={$x$}, ylabel={$y$},
+      xlabel style={anchor=west}, ylabel style={anchor=south}]
+    % the function
+    \addplot[draw=fa, line width=.9pt, domain=-1.6:8.75, samples=120, smooth] {x^2-4};
+    \node[font=\small, text=fa, anchor=south east] at (axis cs:6.1,33.2) {$f(x)$};
+
+    % first step: tangent at x_0 down to x_1
+    \draw[drop] (axis cs:8.5,0) -- (axis cs:8.5,68.25);
+    \addplot[draw=fc, line width=.8pt, domain=4.485:8.5, samples=2] {68.25 + 17*(x-8.5)};
+    % second step: tangent at x_1 down to x_2
+    \draw[drop] (axis cs:4.485,0) -- (axis cs:4.485,16.118);
+    \addplot[draw=fc, line width=.8pt, domain=2.689:4.485, samples=2] {16.118 + 8.971*(x-4.485)};
+    \draw[drop] (axis cs:2.689,0) -- (axis cs:2.689,3.228);
+
+    % the points on the curve
+    \node[dot=fa] at (axis cs:8.5,68.25) {};
+    \node[dot=fa] at (axis cs:4.485,16.118) {};
+    \node[dot=fa] at (axis cs:2.689,3.228) {};
+    \node[pt, anchor=south east] at (axis cs:8.4,69) {$(x_0, f(x_0))$};
+    \node[pt, anchor=south east] at (axis cs:4.38,16.6) {$(x_1, f(x_1))$};
+    \node[pt, anchor=south east] at (axis cs:2.55,3.6) {$(x_2, f(x_2))$};
+
+    % where each tangent lands, and the root
+    \node[dot=fc] at (axis cs:4.485,0) {};
+    \node[dot=fc] at (axis cs:2.689,0) {};
+    \node[dot=ink] at (axis cs:2,0) {};
+    \node[pt, anchor=north] at (axis cs:8.5,-1.2) {$x_0$};
+    \node[pt, anchor=north] at (axis cs:4.485,-1.2) {$x_1$};
+    \node[pt, anchor=north] at (axis cs:2.689,-1.2) {$x_2$};
+    \node[pt, anchor=north] at (axis cs:1.85,-1.2) {$x^{*}$};
+
+    % which line is which
+    \draw[call] (axis cs:6.75,38.5) -- (axis cs:4.9,46);
+    \node[font=\footnotesize, text=fc, anchor=east] at (axis cs:4.95,46) {tangent line at $x_0$};
+    \draw[call] (axis cs:3.55,7.7) -- (axis cs:1.6,13);
+    \node[font=\footnotesize, text=fc, anchor=east] at (axis cs:1.65,13) {tangent line at $x_1$};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

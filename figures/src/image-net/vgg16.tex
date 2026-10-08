@@ -1,0 +1,63 @@
+% image-net post, figure 2: VGG16, after the neurohive diagram. Each block is
+% one layer's output volume, drawn flat: height grows with spatial size,
+% width with channel count (both on a square-root scale, so the 7x7 and
+% 1x1 layers stay visible next to the 224x224 ones).
+% Colour key shared across the post: conv fa, pooling fb, fully-connected fc,
+% softmax/output fd.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm,
+    vol/.style={tint=#1, line width=.5pt, rounded corners=.8pt},
+    dim/.style={font=\rmfamily\footnotesize, text=soft, inner sep=1pt},
+  ]
+  \def\hs{2.8}    % mm of height per sqrt(pixel)
+  \def\ws{.205}   % mm of width per sqrt(channel)
+  \gdef\x{0}
+  % \layer{accent}{spatial}{channels}{gap before}
+  \newcommand{\layer}[4]{%
+    \pgfmathsetmacro{\xa}{\x+#4}%
+    \pgfmathsetmacro{\h}{\hs*sqrt(#2)/2}%
+    \pgfmathsetmacro{\w}{\ws*sqrt(#3)}%
+    \pgfmathsetmacro{\xb}{\xa+\w}%
+    \draw[vol=#1] (\xa,-\h) rectangle (\xb,\h);
+    \xdef\x{\xb}\xdef\top{\h}\xdef\left{\xa}%
+  }
+  \newcommand{\dimlab}[1]{\node[dim, anchor=south west] at (\left,\top+.8) {#1};}
+  \newcommand{\dimbelow}[1]{\node[dim, anchor=north west] at (\left,-\top-.8) {#1};}
+  % input image: a frame, 224 x 224 x 3
+  \draw[frame=soft, line width=.5pt, rounded corners=.8pt] (0,{-\hs*sqrt(224)/2}) rectangle (1.2,{\hs*sqrt(224)/2});
+  \node[dim, anchor=north west] at (0,{-\hs*sqrt(224)/2-1}) {$224\times224\times3$};
+  \node[lab, anchor=north west] at (0,{-\hs*sqrt(224)/2-5}) {input};
+  \gdef\x{1.2}
+  % block 1
+  \layer{fa}{224}{64}{3}\dimlab{$224\times224\times64$}
+  \layer{fa}{224}{64}{.8}
+  % block 2
+  \layer{fb}{112}{64}{3}\dimlab{$112\times112\times128$}
+  \layer{fa}{112}{128}{.8}\layer{fa}{112}{128}{.8}
+  % block 3
+  \layer{fb}{56}{128}{3}\dimlab{$56\times56\times256$}
+  \layer{fa}{56}{256}{.8}\layer{fa}{56}{256}{.8}\layer{fa}{56}{256}{.8}
+  % block 4
+  \layer{fb}{28}{256}{3}\dimlab{$28\times28\times512$}
+  \layer{fa}{28}{512}{.8}\layer{fa}{28}{512}{.8}\layer{fa}{28}{512}{.8}
+  % block 5
+  \layer{fb}{14}{512}{3}\dimlab{$14\times14\times512$}
+  \layer{fa}{14}{512}{.8}\layer{fa}{14}{512}{.8}\layer{fa}{14}{512}{.8}
+  % final pool
+  \layer{fb}{7}{512}{3}\dimlab{$7\times7\times512$}
+  % classifier
+  \layer{fc}{1}{4096}{4}\dimbelow{$1\times1\times4096$}
+  \layer{fc}{1}{4096}{1.5}
+  \layer{fc}{1}{1000}{3}\dimbelow{$1\times1\times1000$}
+  \layer{fd}{1}{1000}{1.5}
+  % legend
+  \begin{scope}[shift={(\x-62,-14)}]
+    \foreach \c/\t [count=\i from 0] in {fa/convolution + ReLU, fb/max pooling, fc/fully connected + ReLU, fd/softmax} {
+      \draw[vol=\c] (0,-\i*4.6-1.4) rectangle ++(2.8,2.8);
+      \node[anchor=west, font=\rmfamily\footnotesize] at (4,-\i*4.6) {\t};
+    }
+  \end{scope}
+\end{tikzpicture}
+\end{document}

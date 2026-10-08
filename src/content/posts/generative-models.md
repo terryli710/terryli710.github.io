@@ -36,7 +36,7 @@ To talk about generative models (v.s. discriminative models), we can first learn
 
 #### A Small Graph Illustration of These Two Kinds of Algorithms
 
-![two kinds](https://i.stack.imgur.com/Xrmqg.png)
+![Discriminative vs generative models](/img/fig/generative-models/generative-vs-discriminative.svg)
 
 – from [Shervine Amidi](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-supervised-learning)
 
@@ -143,7 +143,7 @@ Instead of thinking of LDA as a classification algorithm, see it as a dimensiona
 
 The main goal of this dimensionality reduction algorithm is to reduce the dimensions by projecting the feature space $X$ into a sub-space, such that in this sub-space, $X'$ has the largest “separability” for different classes of $Y$. To show what it means, here is a image illustration.
 
-<img src="/img/generative-models/lda_dimension.png" alt="gda" title="Illustration of LDA Dimensionality Reduction Method" style="zoom:50%;" />
+![Projecting onto a poor line vs the LDA direction](/img/fig/generative-models/lda-projection.svg)
 
 In this example, $X$ was in 2-D space and was projected onto a 1-D line space. Note that in the figure below, once we found the optimal projection line, two classes are quite separated in the sub-space.
 

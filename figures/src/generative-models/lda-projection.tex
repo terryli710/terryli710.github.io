@@ -1,0 +1,41 @@
+% Generative-models post, figure 2: LDA as dimensionality reduction. The same
+% two classes (fa squares, fd circles) projected onto two lines through the
+% origin. Left: a near-horizontal line - the projections overlap. Right: the
+% LDA (Fisher) direction S_W^{-1}(mu_1 - mu_0) - the projections separate.
+% Toy data, deterministic: numpy default_rng(43), 8 points per class from
+% Gaussians (sd .7 x .3, long axis at -28 deg); the LDA angle (67.9 deg) is computed
+% from these points, not chosen by eye.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\def\Pa{3.09/3.96, 3.38/3.27, 4.52/3.30, 3.17/3.76, 3.81/3.77, 2.55/3.98, 3.44/3.42, 3.65/3.44}
+\def\Pd{2.96/2.10, 2.67/1.94, 1.45/2.46, 3.52/1.73, 3.82/1.54, 1.90/2.49, 2.21/1.61, 2.21/2.44}
+\def\good{67.88}\def\bad{4.00}
+\begin{tikzpicture}[fig, x=10.5mm, y=10.5mm,
+    sq/.style={rectangle, minimum size=2.3mm, inner sep=0pt, tint=fa, fill opacity=.45, line width=.5pt},
+    ci/.style={circle, minimum size=2.5mm, inner sep=0pt, tint=fd, fill opacity=.45, line width=.5pt},
+    psq/.style={sq, minimum size=1.5mm, fill opacity=.8},
+    pci/.style={ci, minimum size=1.6mm, fill opacity=.8},
+    note/.style={anchor=north west, text width=58mm, align=left, font=\rmfamily\small, inner sep=0pt,
+      execute at begin node={\hyphenpenalty=10000}},
+  ]
+  % \panel{x offset}{line angle}{line length}
+  \newcommand\panel[3]{%
+    \begin{scope}[xshift=#1]
+      \draw[->, draw=faint, line width=.5pt] (0,0) -- (5.6,0) node[anchor=north east, font=\small, text=soft, yshift=-1mm] {$x_1$};
+      \draw[->, draw=faint, line width=.5pt] (0,0) -- (0,5.6) node[anchor=north east, font=\small, text=soft, xshift=-1mm] {$x_2$};
+      \draw[draw=ink, line width=.7pt] (0,0) -- (#2:#3);
+      \foreach \x/\y in \Pa {\pgfmathsetmacro\t{\x*cos(#2)+\y*sin(#2)}\draw[draw=faint, line width=.4pt] (\x,\y) -- (#2:\t);}
+      \foreach \x/\y in \Pd {\pgfmathsetmacro\t{\x*cos(#2)+\y*sin(#2)}\draw[draw=faint, line width=.4pt] (\x,\y) -- (#2:\t);}
+      \foreach \x/\y in \Pa {\pgfmathsetmacro\t{\x*cos(#2)+\y*sin(#2)}\node[sq] at (\x,\y) {};\node[psq] at (#2:\t) {};}
+      \foreach \x/\y in \Pd {\pgfmathsetmacro\t{\x*cos(#2)+\y*sin(#2)}\node[ci] at (\x,\y) {};\node[pci] at (#2:\t) {};}
+    \end{scope}}
+
+  \panel{0mm}{\bad}{5.1}
+  \node[note] at (0,-.55) {The two classes are not well separated when projected onto this line.};
+
+  \panel{70mm}{\good}{5.4}
+  \node[lab, text=soft, anchor=west] at ($(70mm,0)+(\good:5.4)+(.12,0)$) {LDA direction};
+  \node[note] at ($(70mm,0)+(0,-.55)$) {This line separates the two classes, and reduces the problem from two features $(x_1, x_2)$ to a single scalar $y$.};
+\end{tikzpicture}
+\end{document}

@@ -11,11 +11,11 @@ math: true
 
 In classifications, it is often the case that we want to obtain a non-linear decision boundary. 
 
-<img title="figure 1: non-linear boundary" src="https://miro.medium.com/max/1144/1*C1tN-IxPjg6fwAHKkJthEw.png" alt="non-linear boundary" style="zoom:50%;" />
+![Two classes only a curved boundary separates](/img/fig/kernel-method/nonlinear-boundary.svg)
 
 For example, for this problem (figure 2), we want a desicion boundary that is somewhat like a circle, however, our model only yields linear boundaries. In order to let our model to have more flexibility without changing the basic algorithms, we can apply a transformation onto the feature space $X$. like the figure on the right. In higher dimensionality, we can see that a linear seperation hyperplane serves as a non-linear decision boundary in original feature space. In this case, we performed a transfor somewhat like $(x-\mu)^2$ to make the center $X$ to be smaller while the further away from the center $\mu$, the larger the values are.
 
-<img title="figure 2: Kernel example" src="https://miro.medium.com/max/1400/0*ngkO1BblQXnOTcmr.png" alt="kernel visualize" style="zoom:80%;" />
+![Lifting rings from R2 to R3](/img/fig/kernel-method/kernel-lift.svg)
 
 This idea is called feature map.
 

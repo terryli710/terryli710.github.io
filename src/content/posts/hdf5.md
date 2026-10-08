@@ -23,7 +23,7 @@ But basically none of the above, can nicely save/load a bunch of numpy array as 
 
 ### Structure of HDF5 files
 
-![img](https://www.lijunzhu.info/img/post/hdf5_structure.jpg)
+![What an HDF5 file holds](/img/fig/hdf5/hdf5-structure.svg)
 
 There are groups and datasets inside a HDF5 file, we can think of groups as folders, datasets as files. And for each folder and file, we can have descriptions/tags/metadata for them.
 

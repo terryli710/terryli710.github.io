@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import remarkMath from "remark-math";
 import rehypeMathjaxTex from "./src/plugins/rehype-mathjax-tex.mjs";
 import rehypeFootnotePopovers from "./src/plugins/rehype-footnote-popovers.mjs";
+import rehypeInlineFigures from "./src/plugins/rehype-inline-figures.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,7 +13,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeMathjaxTex, rehypeFootnotePopovers],
+    rehypePlugins: [rehypeMathjaxTex, rehypeFootnotePopovers, rehypeInlineFigures],
     // The design sets code in the body ink on the page ground, with only
     // keywords and comments carrying colour — so a single theme, restyled by
     // `.po-code` in global.css, rather than a dual light/dark pair.

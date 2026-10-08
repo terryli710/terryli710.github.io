@@ -1,0 +1,48 @@
+% LSTM post, figure 8: a two-layer LSTM unrolled over two time steps. Each
+% layer passes its cell state C and hidden state h along in time; layer 1's
+% h_t is layer 2's input at the same step. Inputs are the token vectors
+% [the; sky] at t=1 and [is; blue] at t=2. Colour key as the other LSTM
+% figures: cell = fc, h = fe, input = fa, cell state = ink.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\tikzset{
+  cell/.style={box=fc, minimum width=40mm, minimum height=18mm, anchor=south west, font=\rmfamily\small},
+  carr/.style={arr=ink},
+  harr/.style={arr=fe},
+  sl/.style={font=\footnotesize, inner sep=1.5pt, above},
+  tok/.style={rectangle, tint=fa, line width=.5pt, font=\ttfamily\footnotesize,
+    minimum width=9mm, minimum height=5mm, inner sep=1pt},
+  band/.style={group, inner sep=0pt},
+  layer/.style={font=\ttfamily\footnotesize, text=soft, anchor=east},
+}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm]
+  % cell (l, t) has its lower-left corner at (\x, \y)
+  \def\cw{40}\def\ch{18}
+  \foreach \l/\y in {1/0, 2/38} {
+    \draw[rule, dashed, line width=.6pt, rounded corners=4pt] (2,\y-4) rectangle (146,\y+\ch+4);
+    \node[layer] at (0,\y+\ch/2) {LAYER \l};
+    \foreach \t/\x in {1/24, 2/86} {
+      \node[cell] (c\l\t) at (\x,\y) {LSTM Cell};
+    }
+    % C along the top third, h along the bottom third; t = 0 .. 2
+    \foreach \t/\xa/\xb in {0/8/24, 1/64/86, 2/126/142} {
+      \draw[carr] (\xa,\y+13) -- (\xb,\y+13) node[sl, midway] {$C^{l=\l}_{t=\t}$};
+      \draw[harr] (\xa,\y+5) -- (\xb,\y+5) node[sl, midway] {$h^{l=\l}_{t=\t}$};
+    }
+  }
+  % layer 1's hidden state goes up into layer 2 at the same step
+  \foreach \t/\x in {1/24, 2/86} {
+    \draw[harr, rounded corners=3mm] (\x+\cw-7,\ch) -- (\x+\cw-7,28) -- (\x+7,28) -- (\x+7,38);
+    \node[sl] at (\x+\cw/2,28) {$h^{l=1}_{t=\t}$};
+  }
+  % inputs: one token vector per step
+  \foreach \t/\x/\a/\b in {1/24/the/sky, 2/86/is/blue} {
+    \node[tok] (a\t) at (\x+7,-13) {\a};
+    \node[tok, below=0pt of a\t] (b\t) {\b};
+    \draw[line width=.5pt, draw=soft] ($(a\t.north west)+(-1.2,1)$) -- ++(-.8,0) |- ($(b\t.south west)+(-1.2,-1)$);
+    \draw[line width=.5pt, draw=soft] ($(a\t.north east)+(1.2,1)$) -- ++(.8,0) |- ($(b\t.south east)+(1.2,-1)$);
+    \draw[arr] ($(a\t.north)+(0,1)$) -- (\x+7,0);
+  }
+\end{tikzpicture}
+\end{document}

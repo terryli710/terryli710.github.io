@@ -1,0 +1,66 @@
+% Tree-based post, figure 1: a binary classification tree (recovered from the
+% Oracle Big Data Blog's "Decision Trees in Machine Learning, Simplified"
+% via the Wayback Machine). Every node keeps its original number and class
+% counts; the bar shows the class mix, so purity can be read at a glance.
+% Class 0 is fd, class 1 is fa, as in every two-class figure on the site.
+% Nodes 5, 3 and 10 are split further in the original, which stops here.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig,
+    nd/.style={frame=soft, minimum width=21mm, minimum height=15mm, inner sep=0pt},
+    edge/.style={draw=soft, line width=.5pt, rounded corners=2pt},
+    sp/.style={lab, fill=paper, inner sep=1.5pt},
+  ]
+  \def\bw{17}% bar width, mm
+  % \tn{name}{x}{y}{node id}{class-0 count}{class-1 count}
+  \newcommand\tn[6]{%
+    \pgfmathtruncatemacro\tot{#5+#6}%
+    \pgfmathsetmacro\wz{\bw*#5/\tot}%
+    \node[nd] (#1) at (#2*.96mm,#3mm) {};
+    \node[anchor=north, font=\rmfamily\footnotesize, inner sep=0pt] at ($(#1.north)+(0,-1.6mm)$) {Node #4};
+    \node[anchor=north, font=\ttfamily\scriptsize, text=soft, inner sep=0pt] at ($(#1.north)+(0,-5.3mm)$) {n=\tot};
+    \coordinate (b) at ($(#1.south west)+(2mm,4.6mm)$);
+    \fill[fd, fill opacity=.8] (b) rectangle ++(\wz mm,1.9mm);
+    \fill[fa, fill opacity=.8] ($(b)+(\wz mm,0)$) rectangle ($(b)+(\bw mm,1.9mm)$);
+    \node[anchor=south west, font=\ttfamily\scriptsize, text=fd, inner sep=0pt] at ($(#1.south west)+(2mm,1.3mm)$) {#5};
+    \node[anchor=south east, font=\ttfamily\scriptsize, text=fa, inner sep=0pt] at ($(#1.south east)+(-2mm,1.3mm)$) {#6};
+  }
+  % elbow edge from parent to child, with the split variable on the stem
+  \newcommand\tedge[2]{\draw[edge] (#1.south) -- ++(0,-5mm) -| (#2.north);}
+
+  \tn{n0}{71.25}{0}{0}{791}{483}
+  \tn{n1}{37.5}{-25}{1}{452}{450}
+  \tn{n8}{105}{-25}{8}{339}{33}
+  \tn{n4}{12.5}{-50}{4}{247}{430}
+  \tn{n2}{62.5}{-50}{2}{205}{20}
+  \tn{n19}{88.5}{-50}{19}{149}{0}
+  \tn{n9}{116}{-50}{9}{190}{33}
+  \tn{n14}{0}{-75}{14}{0}{223}
+  \tn{n5}{25}{-75}{5}{247}{207}
+  \tn{n13}{50}{-75}{13}{153}{3}
+  \tn{n3}{75}{-75}{3}{52}{17}
+  \tn{n22}{103.5}{-75}{22}{53}{0}
+  \tn{n10}{128.5}{-75}{10}{137}{33}
+
+  \foreach \p/\a/\b in {n0/n1/n8, n1/n4/n2, n8/n19/n9, n4/n14/n5, n2/n13/n3, n9/n22/n10}{
+    \tedge{\p}{\a}\tedge{\p}{\b}
+  }
+  % split variable of each internal node, on its stem
+  \foreach \p/\v in {n0/INCOME, n1/INCOME, n8/INCOME, n4/INCOME, n2/GENDER, n9/INCOME}{
+    \node[sp, anchor=north] at ($(\p.south)+(0,-.4mm)$) {\v};
+  }
+  % nodes the original splits further
+  \foreach \p in {n5, n3, n10}{
+    \draw[edge, dashed, draw=faint] (\p.south) -- ++(0,-3mm);
+    \node[lab, anchor=north] at ($(\p.south)+(0,-3.2mm)$) {INCOME\,\dots};
+  }
+
+  % legend
+  \node[anchor=west, lab, text=soft] (lg) at (0,-2mm) {class};
+  \fill[fd, fill opacity=.8] ($(lg.east)+(1mm,-1mm)$) rectangle ++(2mm,2mm);
+  \node[anchor=west, font=\ttfamily\scriptsize, text=fd] at ($(lg.east)+(3.4mm,0)$) {0};
+  \fill[fa, fill opacity=.8] ($(lg.east)+(8.5mm,-1mm)$) rectangle ++(2mm,2mm);
+  \node[anchor=west, font=\ttfamily\scriptsize, text=fa] at ($(lg.east)+(10.9mm,0)$) {1};
+\end{tikzpicture}
+\end{document}

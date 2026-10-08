@@ -1,0 +1,115 @@
+% image-net post, figure 9 (Tan & Le 2019, EfficientNet, Fig. 2): model
+% scaling. A network is drawn as a stack of stages; a block's width is its
+% channel count and its height its spatial resolution. (a) baseline;
+% (b) width scaling, more channels; (c) depth scaling, more layers (each
+% stage repeated); (d) resolution scaling, larger input and feature maps;
+% (e) compound scaling, all three at once by a fixed ratio.
+% Schematic: sizes are illustrative, as in the paper. Every stage is a conv
+% stage, so all blocks are fa (the post's conv colour).
+% Block geometry (panel centres x = 0 92 162 236 336): baseline widths 8 14 25
+% 34 42, heights 16 12 8 4.5 2.8; (b) widths x2; (c) each stage twice;
+% (d) heights x1.7; (e) widths x1.3, heights x1.25, each stage twice.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig,
+    stage/.style={rectangle, rounded corners=1pt, inner sep=0pt, outer sep=0pt,
+      line width=.5pt, tint=fa},
+    tarr/.style={-{Stealth[length=3.2pt,width=2.6pt]}, draw=soft, line width=.5pt},
+    ann/.style={font=\ttfamily\scriptsize, text=soft},
+    dimln/.style={draw=soft, line width=.5pt, dash pattern=on 2pt off 1.5pt},
+    dimarr/.style={dimln, {Stealth[length=3pt,width=2.4pt]}-{Stealth[length=3pt,width=2.4pt]}},
+    pcap/.style={font=\rmfamily\footnotesize, anchor=north, align=center},
+  ]
+  % \blk{name}{centre x}{bottom y}{width}{height}, all in pt
+  \newcommand{\blk}[5]{\node[stage, minimum width=#4pt, minimum height=#5pt, anchor=south]
+    (#1) at (#2pt,#3pt) {};}
+  % arrows between consecutive blocks of a stack, plus the input arrow
+  \newcommand{\chain}[2]{%
+    \draw[tarr] ($(#10.south)+(0,-11pt)$) -- (#10.south);
+    \foreach \i in {1,...,#2} {
+      \pgfmathtruncatemacro{\h}{\i-1}
+      \draw[tarr] (#1\h.north) -- (#1\i.south);
+    }}
+  % (a) top at 91.30
+  \blk{a0}{0}{0.00}{8}{16}
+  \blk{a1}{0}{28.00}{14}{12}
+  \blk{a2}{0}{52.00}{25}{8}
+  \blk{a3}{0}{72.00}{34}{4.5}
+  \blk{a4}{0}{88.50}{42}{2.8}
+  \chain{a}{4}
+  % (b) top at 91.30
+  \blk{b0}{92}{0.00}{16}{16}
+  \blk{b1}{92}{28.00}{28}{12}
+  \blk{b2}{92}{52.00}{50}{8}
+  \blk{b3}{92}{72.00}{68}{4.5}
+  \blk{b4}{92}{88.50}{84}{2.8}
+  \chain{b}{4}
+  % (c) top at 169.60
+  \blk{c0}{162}{0.00}{8}{16}
+  \blk{c1}{162}{23.00}{8}{16}
+  \blk{c2}{162}{51.00}{14}{12}
+  \blk{c3}{162}{70.00}{14}{12}
+  \blk{c4}{162}{94.00}{25}{8}
+  \blk{c5}{162}{109.00}{25}{8}
+  \blk{c6}{162}{129.00}{34}{4.5}
+  \blk{c7}{162}{140.50}{34}{4.5}
+  \blk{c8}{162}{157.00}{42}{2.8}
+  \blk{c9}{162}{166.80}{42}{2.8}
+  \chain{c}{9}
+  % (d) top at 121.61
+  \blk{d0}{236}{0.00}{8}{27.2}
+  \blk{d1}{236}{39.20}{14}{20.4}
+  \blk{d2}{236}{71.60}{25}{13.6}
+  \blk{d3}{236}{97.20}{34}{7.65}
+  \blk{d4}{236}{116.85}{42}{4.76}
+  \chain{d}{4}
+  % (e) top at 191.24
+  \blk{e0}{336}{0.00}{10.4}{20}
+  \blk{e1}{336}{27.00}{10.4}{20}
+  \blk{e2}{336}{59.00}{18.2}{15}
+  \blk{e3}{336}{81.00}{18.2}{15}
+  \blk{e4}{336}{108.00}{32.5}{10}
+  \blk{e5}{336}{125.00}{32.5}{10}
+  \blk{e6}{336}{147.00}{44.2}{5.62}
+  \blk{e7}{336}{159.62}{44.2}{5.62}
+  \blk{e8}{336}{177.24}{54.6}{3.5}
+  \blk{e9}{336}{187.74}{54.6}{3.5}
+  \chain{e}{9}
+
+  % ---- (a) baseline: what each dimension is
+  \draw[dimln] ($(a4.north west)+(0,3pt)$) -- ++(0,3pt) -- ($(a4.north east)+(0,6pt)$) -- ++(0,-3pt);
+  \node[ann, anchor=south] at ($(a4.north)+(0,6.5pt)$) {\#channels};
+  \draw[dimln, -{Stealth[length=3pt,width=2.4pt]}] ($(a1.east)+(15pt,0)$) -- ($(a1.east)+(2pt,0)$);
+  \node[ann, anchor=west] at ($(a1.east)+(15pt,0)$) {layer$_i$};
+  \draw[soft, line width=.5pt, decorate, decoration={brace, amplitude=2.5pt}]
+    ($(a0.north east)+(2pt,0)$) -- ($(a0.south east)+(2pt,0)$);
+  \node[ann, anchor=west] at ($(a0.east)+(6pt,0)$) {resolution $H{\times}W$};
+  % ---- (b) wider
+  \foreach \s in {west, east} \draw[dimln] ($(b4.north \s)+(0,2pt)$) -- ++(0,8pt);
+  \draw[dimarr] ($(b4.north west)+(0,7pt)$) -- ($(b4.north east)+(0,7pt)$);
+  \node[ann, fill=paper, inner sep=1.5pt] at ($(b4.north)+(0,7pt)$) {wider};
+  % ---- (c) deeper
+  \foreach \b in {c0.south, c9.north} \draw[dimln] ($(\b)+(24pt,0)$) -- ++(10pt,0);
+  \draw[dimarr] ($(c0.south)+(30pt,0)$) -- ($(c9.north)+(30pt,0)$);
+  \node[ann, fill=paper, inner sep=1.5pt] at ($(c0.south)!.5!(c9.north)+(30pt,0)$) {deeper};
+  % ---- (d) higher resolution
+  \foreach \s in {north, south} \draw[dimln] ($(d0.\s\space east)+(2pt,0)$) -- ++(9pt,0);
+  \draw[dimarr] ($(d0.south east)+(7pt,0)$) -- ($(d0.north east)+(7pt,0)$);
+  \node[ann, anchor=west, align=left] at ($(d0.east)+(12pt,0)$) {higher\\resolution};
+  % ---- (e) compound: all three
+  \foreach \s in {west, east} \draw[dimln] ($(e9.north \s)+(0,2pt)$) -- ++(0,8pt);
+  \draw[dimarr] ($(e9.north west)+(0,7pt)$) -- ($(e9.north east)+(0,7pt)$);
+  \node[ann, fill=paper, inner sep=1.5pt] at ($(e9.north)+(0,7pt)$) {wider};
+  \foreach \b in {e0.south, e9.north} \draw[dimln] ($(\b)+(-34pt,0)$) -- ++(10pt,0);
+  \draw[dimarr] ($(e0.south)+(-30pt,0)$) -- ($(e9.north)+(-30pt,0)$);
+  \node[ann, fill=paper, inner sep=1.5pt] at ($(e0.south)!.5!(e9.north)+(-30pt,0)$) {deeper};
+  \foreach \s in {north, south} \draw[dimln] ($(e0.\s\space east)+(2pt,0)$) -- ++(9pt,0);
+  \draw[dimarr] ($(e0.south east)+(7pt,0)$) -- ($(e0.north east)+(7pt,0)$);
+  \node[ann, anchor=west, align=left] at ($(e0.east)+(12pt,0)$) {higher\\resolution};
+  % ---- captions
+  \foreach \p/\t in {a/{(a) baseline}, b/{(b) width\\scaling}, c/{(c) depth\\scaling},
+                     d/{(d) resolution\\scaling}, e/{(e) compound\\scaling}}
+    \node[pcap] at ($(\p0.south)+(0,-14pt)$) {\t};
+\end{tikzpicture}
+\end{document}

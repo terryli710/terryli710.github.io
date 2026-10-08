@@ -1,0 +1,93 @@
+% Survival-analysis post, figure 2: an annotated Kaplan-Meier curve for two
+% groups (placebo, treatment), from S4BE / Cochrane "Tutorial about survival
+% analysis" (2016), Figure 2. The step curves and censoring ticks were
+% digitised from that figure's pixels (axis-calibrated, ~1 % / ~10 day
+% precision); the numbers in the annotations (medians 906 and 2246 days,
+% 45 % at 3650 days, HR 0.38 (0.28-0.53), the at-risk counts) are the
+% original's own. The original drew the y-axis "0" label at the frame bottom,
+% which actually sat at about 4.5 %; here the axis is linear from 0.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\begin{document}
+\pgfplotsset{
+  base/.style={
+    axis line style={draw=faint, line width=.5pt},
+    every tick/.style={draw=faint, line width=.5pt},
+    major tick length=1.2mm,
+    tick label style={font=\ttfamily\scriptsize, text=soft},
+    label style={font=\small, text=ink},
+  },
+  km/.style={const plot, no marks, line width=.9pt, draw=#1},
+  cens/.style={only marks, mark=|, mark size=2.3pt, mark options={draw=#1, line width=.7pt}},
+}
+\tikzset{
+  guide/.style={draw=#1, line width=.5pt, dash pattern=on 2.5pt off 2pt},
+  note/.style={font=\footnotesize, text=soft, align=left},
+  call/.style={->, draw=soft, line width=.5pt, >={Stealth[length=1.6mm,width=1.2mm]}},
+}
+\begin{tikzpicture}[fig]
+  \begin{axis}[base, width=112mm, height=72mm, scale only axis, clip=false,
+      xmin=0, xmax=6600, ymin=0, ymax=100, enlarge x limits={abs=120},
+      xtick={0,2000,4000,6000}, ytick={0,25,50,75,100},
+      scaled x ticks=false, xticklabel style={/pgf/number format/set thousands separator={}},
+      axis x line=bottom, axis y line=left,
+      x axis line style={-}, y axis line style={-},
+      xlabel={time (days)}, ylabel={patients surviving (\%)},
+      ylabel style={yshift=-1mm}]
+    % median survival: where each curve crosses 50 %
+    \draw[guide=soft] (axis cs:-120,50) -- (axis cs:2246,50);
+    \draw[guide=fb] (axis cs:906,50) -- (axis cs:906,0);
+    \draw[guide=fa] (axis cs:2246,50) -- (axis cs:2246,0);
+    % 10-year (3650-day) survival of the treatment group
+    \draw[guide=fa] (axis cs:3650,0) -- (axis cs:3650,45) -- (axis cs:-120,45);
+
+    \addplot[km=fb] coordinates {(0,100.0) (44,97.4) (49,93.7) (54,90.8) (59,84.1) (64,83.1) (69,82.2) (74,81.3) (142,80.4) (191,79.4) (201,78.4) (225,77.4) (230,76.6) (269,75.6) (274,74.6) (338,73.7) (343,72.7) (367,71.8) (377,70.9) (391,69.1) (431,68.0) (450,67.1) (504,66.1) (518,65.2) (538,63.3) (543,62.4) (553,61.5) (558,60.5) (567,59.7) (582,57.7) (606,56.7) (650,55.8) (665,54.8) (734,53.9) (792,52.9) (861,52.1) (865,51.1) (906,50.1) (919,49.7) (939,49.0) (993,48.3) (1007,47.3) (1012,46.4) (1066,45.4) (1100,44.5) (1110,43.5) (1193,42.6) (1261,41.6) (1296,40.7) (1320,39.8) (1374,38.8) (1437,37.9) (1447,37.0) (1462,36.0) (1467,34.1) (1496,33.2) (1584,32.3) (1589,31.3) (1618,30.4) (1642,29.4) (1647,27.5) (1652,26.5) (1657,25.7) (1667,24.6) (1735,23.8) (1740,22.8) (1765,21.9) (1770,20.9) (1906,20.0) (1931,19.0) (2156,18.1) (2283,17.3) (2317,16.2) (2576,15.2) (2669,14.1) (2688,13.2) (2942,12.2) (3109,11.1) (3328,10.1) (3475,9.5) (5561,9.5)};
+    \addplot[cens=fb] coordinates {(2424,16.2) (3519,9.5) (3677,9.5) (3751,9.5) (3954,9.5) (4120,9.5) (4432,9.5) (5021,9.5) (5561,9.5)};
+
+    \addplot[km=fa] coordinates {(0,100.0) (5,97.3) (10,93.5) (15,90.6) (20,86.8) (30,85.8) (44,84.8) (74,84.0) (186,83.0) (259,82.0) (299,81.2) (303,80.2) (401,79.2) (465,78.2) (602,77.3) (694,76.3) (782,75.4) (1027,74.4) (1271,73.5) (1471,72.5) (1843,70.7) (1887,69.7) (1892,67.8) (1897,66.8) (1926,64.9) (1936,64.0) (1945,63.0) (1960,62.0) (1989,60.3) (1999,59.2) (2043,58.2) (2053,57.2) (2121,56.3) (2126,55.4) (2165,54.4) (2209,52.5) (2229,51.6) (2239,50.6) (2246,49.6) (2258,48.8) (2288,46.8) (2444,45.8) (2620,45.0) (3724,42.8) (3773,41.3) (3778,40.1) (3793,38.8) (3817,37.9) (3925,36.0) (4032,35.0) (6304,35.0)};
+    \addplot[cens=fa] coordinates {(3436,45.0) (3514,45.0) (3614,45.0) (3692,45.0) (3739,42.8) (3841,37.9) (3890,37.9) (3963,36.0) (4034,35.0) (4166,35.0) (4252,35.0) (4391,35.0) (4425,35.0) (4450,35.0) (4503,35.0) (4555,35.0) (4633,35.0) (4677,35.0) (4799,35.0) (4907,35.0) (4946,35.0) (5007,35.0) (5078,35.0) (5131,35.0) (5557,35.0) (6199,35.0) (6304,35.0)};
+
+    % direct group labels
+    \node[anchor=west, font=\small, text=fa] at (axis cs:6340,35) {treatment};
+    \node[anchor=west, font=\small, text=fb] at (axis cs:5600,9.5) {placebo};
+
+    % effect size
+    \node[anchor=north east, font=\footnotesize, align=right] at (axis cs:6600,101)
+      {hazard ratio for death in the treatment group\\
+       $0.38$ (95\% CI $0.28$-$0.53$), $p<0.0001$};
+
+    % reading the curve
+    \node[note, anchor=west] (step) at (axis cs:2350,79)
+      {each downward \textit{step} is an event (e.g.\ a death)\\in that group};
+    \draw[call] (step.west) to[out=180, in=45] (axis cs:1500,73.6);
+    \node[note, anchor=north west] (tick) at (axis cs:3950,64)
+      {each small \textit{tick} is a censored patient: no\\
+       event by the last follow-up (lost to follow-up,\\
+       study ended, or died of an unrelated cause)};
+    \draw[call] ([xshift=6mm]tick.south) -- (axis cs:5150,37.6);
+
+    % medians and the 10-year point
+    \node[anchor=south east, font=\scriptsize, text=fb, inner sep=1.5pt] at (axis cs:906,0) {906};
+    \node[anchor=south west, font=\scriptsize, text=fa, inner sep=1.5pt] at (axis cs:2246,0) {2246};
+    \node[font=\footnotesize, text=soft, align=center] at (axis cs:1576,7) {median\\survival};
+    \node[anchor=north east, font=\footnotesize, text=fa, align=right] at (axis cs:3600,43.5)
+      {10-year survival\\$45\%$};
+    \node[anchor=south west, font=\scriptsize, text=fa, inner sep=1.5pt] at (axis cs:3650,0) {3650 d $\approx$ 10 yr};
+
+    % number at risk, aligned to the time axis
+    \draw[draw=rule, line width=.5pt] (axis cs:-1250,-19.5) -- (axis cs:6600,-19.5);
+    \node[lab, anchor=west] at (axis cs:-120,-23) {NUMBER AT RISK};
+    \node[anchor=east, font=\small, text=fb] at (axis cs:-300,-29.5) {placebo};
+    \node[anchor=east, font=\small, text=fa] at (axis cs:-300,-36.5) {treatment};
+    \node[font=\small] at (axis cs:0,-29.5) {106};
+    \node[font=\small] at (axis cs:2000,-29.5) {20};
+    \node[font=\small] at (axis cs:4000,-29.5) {5};
+    \node[font=\small] at (axis cs:6000,-29.5) {0};
+    \node[font=\small] at (axis cs:0,-36.5) {105};
+    \node[font=\small] at (axis cs:2000,-36.5) {62};
+    \node[font=\small] at (axis cs:4000,-36.5) {25};
+    \node[font=\small] at (axis cs:6000,-36.5) {2};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,44 @@
+% image-net post, figure 8 (Szegedy et al. 2015, "Rethinking the Inception
+% Architecture", Fig. 6): the Inception-v3 module after factorising the n x n
+% convolutions into a 1 x n followed by an n x 1. Branches, left to right:
+% 1x1 -> 1xn -> nx1 -> 1xn -> nx1 (a factorised pair of n x n convs);
+% 1x1 -> 1xn -> nx1 (one factorised n x n conv); pool -> 1x1; and a lone 1x1.
+% Colour key shared across the post (and with inception-naive/-reduced):
+% conv fa, pooling fb, concat/output fd; the 1x1 reductions in front of the
+% factorised convs and behind the pool are fa outlines.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig,
+    cell/.style={minimum width=42pt, minimum height=18pt, inner sep=1pt,
+      text height=1.6ex, text depth=.45ex},
+    blk/.style={box=#1, cell},
+    red/.style={frame=fa, cell},
+    bar/.style={minimum width=198pt, minimum height=17pt, inner sep=2pt},
+  ]
+  % columns at x = 0, 52, 104, 156; rows every 30pt from y = 30
+  \node[frame=soft, bar] (base) at (78pt,0) {Base};
+  \node[box=fd, bar] (cat) at (78pt,181pt) {Filter Concat};
+  % branch 1: two factorised n x n convs
+  \node[red]    (a1) at (0,30pt)  {$1\times1$};
+  \node[blk=fa] (a2) at (0,60pt)  {$1\times n$};
+  \node[blk=fa] (a3) at (0,90pt)  {$n\times 1$};
+  \node[blk=fa] (a4) at (0,120pt) {$1\times n$};
+  \node[blk=fa] (a5) at (0,150pt) {$n\times 1$};
+  % branch 2: one factorised n x n conv
+  \node[red]    (b1) at (52pt,30pt) {$1\times1$};
+  \node[blk=fa] (b2) at (52pt,60pt) {$1\times n$};
+  \node[blk=fa] (b3) at (52pt,90pt) {$n\times 1$};
+  % branch 3: pool, then a 1x1
+  \node[blk=fb] (c1) at (104pt,30pt) {Pool};
+  \node[red]    (c2) at (104pt,60pt) {$1\times1$};
+  % branch 4: a lone 1x1
+  \node[blk=fa] (d1) at (156pt,30pt) {$1\times1$};
+  \foreach \lo/\hi in {a1/a5, b1/b3, c1/c2, d1/d1} {
+    \draw[arr] (\lo |- base.north) -- (\lo.south);
+    \draw[arr] (\hi.north) -- (\hi |- cat.south);
+  }
+  \foreach \lo/\hi in {a1/a2, a2/a3, a3/a4, a4/a5, b1/b2, b2/b3, c1/c2}
+    \draw[arr] (\lo.north) -- (\hi.south);
+\end{tikzpicture}
+\end{document}

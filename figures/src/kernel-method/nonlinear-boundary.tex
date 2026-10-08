@@ -1,0 +1,18 @@
+% Kernel-method post, figure 1: a toy two-class dataset (fa, fd) that only a
+% curved decision boundary separates. Layout follows the original sketch.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=.11mm, y=-.11mm,
+    pt/.style={circle, minimum size=4.6mm, inner sep=0pt, tint=#1, fill opacity=.45},
+  ]
+  \draw[line width=.9pt, draw=ink, smooth, tension=.6] plot coordinates {
+    (28,262) (110,292) (168,306) (190,262) (187,195) (214,140) (262,84)
+    (300,70) (330,80) (370,135) (420,195) (482,240) (498,282) (466,316)
+    (418,346) (396,380) (393,415)};
+  \foreach \x/\y in {160/92, 375/57, 476/168, 130/241, 497/374}
+    \node[pt=fa] at (\x,\y) {};
+  \foreach \x/\y in {303/124, 232/208, 418/281, 80/343, 311/368}
+    \node[pt=fd] at (\x,\y) {};
+\end{tikzpicture}
+\end{document}

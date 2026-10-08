@@ -1,0 +1,44 @@
+% LSTM post, figure 2: a standard RNN unrolled over three steps. Its
+% repeating module holds a single tanh layer over [h_{t-1}, x_t]; drawn on
+% the same module geometry and colour key as lstm-chain, for comparison.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\tikzset{
+  tlay/.style={rectangle, preaction={fill=paper, draw=none}, tint=fd, line width=.7pt,
+    minimum width=8.4mm, minimum height=4.6mm, inner sep=0pt, font=\footnotesize},
+  wire/.style={line width=.7pt, rounded corners=2mm},
+  ghost/.style={draw opacity=.13, fill opacity=0, text opacity=.16,
+    tlay/.style={rectangle, draw=fd, line width=.7pt, minimum width=8.4mm, minimum height=4.6mm,
+      inner sep=0pt, font=\footnotesize}},
+  xin/.style={op=fa, minimum size=8mm},
+  hout/.style={op=fe, minimum size=8mm},
+}
+% module box (0,0)-(\W,\H), as in lstm-chain; the state runs at height \yS
+\def\W{52}\def\H{33}\def\yS{22}\def\xX{3}\def\xU{48}\def\gap{9}
+\newcommand\Rbox{\draw[tint=fc, rounded corners=2.5pt] (0,0) rectangle (\W,\H);}
+\newcommand\Rnn{%
+  \draw[wire, ->] (0,\yS) -- (16,\yS) -- (16,9) -- (26,9) -- (26,13.7);
+  \draw[wire] (\xX,0) -- (\xX,9) -- (20,9);
+  \draw[wire] (26,18.3) -- (26,\yS) -- (\W,\yS);
+  \draw[wire] (\xU,\yS) -- (\xU,\H);
+  \node[tlay] at (26,16) {$\tanh$};}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm]
+  \foreach \k/\s in {-1/{t-1}, 0/t, 1/{t+1}} {
+    \begin{scope}[xshift=\k*(\W+\gap)*1mm]
+      \Rbox
+      \ifnum\k=0 \Rnn \else
+        \begin{scope}[ghost] \Rnn \end{scope}
+        \node[font=\LARGE] at (38,14) {$A$};
+      \fi
+      \node[xin] (x) at (\xX,-12) {$x_{\s}$};
+      \node[hout] (h) at (\xU,\H+12) {$h_{\s}$};
+      \draw[wire] (x) -- (\xX,0);
+      \draw[arr] (\xU,\H) -- (h);
+    \end{scope}
+  }
+  \draw[arr] (-\gap,\yS) -- (0,\yS);
+  \draw[arr] (\W,\yS) -- (\W+\gap,\yS);
+  \draw[arr] (2*\W+\gap,\yS) -- (2*\W+\gap+7,\yS);
+\end{tikzpicture}
+\end{document}

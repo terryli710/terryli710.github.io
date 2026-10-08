@@ -1,0 +1,78 @@
+% figkit preamble - figures for terryli710.github.io.
+%
+% Usage (build with: python3 figures/build.py figures/src/<post>/<name>.tex):
+%   \documentclass[tikz,border=3pt]{standalone}
+%   \input{FIGKIT/preamble.tex}   % build.py resolves FIGKIT
+%   \begin{document}
+%   \begin{tikzpicture}[fig] ... \end{tikzpicture}
+%   \end{document}
+%
+% COLOUR RULE - read this before drawing anything.
+% Every colour below is a SENTINEL: an exact RGB value that build.sh rewrites
+% into a CSS variable, so the figure follows the page's day/night theme and has
+% no background of its own. Therefore:
+%   * use ONLY these colour names, never black/white/red/... and never a mix
+%     such as fa!20 or fa!50!fb - a mix produces an RGB value that cannot be
+%     mapped, and build.sh rejects the figure;
+%   * for a tint, use the colour at full strength with `fill opacity`
+%     (the styles below already do: tint=fa etc.);
+%   * `paper` is the page background: use it only to knock a shape out of
+%     something drawn underneath it (e.g. a line passing behind a node).
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{Spectral}[Path=FIGKITFONTS/, UprightFont=*-Regular, ItalicFont=*-Italic,
+  BoldFont=*-Medium, Extension=.ttf]
+\setmonofont{IBMPlexMono}[Path=FIGKITFONTS/, UprightFont=*-Regular, BoldFont=*-Medium, Extension=.ttf]
+\setmathfont{STIXTwoMath-Regular.ttf}[Path=FIGKITFONTS/]
+
+\usetikzlibrary{arrows.meta,calc,positioning,fit,backgrounds,shapes.geometric,shapes.misc,
+  decorations.pathreplacing,decorations.markings,matrix,3d,perspective,intersections}
+
+% --- sentinels (R,G,B 0-255) -> CSS variables, see build.py ---
+\definecolor{ink}{RGB}{1,0,10}    % --ink    main text, main strokes
+\definecolor{soft}{RGB}{2,0,10}   % --soft   secondary text and strokes
+\definecolor{faint}{RGB}{3,0,10}  % --faint  axes, guides, captions
+\definecolor{rule}{RGB}{4,0,10}   % --line2  hairlines, grids, frames
+\definecolor{fa}{RGB}{5,0,10}     % --fa     accent 1, the site blue
+\definecolor{fb}{RGB}{6,0,10}     % --fb     accent 2, ochre
+\definecolor{fc}{RGB}{7,0,10}     % --fc     accent 3, sage green
+\definecolor{fd}{RGB}{8,0,10}     % --fd     accent 4, rose
+\definecolor{fe}{RGB}{9,0,10}     % --fe     accent 5, lavender
+\definecolor{paper}{RGB}{10,0,10} % --bg     knock-out only
+
+\color{ink}
+
+\tikzset{
+  fig/.style={
+    >={Stealth[length=2.2mm,width=1.6mm]},
+    line width=.7pt, draw=ink, color=ink,
+    font=\rmfamily\small,
+    every node/.style={align=center, text=ink},
+    node distance=7mm and 10mm,
+  },
+  % a block: tinted fill + full-strength edge of the same accent
+  tint/.style={draw=#1, fill=#1, fill opacity=.16, text opacity=1, draw opacity=1},
+  box/.style={rectangle, rounded corners=2.5pt, line width=.7pt, minimum height=7.5mm,
+    minimum width=18mm, inner sep=4pt, tint=#1},
+  box/.default=fa,
+  % an outline-only block
+  frame/.style={rectangle, rounded corners=2.5pt, draw=#1, line width=.7pt, minimum height=7.5mm,
+    minimum width=18mm, inner sep=4pt},
+  frame/.default=soft,
+  % group background
+  group/.style={rectangle, rounded corners=4pt, draw=rule, dashed, line width=.6pt, inner sep=6pt},
+  % small label, mono caps - the site's label voice
+  lab/.style={font=\ttfamily\scriptsize, text=faint},
+  % arrows
+  arr/.style={->, draw=#1, line width=.7pt},
+  arr/.default=ink,
+  thinarr/.style={->, draw=#1, line width=.5pt},
+  thinarr/.default=soft,
+  % circle operator (+, x, sigma ...)
+  op/.style={circle, draw=#1, fill=paper, line width=.7pt, inner sep=0pt, minimum size=5mm, font=\small},
+  op/.default=ink,
+}

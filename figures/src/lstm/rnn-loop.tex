@@ -1,0 +1,16 @@
+% LSTM post, figure 1: a recurrent unit A reading x_t, emitting h_t, and
+% feeding its own state back to itself on the next step.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig]
+  \node[box=fc, minimum width=16mm, minimum height=11mm, font=\large] (A) {$A$};
+  \node[op=fa, minimum size=8mm, below=8mm of A] (x) {$x_t$};
+  \node[op=fe, minimum size=8mm, above=8mm of A] (h) {$h_t$};
+  \draw[arr] (x) -- (A);
+  % the loop: out of A's right side, over the top, back into its left side.
+  % It crosses the h_t stem, so the stem is redrawn over it with a gap.
+  \draw[arr, rounded corners=5pt] (A.east) -- ++(7mm,0) |- ($(A.north)+(0,4mm)$) -| ($(A.west)+(-7mm,0)$) -- (A.west);
+  \draw[preaction={draw=paper, line width=4pt}, arr] (A) -- (h);
+\end{tikzpicture}
+\end{document}

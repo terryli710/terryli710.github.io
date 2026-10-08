@@ -52,3 +52,6 @@ dist
 # script writes to public/img/g/ are what ship.
 /photos-inbox/
 
+
+# Fonts for figures/ are fetched by figures/build.py on first run.
+/figures/fonts/

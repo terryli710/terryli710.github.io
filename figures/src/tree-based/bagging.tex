@@ -1,0 +1,54 @@
+% Tree-based post, figure 3: bagging (after Wikimedia's Ensemble_Bagging.svg).
+% The original data are bootstrapped into several samples drawn with
+% replacement (each sample's colour mix differs from the data's), one
+% classifier is trained per sample, and their outputs are aggregated
+% into one ensemble classifier. Dot colours mark distinct data points,
+% not classes. Sample contents copied from the original.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=.13mm, y=-.13mm,
+    dot/.style={circle, minimum size=3.9mm, inner sep=0pt, tint=#1, fill opacity=.5},
+    bag/.style={draw=soft, line width=.5pt, rounded corners=2.5pt},
+    clf/.style={box=fa, minimum width=24mm, minimum height=6.5mm, font=\rmfamily\footnotesize},
+    side/.style={lab, anchor=west, font=\ttfamily\footnotesize},
+  ]
+  % the original data: 20 points, five of each kind
+  \foreach \x/\y/\c in {
+      343/22/fc, 300/108/fc, 358/95/fc, 477/118/fc, 408/148/fc,
+      378/22/fb, 289/66/fb, 327/72/fb, 472/83/fb, 372/133/fb,
+      307/34/fe, 457/46/fe, 395/70/fe, 433/107/fe, 335/123/fe,
+      409/35/fd, 362/55/fd, 429/70/fd, 396/105/fd, 445/143/fd}
+    \node[dot=\c] at (\x,\y) {};
+
+  % three bootstrap samples (two rows of five), shown at their x offsets
+  \foreach \ox/\top/\bot [count=\k] in {
+      0/{fb,fe,fb,fb,fc}/{fe,fd,fb,fd,fb},
+      223/{fb,fe,fe,fe,fc}/{fd,fe,fe,fd,fc},
+      552/{fc,fe,fc,fc,fc}/{fc,fc,fe,fc,fb}}{
+    \draw[bag] (5+\ox,226) rectangle (208+\ox,400);
+    \foreach \c [count=\i] in \top \node[dot=\c] at (\ox-9+38*\i,258) {};
+    \foreach \c [count=\i] in \bot \node[dot=\c] at (\ox-9+38*\i,296) {};
+    \node[clf] (c\k) at (106+\ox,360) {Classifier};
+  }
+  \node[font=\large, text=soft] at (492,312) {$\cdots$};
+
+  % data -> each sample
+  \draw[thinarr] (383,170) -- (383,196) -| (106,224);
+  \draw[thinarr] (383,196) -| (329,224);
+  \draw[thinarr] (383,196) -| (658,224);
+
+  % classifiers -> ensemble
+  \node[box=fa, minimum width=32mm, minimum height=8mm, font=\rmfamily\small] (ens) at (383,490) {Ensemble classifier};
+  \draw[draw=fa, line width=.5pt] (c1.south) -- (106,425) -| (c3.south);
+  \draw[draw=fa, line width=.5pt] (c2.south) -- (329,425);
+  \draw[thinarr=fa] (383,425) -- (ens.north);
+  \node[lab, anchor=west, text=soft] at (393,445) {vote / average};
+
+  % stage labels
+  \node[side] at (800,85)  {original data};
+  \node[side] at (800,272) {bootstrapping};
+  \node[side] at (800,360) {aggregating};
+  \node[side, text=fa] at (800,490) {bagging};
+\end{tikzpicture}
+\end{document}

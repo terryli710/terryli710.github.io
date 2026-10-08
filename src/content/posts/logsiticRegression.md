@@ -93,7 +93,7 @@ Apart from gradient descent, we have a another technique that sometimes (this â€
 
 
 
-<img src="https://openstax.org/resources/03a495b2b2b3d4dfa2b027fccdae44d1aba527a1" alt="newtons method png" title="Newton's Method: How to Get Next Guesses of Root of a Function" style="zoom: 80%;" />
+![Newton's method: following tangents to the root](/img/fig/logsiticRegression/newton-tangents.svg)
 
 
 

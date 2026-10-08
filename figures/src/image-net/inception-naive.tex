@@ -1,0 +1,27 @@
+% image-net post, figure 6 (Szegedy et al. 2014, GoogLeNet, Fig. 2a): the
+% naive Inception module. The previous layer feeds 1x1, 3x3 and 5x5 convs and
+% a 3x3 max pool in parallel; their outputs are concatenated along channels.
+% Pairs with inception-reduced.tex: same columns, same rows, same bars.
+% Colour key shared across the post: conv fa, pooling fb, concat/output fd;
+% 1x1 reduction convs (inception-reduced) are fa outlines.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig,
+    blk/.style={box=#1, minimum width=80pt, minimum height=21pt, inner sep=2pt, text height=1.6ex, text depth=.45ex},
+    bar/.style={minimum width=350pt, minimum height=18pt, inner sep=2pt},
+  ]
+  % columns at x = 0, 90, 180, 270; the module spans -40 .. 310
+  \node[frame=soft, bar] (prev) at (135pt,0) {Previous layer};
+  \node[box=fd, bar] (cat) at (135pt,108.5pt) {Filter concatenation};
+  % one row of branches, at the height of the middle of the reduced module
+  \node[blk=fa] (b1) at (0,54.5pt)    {$1\times1$ convolutions};
+  \node[blk=fa] (b2) at (90pt,54.5pt) {$3\times3$ convolutions};
+  \node[blk=fa] (b3) at (180pt,54.5pt){$5\times5$ convolutions};
+  \node[blk=fb] (b4) at (270pt,54.5pt){$3\times3$ max pooling};
+  \foreach \b in {b1,b2,b3,b4} {
+    \draw[arr] (\b |- prev.north) -- (\b.south);
+    \draw[arr] (\b.north) -- (\b |- cat.south);
+  }
+\end{tikzpicture}
+\end{document}

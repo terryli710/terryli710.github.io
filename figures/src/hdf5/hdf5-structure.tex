@@ -1,0 +1,77 @@
+% HDF5 post, the structure of an HDF5 file. Recovered from the original
+% (lijunzhu.info/img/post/hdf5_structure.jpg, via the Wayback Machine): the
+% file holds two groups; the first holds a nested group with three datasets,
+% the second holds one dataset; the file, every group and every dataset carry
+% their own metadata. Groups are folders and datasets are arrays, as the post
+% says; metadata are the h5py .attrs.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm,
+    edge/.style={draw=soft, line width=.7pt},
+  ]
+  % --- pieces -------------------------------------------------------------
+  % metadata tag: a small card with text lines, pinned to an object's corner
+  \newcommand\meta[1]{%
+    \begin{scope}[shift={(#1)}]
+      \filldraw[draw=fb, fill=paper, line width=.6pt, rounded corners=1pt] (0,0) rectangle (6.4,4.6);
+      \filldraw[draw=fb, fill=fb, fill opacity=.16, line width=.6pt, rounded corners=1pt] (0,0) rectangle (6.4,4.6);
+      \foreach \yy/\ww in {3.4/4.4, 2.3/3.6, 1.2/4.0}
+        \draw[fb, line width=.5pt] (1,\yy) -- ++(\ww,0);
+    \end{scope}}
+  % group: a folder, its tab on the top left
+  \newcommand\group[2]{%
+    \begin{scope}[shift={(#1)}]
+      \filldraw[draw=fc, fill=fc, fill opacity=.16, line width=.7pt, rounded corners=1.4pt]
+        (-9,-5.5) -- (-9,6.8) -- (-3.4,6.8) -- (-2,5.5) -- (9,5.5) -- (9,-5.5) -- cycle;
+      \node[font=\small, text=ink] at (0,0) {group};
+      \meta{5.6,-8}
+    \end{scope}
+    \coordinate (#2w) at ($(#1)+(-9,0)$); \coordinate (#2e) at ($(#1)+(9,0)$);}
+  % dataset: an array, a small grid
+  \newcommand\dset[2]{%
+    \begin{scope}[shift={(#1)}]
+      \filldraw[draw=fd, fill=fd, fill opacity=.16, line width=.7pt, rounded corners=1pt] (-5,-3.8) rectangle (5,3.8);
+      \foreach \xx in {-1.67,1.67} \draw[fd, line width=.4pt] (\xx,-3.8) -- (\xx,3.8);
+      \foreach \yy in {-1.27,1.27} \draw[fd, line width=.4pt] (-5,\yy) -- (5,\yy);
+      \node[font=\footnotesize, text=fd, anchor=west] at (9.6,0) {dataset};
+      \meta{2.6,-6.2}
+    \end{scope}
+    \coordinate (#2w) at ($(#1)+(-5,0)$);}
+
+  % --- the tree -----------------------------------------------------------
+  % edges first, so the shapes sit on top of them
+  \draw[edge] (10,4) -- (25,13);
+  \draw[edge] (10,-4) -- (25,-15);
+  \draw[edge] (43,13) -- (57,13);
+  \draw[edge] (75,13) -- (93,29);
+  \draw[edge] (75,13) -- (93,13);
+  \draw[edge] (75,13) -- (93,-3);
+  \draw[edge] (43,-15) -- (59,-15);
+
+  % the file: a cylinder
+  \begin{scope}
+    \filldraw[draw=fa, fill=fa, fill opacity=.16, line width=.7pt]
+      (-10,11) -- (-10,-11) arc[start angle=180, end angle=360, x radius=10, y radius=3.2]
+      -- (10,11) arc[start angle=0, end angle=180, x radius=10, y radius=3.2];
+    \draw[fa, line width=.7pt] (-10,11) arc[start angle=180, end angle=360, x radius=10, y radius=3.2];
+    \node[font=\small, text=ink, align=center] at (0,-1) {HDF5\\[-1pt]file};
+    \meta{6,-16.6}
+  \end{scope}
+
+  \group{34,13}{ga}
+  \group{66,13}{gb}
+  \group{34,-15}{gc}
+  \dset{98,29}{d1}
+  \dset{98,13}{d2}
+  \dset{98,-3}{d3}
+  \dset{64,-15}{d4}
+
+  % --- key ----------------------------------------------------------------
+  \begin{scope}[shift={(-10,-34)}]
+    \meta{0,-2.3}
+    \node[anchor=west, font=\footnotesize, text=soft] at (8,0)
+      {metadata (\texttt{.attrs}): the file, every group and every dataset carry their own};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

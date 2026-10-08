@@ -62,7 +62,7 @@ The answer is **NO** and that is because **<u>there are some patients who didn�
 
 **The subjects whose events were not observed**, these observations are called censored. There are many types of censoring. Let’s take a look this figure.
 
-<img src="https://jtd.amegroups.com/article/viewFile/22276/html/178542" alt="censoring[^3]" style="zoom:67%;" />*Fig 1. Examples of Censoring[^3]*
+![Six subjects in a study window: events and censoring](/img/fig/survival-analysis/censoring-timeline.svg)*Fig 1. Examples of Censoring[^3]*
 
 1. Right-censoring: subject 3 and 4 are right-censoring. It means that either follow-up information was lack to know the time for outcome (subject 4), or the outcome happened after study ended (subject 3).
 2. Left-censoring: subject 6 is left-censoring. Exact time for entry or exposure happened before study began, which is unknown. What is known is the time that study began.
@@ -96,7 +96,7 @@ With K-M estimator, we can plot a curve with x-axis = time and y-axis = survival
 
 Here is an example[^5] of Kaplan-Meier curve. Patients are divided into two groups, and survival curve for two groups are plotted on the same figure. Each point on the line represent a value pair of (time after entry, survival rate of the group).
 
-<img src="https://www.students4bestevidence.net/app/uploads/2016/04/Figure-2-Loai-JPEG.jpg" alt="km_curve" style="zoom:67%;" />
+![Reading a Kaplan-Meier curve](/img/fig/survival-analysis/km-curve.svg)
 
 As soon as we can understand this figure, question arises as “Can we statistically compare these two group and say 'treatment' group is better than ‘placebo’ ?”. That when we move to the next common method, log-rank test. 
 

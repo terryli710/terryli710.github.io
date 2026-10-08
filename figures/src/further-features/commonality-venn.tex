@@ -1,0 +1,42 @@
+% Further-features post, the commonality-analysis Venn diagram. Recovered from
+% its source, Capraro & Capraro (2001), "Commonality Analysis: Understanding
+% Variance Contributions ...", Multiple Linear Regression Viewpoints 27(2),
+% Figure 1 "Illustrating Commonality Analysis": three predictor circles,
+% seven regions (three unique, three common-to-two, one common-to-all).
+% Labelled in the post's notation: variable 1 = i, 2 = j, 3 = k; regions
+% U(i) ... C(i,j,k); each whole circle is that predictor's R^2_{y.i}.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm,
+    set/.style={draw=#1, fill=#1, fill opacity=.11, line width=.7pt},
+    reg/.style={font=\small, inner sep=0pt},
+    kind/.style={font=\ttfamily\scriptsize, text=soft, inner sep=0pt},
+  ]
+  \def\r{24}
+  \path[set=fa] (0,0) circle (\r);
+  \path[set=fb] (26,0) circle (\r);
+  \path[set=fc] (13,-22) circle (\r);
+  % redraw the edges on top so every outline stays crisp over the tints
+  \draw[fa, line width=.7pt] (0,0) circle (\r);
+  \draw[fb, line width=.7pt] (26,0) circle (\r);
+  \draw[fc, line width=.7pt] (13,-22) circle (\r);
+
+  % the seven pieces, at their centroids
+  \node[reg] at (-9,6.6) {$U(i)$};      \node[kind] at (-9,1.6) {unique};
+  \node[reg] at (35,6.6) {$U(j)$};      \node[kind] at (35,1.6) {unique};
+  \node[reg] at (13,-31) {$U(k)$};      \node[kind] at (13,-36) {unique};
+  \node[reg] at (13,10.4) {$C(i,j)$};   \node[kind] at (13,5.6) {common};
+  \node[reg] at (-.6,-13) {$C(i,k)$};   \node[kind] at (-.6,-17.6) {common};
+  \node[reg] at (26.6,-13) {$C(j,k)$};  \node[kind] at (26.6,-17.6) {common};
+  \node[reg] at (13,-5) {$C(i,j,k)$};   \node[kind] at (13,-9.6) {all three};
+
+  % the circles: one predictor each, its area that predictor's R^2
+  \node[anchor=south east, align=right, font=\small, text=fa] at (-15,18)
+    {variable 1, $i$\\[-1pt] $R^2_{y\cdot i}$};
+  \node[anchor=south west, align=left, font=\small, text=fb] at (41,18)
+    {variable 2, $j$\\[-1pt] $R^2_{y\cdot j}$};
+  \node[anchor=north west, align=left, font=\small, text=fc] at (32,-38)
+    {variable 3, $k$\\[-1pt] $R^2_{y\cdot k}$};
+\end{tikzpicture}
+\end{document}

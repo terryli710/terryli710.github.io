@@ -15,7 +15,7 @@ math: true
 
 [Gaussian mixture model](https://en.wikipedia.org/wiki/Mixture_model)(GMM) is a statistical model that can serve as a clustering algorithm. It assumes the data points to be from several gaussian distributions and uses EM algorithm to obtain the MLE estimations of those gaussians.(See plot)
 
-![fitting gmm](https://www.mathworks.com/help/examples/stats/win64/ClusterDataUsingAGaussianMixtureModelExample_01.png)
+![Two clusters and their fitted Gaussian mixture](/img/fig/em-algorithm/gmm-clusters.svg)
 
 Started from GMM algorithm.
 

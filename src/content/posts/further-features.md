@@ -111,7 +111,7 @@ $$
     R^2_{y \cdot ij} &= \text{Unique to var i} + \text{Common to var i&j} + \text{Common to var i&j} + \text{Common to var i&j&k} + \text{Common to var j&k}
 \end{align}
 $$
-![Illustrating Commonality Analysis. | Download Scientific Diagram](https://www.researchgate.net/profile/Robert_Capraro/publication/238605329/figure/fig1/AS:669410532548621@1536611316685/Illustrating-Commonality-Analysis.png)
+![Commonality analysis: unique and common variance](/img/fig/further-features/commonality-venn.svg)
 
 And unique effects or common effects are the **small pieces in the diagram** as labeled, think of them as **complements** or **intersections**. 
 

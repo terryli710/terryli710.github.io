@@ -1,0 +1,32 @@
+% Tree-based post, figure 2: a decision tree from daily life -
+% "Should I write this blog post?". Questions are outlined boxes; the
+% leaves are the two outcomes, yes (fa) and no (fd), as the two classes
+% are coloured in every two-class figure on the site.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig,
+    q/.style={frame=soft, minimum width=27mm, minimum height=10mm, font=\rmfamily\small},
+    yes/.style={box=fa, minimum width=27mm, minimum height=10mm},
+    no/.style={box=fd, minimum width=27mm, minimum height=10mm},
+    e/.style={thinarr=soft},
+    el/.style={lab, fill=paper, inner sep=1.5pt},
+  ]
+  \node[q] (root) at (0,0)         {Should I write\\this blog post?};
+  \node[q] (und)  at (0,-17mm)     {Do I understand\\the concept?};
+  \node[q] (tired) at (-24mm,-37mm) {Am I feeling\\tired?};
+  \node[no] (study) at (24mm,-37mm) {No, study up\\more first.};
+  \node[q] (tea)  at (-48mm,-57mm) {Do I have\\tea nearby?};
+  \node[yes] (w1) at (0,-57mm)     {Yes, write\\the post.};
+  \node[yes] (w2) at (-66mm,-77mm) {Yes, write\\the post.};
+  \node[no] (later) at (-30mm,-77mm) {No, do it\\another time.};
+
+  \draw[e] (root) -- (und);
+  \draw[e] (und.south) -- node[el, pos=.5] {yes} (tired.north);
+  \draw[e] (und.south) -- node[el, pos=.5] {no} (study.north);
+  \draw[e] (tired.south) -- node[el, pos=.5] {yes} (tea.north);
+  \draw[e] (tired.south) -- node[el, pos=.5] {no} (w1.north);
+  \draw[e] (tea.south) -- node[el, pos=.5] {yes} (w2.north);
+  \draw[e] (tea.south) -- node[el, pos=.5] {no} (later.north);
+\end{tikzpicture}
+\end{document}

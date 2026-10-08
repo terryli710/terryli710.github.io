@@ -1,0 +1,83 @@
+% Survival-analysis post, figure 1: six subjects followed from entry to event
+% or censoring, between study start (t = 0) and study end (t = 9 months).
+% Same subjects and times as the original (JTD, "Examples of censoring"):
+%   1: 0 -> event 7      2: 2.5 -> event 5    3: 1 -> event 10 (after study end)
+%   4: .5 -> censored 4.5   5: 1.5 -> event 8   6: -1 (before study start) -> event 6
+% The stretches nobody observes (subject 3 after t = 9, subject 6 before t = 0)
+% are dotted; the original dotted only subject 3's.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\begin{document}
+\pgfplotsset{
+  base/.style={
+    axis line style={draw=faint, line width=.5pt},
+    every tick/.style={draw=faint, line width=.5pt},
+    major tick length=1.2mm,
+    tick label style={font=\ttfamily\scriptsize, text=soft},
+    label style={font=\small, text=ink},
+  },
+}
+\tikzset{
+  fu/.style={draw=ink, line width=.9pt},
+  unseen/.style={draw=soft, line width=.9pt, dash pattern=on 1.2pt off 2pt},
+  entry/.style={circle, draw=soft, fill=paper, line width=.7pt, inner sep=0pt, minimum size=2.4mm},
+  event/.style={cross out, draw=fd, line width=1.1pt, inner sep=0pt, minimum size=2.4mm},
+  cens/.style={circle, draw=fc, fill=fc, line width=.7pt, inner sep=0pt, minimum size=2.4mm},
+}
+\begin{tikzpicture}[fig]
+  \begin{axis}[base, width=96mm, height=62mm, scale only axis, clip=false,
+      xmin=-1.6, xmax=10.6, ymin=.4, ymax=6.6, y dir=reverse,
+      xtick={0,2,4,6,8,10}, ytick={1,2,3,4,5,6},
+      axis x line=bottom, axis y line=left,
+      x axis line style={-}, y axis line style={-},
+      xlabel={time (months)}, ylabel={subject},
+      ylabel style={yshift=-1mm}]
+    % the observation window
+    \fill[fa, fill opacity=.07] (axis cs:0,.4) rectangle (axis cs:9,6.6);
+    \draw[fa, line width=.7pt, dash pattern=on 3pt off 2pt] (axis cs:0,.4) -- (axis cs:0,6.6);
+    \draw[fa, line width=.7pt, dash pattern=on 3pt off 2pt] (axis cs:9,.4) -- (axis cs:9,6.6);
+    \node[anchor=south, font=\footnotesize, text=fa] at (axis cs:0,.4) {study start};
+    \node[anchor=south, font=\footnotesize, text=fa] at (axis cs:9,.4) {study end};
+    % follow-up lines
+    \draw[fu] (axis cs:0,1) -- (axis cs:7,1);
+    \draw[fu] (axis cs:2.5,2) -- (axis cs:5,2);
+    \draw[fu] (axis cs:1,3) -- (axis cs:9,3);
+    \draw[unseen] (axis cs:9,3) -- (axis cs:10,3);
+    \draw[fu] (axis cs:.5,4) -- (axis cs:4.5,4);
+    \draw[fu] (axis cs:1.5,5) -- (axis cs:8,5);
+    \draw[unseen] (axis cs:-1,6) -- (axis cs:0,6);
+    \draw[fu] (axis cs:0,6) -- (axis cs:6,6);
+    % entries
+    \node[entry] at (axis cs:0,1) {};
+    \node[entry] at (axis cs:2.5,2) {};
+    \node[entry] at (axis cs:1,3) {};
+    \node[entry] at (axis cs:0.5,4) {};
+    \node[entry] at (axis cs:1.5,5) {};
+    \node[entry] at (axis cs:-1,6) {};
+    % outcomes
+    \node[event] at (axis cs:7,1) {};
+    \node[event] at (axis cs:5,2) {};
+    \node[event] at (axis cs:10,3) {};
+    \node[event] at (axis cs:8,5) {};
+    \node[event] at (axis cs:6,6) {};
+    \node[cens] at (axis cs:4.5,4) {};
+    % censoring type, as the post names it
+    \node[lab, text=soft, anchor=west] at (axis cs:10.5,3) {right-censored};
+    \node[lab, text=soft, anchor=west] at (axis cs:10.5,4) {right-censored};
+    \node[lab, text=soft, anchor=west] at (axis cs:10.5,6) {left-censored};
+    % legend
+    \coordinate (leg) at (axis cs:-1.6,7.95);
+  \end{axis}
+  \begin{scope}[shift={(leg)}, every node/.append style={font=\footnotesize, text height=1.5ex, text depth=.3ex}]
+    \node[entry] (a) at (2mm,0) {};
+    \node[anchor=west] at ([xshift=1.5mm]a.east) {entry};
+    \node[event] (b) at (20mm,0) {};
+    \node[anchor=west] at ([xshift=1.5mm]b.east) {event};
+    \node[cens] (c) at (38mm,0) {};
+    \node[anchor=west] at ([xshift=1.5mm]c.east) {censored (no event seen)};
+    \draw[unseen] (77mm,0) -- ++(6mm,0);
+    \node[anchor=west] at (84.5mm,0) {not observed};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

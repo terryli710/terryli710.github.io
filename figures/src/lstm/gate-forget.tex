@@ -1,0 +1,110 @@
+% LSTM post, step 1: the forget gate. The whole cell recedes; the forget
+% gate's sigma layer and its path from [h_{t-1}, x_t] to the cell state stay.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+% ---- shared LSTM cell (identical in lstm-chain, gate-forget, gate-input,
+% cell-update, gate-output: edit one, copy to all) -------------------------
+% Colour key for every LSTM figure: cell = fc, x = fa, h = fe,
+% sigmoid gate = fb, tanh layer = fd, pointwise op = ink circle on paper.
+% Geometry in mm; the box is (0,0)-(\W,\H). Each \C... macro draws one part,
+% so a figure can recede the whole cell and redraw only the parts it is about.
+\tikzset{
+  sig/.style={rectangle, under, tint=fb, line width=.7pt, minimum width=5.6mm, minimum height=4.6mm,
+    inner sep=0pt, font=\small},
+  tlay/.style={rectangle, under, tint=fd, line width=.7pt, minimum width=8.4mm, minimum height=4.6mm,
+    inner sep=0pt, font=\footnotesize},
+  % a drawn layer sits on clean paper, not on the cell's own tint
+  under/.style={preaction={fill=paper, fill opacity=1, draw=none}},
+  pw/.style={op, minimum size=4.5mm, font=\footnotesize},
+  pwt/.style={ellipse, draw=ink, fill=paper, line width=.7pt, minimum width=8.4mm,
+    minimum height=3.6mm, inner sep=0pt, font=\footnotesize},
+  wire/.style={line width=.7pt, rounded corners=2mm},
+  cl/.style={font=\footnotesize, inner sep=1pt},
+  % how far the outside flows reach beyond the box (a figure may override)
+  stubL/.initial=8, stubR/.initial=8, stubT/.initial=8, stubB/.initial=8,
+  % the receded cell: every stroke and label at low opacity, tints fainter,
+  % pointwise ops still opaque so they hide the lines that run under them
+  recede/.style={draw opacity=.28, fill opacity=.28, text opacity=.32,
+    tint/.style={draw=##1, fill=##1, fill opacity=.06, draw opacity=.28, text opacity=.32},
+    under/.style={}, pw/.append style={fill opacity=1}, pwt/.append style={fill opacity=1}},
+  % arrow tips where a flow leaves the cell, rightwards and upwards
+  outtip/.style={-{Stealth[length=2.2mm,width=1.6mm]}},
+  uptip/.style={-{Stealth[length=2.2mm,width=1.6mm]}},
+}
+% flow labels; a figure may switch them off with \celllabelsfalse
+\newif\ifcelllabels \celllabelstrue
+\newcommand\clab[3]{\ifcelllabels\node[cl, #1] at (#2) {#3};\fi}
+% fixed coordinates
+\def\W{52}\def\H{33}\def\yC{28}\def\yB{5}\def\yG{11}\def\yX{19}\def\yT{24.3}
+\def\xF{7}\def\xI{15}\def\xG{23}\def\xO{34}\def\xM{42.5}\def\xU{48}\def\xX{3}
+\newcommand\Cbox{\draw[tint=fc, rounded corners=2.5pt] (0,0) rectangle (\W,\H);}
+% cell state line, C_{t-1} -> C_t
+\newcommand\Cstate[1][]{%
+  \pgfkeysgetvalue{/tikz/stubL}\sL\pgfkeysgetvalue{/tikz/stubR}\sR
+  \draw[wire, outtip, #1] (-\sL,\yC) -- (\W+\sR,\yC);
+  \clab{above right}{-\sL,\yC}{$C_{t-1}$}
+  \clab{above left}{\W+\sR-2.6,\yC}{$C_t$}}
+% the [h_{t-1}, x_t] bus, in segments: entry .. forget, forget .. input, input .. candidate, candidate .. output gate
+\newcommand\CbusA{%
+  \pgfkeysgetvalue{/tikz/stubL}\sL\pgfkeysgetvalue{/tikz/stubB}\sB
+  \draw[wire] (-\sL,\yB) -- (\xF,\yB);
+  \draw[wire] (\xX,-\sB) -- (\xX,\yB) -- (\xF,\yB);
+  \clab{above right}{-\sL,\yB}{$h_{t-1}$}
+  \clab{left}{\xX,-\sB+2}{$x_t$}}
+\newcommand\CbusB{\draw[wire] (\xF,\yB) -- (\xI,\yB);}
+\newcommand\CbusC{\draw[wire] (\xI,\yB) -- (\xG,\yB);}
+\newcommand\CbusD{\draw[wire] (\xG,\yB) -- (\xO,\yB) -- (\xO,\yG);}
+% forget gate: sigma layer and f_t into the forget multiply
+\newcommand\Cf{%
+  \draw[wire] (\xF,\yB) -- (\xF,\yG);
+  \draw[wire, ->] (\xF,\yG) -- (\xF,\yC-2.25);
+  \node[sig] at (\xF,\yG) {$\sigma$};
+  \clab{left}{\xF,\yX}{$f_t$}}
+% input gate: sigma layer and i_t into the input multiply
+\newcommand\Ci{%
+  \draw[wire] (\xI,\yB) -- (\xI,\yG);
+  \draw[wire, ->] (\xI,\yG) -- (\xI,\yX) -- (\xG-2.25,\yX);
+  \node[sig] at (\xI,\yG) {$\sigma$};
+  \clab{left}{\xI,\yX-2}{$i_t$}}
+% candidate: tanh layer and \tilde C_t into the input multiply
+\newcommand\Cc{%
+  \draw[wire] (\xG,\yB) -- (\xG,\yX);
+  \node[tlay] at (\xG,\yG) {$\tanh$};
+  \clab{right}{\xG+2.3,\yX-2.6}{$\tilde C_t$}}
+% the input multiply and its sum into the cell state
+\newcommand\Cix{%
+  \draw[wire, ->] (\xG,\yX+2.25) -- (\xG,\yC-2.25);
+  \node[pw] at (\xG,\yX) {$\times$};}
+\newcommand\Cfx{\node[pw] at (\xF,\yC) {$\times$};}
+\newcommand\Cplus{\node[pw] at (\xG,\yC) {$+$};}
+% output gate: sigma layer and o_t into the output multiply
+\newcommand\Co{%
+  \draw[wire, ->] (\xO,\yG) -- (\xO,\yX) -- (\xM-2.25,\yX);
+  \node[sig] at (\xO,\yG) {$\sigma$};
+  \clab{left}{\xO,\yX+1.6}{$o_t$}}
+% tanh of the cell state into the output multiply
+\newcommand\Cth{%
+  \draw[wire] (\xM,\yC) -- (\xM,\yX);
+  \node[pwt] at (\xM,\yT) {$\tanh$};}
+\newcommand\Cox{\node[pw] at (\xM,\yX) {$\times$};}
+% h_t: out to the right, and up out of the top (gapped where it crosses C)
+\newcommand\Chout[1][]{%
+  \pgfkeysgetvalue{/tikz/stubR}\sR\pgfkeysgetvalue{/tikz/stubT}\sT
+  \draw[wire, outtip, #1] (\xM,\yX-2.25) -- (\xM,\yB) -- (\W+\sR,\yB);
+  \draw[wire, #1] (\xU,\yB) -- (\xU,\yC-1.5);
+  \draw[wire, uptip, #1] (\xU,\yC+1.5) -- (\xU,\H+\sT);
+  \clab{above left}{\W+\sR-2.6,\yB}{$h_t$}
+  \clab{right}{\xU+.8,\H+\sT-3}{$h_t$}}
+% everything, in drawing order
+\newcommand\Call{\CbusA\CbusB\CbusC\CbusD\Cstate\Cf\Ci\Cc\Cix\Cfx\Cplus\Co\Cth\Cox\Chout}
+% --------------------------------------------------------------------------
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm]
+  % one frame for all four steps, so the cell sits in the same place in each
+  \useasboundingbox (-10,-11) rectangle (120,43);
+  \begin{scope}[recede] \Cbox \Call \end{scope}
+  \CbusA \Cf
+  \node[anchor=west] at (70,16) {$f_t = \sigma(W_{\mkern-6mu f} \cdot [h_{t-1}, x_t] + b_f)$};
+  \node[lab, anchor=south west] at (70,22) {STEP 1 · FORGET GATE};
+\end{tikzpicture}
+\end{document}

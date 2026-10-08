@@ -26,7 +26,7 @@ And this challenge is also the reason why we have mention ImageNet as an intro c
 
 AlexNet achieved a top-5 error of 15.3% in the 2012 ILSVRC, more than 10.8 percentage points lower than that of the runner up. The original paper's primary result was that the depth of the model was essential for its high performance (though today, we may not think it's that deep anymore), which was computationally expensive, but made feasible due to the utilization of GPUs [3]. The architecture of the model looks like the following:
 
-![img](https://miro.medium.com/max/2000/1*eBDriuBwa5O8HPFUgerklA.png)
+![AlexNet](/img/fig/image-net/alexnet.svg)
 
 The **features** of this network is that:
 
@@ -44,7 +44,7 @@ To **reduce overfitting**, they took 2 main methods:
 
 VGG was the 1st runner-up of the 2014 ILSVRC, and was invented by Simonyan and Zisserman from Visual Geometry Group (VGG) at University of Oxford. The data trained and tested was much larger: 1.3 million training images from 1000 classes; 100,000 test images. The model finally achieved 92.7% test accuracy and has successful applications in many real world problems. The architecture looks like this:
 
-![vgg16](https://neurohive.io/wp-content/uploads/2018/11/vgg16-1-e1542731207177.png)
+![VGG16](/img/fig/image-net/vgg16.svg)
 
 > VGGNet consists of 16 convolutional layers and is very appealing because of its very uniform architecture. Similar to AlexNet, only 3x3 convolutions, but lots of filters. Trained on 4 GPUs for 2–3 weeks. It is currently the most preferred choice in the community for extracting features from images. The weight configuration of the VGGNet is publicly available and has been used in many other applications and challenges as a baseline feature extractor. However, VGGNet consists of 138 million parameters, which can be a bit challenging to handle.
 > 
@@ -60,7 +60,7 @@ It's simply convolutional layers and max pooling layers,  with three fully conne
 
 ResNet introduced a new structure -- make direct data connection between every two convolutional layers, which can be interpreted as let the model to learn the function of $f(x) = x$​​ (identity function) more easily, or only learning the residual, or make the model to adjust its layer number according to the complexity of the problem, make deep model more trainable etc.
 
-![img](https://miro.medium.com/max/2000/1*6hF97Upuqg_LdsqWY6n_wg.png)
+![VGG-19, a 34-layer plain net, and ResNet-34](/img/fig/image-net/resnet34-compare.svg)
 
 In ResNet paper, they discovered that the depth of the network is a very important factor for better performance. So they designed a deeper network than VGG. However, they controlled the dimensions of the convolutional kernels so that the total parameter size is smaller than VGG (ResNet18: ~11 million vs. VGG16: ~128 million).
 
@@ -68,7 +68,7 @@ In ResNet paper, they discovered that the depth of the network is a very importa
 
 Batchnorm is vastly applied in ResNet, because obviously, the Residuals should not be in the same scale as the result, while the result from each layer should be in the similar scale. The residual block (the substructure of every two conv layers) is vividly shown below:
 
-![../_images/resnet-block.svg](https://d2l.ai/_images/resnet-block.svg)
+![The residual block](/img/fig/image-net/resnet-block.svg)
 
 > -- Dive into Deep Learning
 
@@ -80,9 +80,9 @@ Inception net is actually a series of networks, from V1 to V4. Starting from 201
 
 The problem is similar to VGG's multi-scale training: pictures in real life can vary and the object of interest is different in sizes. Instead of changing the training images, inception net changes the kernel sizes. This is done by using multiple kernel sizes for each step, which is called [inception module](https://arxiv.org/pdf/1409.4842v1.pdf).
 
-![img](https://miro.medium.com/max/700/1*DKjGRDd_lJeUfVlY50ojOA.png)
+![Inception module, naive version](/img/fig/image-net/inception-naive.svg)
 
-![img](https://miro.medium.com/max/700/1*U_McJnp7Fnif-lw9iIC5Bw.png)
+![Inception module with dimension reductions](/img/fig/image-net/inception-reduced.svg)
 
 Note that these modules arWe chosen for some reason. The team wanted to make inception net to be very deep so that it handles more complex problems. That requires convolutional layers to be computationally cheap in a sense. So size of 1, 3, 5 were chosen. Plus, the simple kernels and max pooling layer, also adds some sort of convenience for modeling the identity function, which was recommended by ResNet. 
 
@@ -90,7 +90,7 @@ Note that these modules arWe chosen for some reason. The team wanted to make inc
 
 These two versions are introduced in the same papar, they are also focused on reduce the computational complexity even more. They factorized an $n \times n$ convolutional layer into a combination of $1 \times n$ and $n \times 1$​ layers. So the new inception module looks like the following:
 
-<img src="https://miro.medium.com/max/598/1*hTwo-hy9BUZ1bYkzisL1KA.png" alt="img" style="zoom:50%;" />
+![Inception-v3 module with factorised convolutions](/img/fig/image-net/inception-v3-factorised.svg)
 
 #### InceptionNet v4
 
@@ -104,7 +104,7 @@ An brief introduction by themselves for the EffecientNet paper:
 
 Efficient net started with a very good baseline model (EfficientNet B0), which uses a small amount of parameters to achieve an OK performance. Simply scaling that model gives them better and better results. They are taking scaling in two dimensions (width and depth) and through experimentations, they discovered the best efficiency of scaling is obtained by simultaneously increase both depth and width, which they called compound scaling.
 
- ![img](https://1.bp.blogspot.com/-Cdtb97FtgdA/XO3BHsB7oEI/AAAAAAAAEKE/bmtkonwgs8cmWyI5esVo8wJPnhPLQ5bGQCLcBGAs/s1600/image4.png)
+![EfficientNet: width, depth, resolution and compound scaling](/img/fig/image-net/efficientnet-scaling.svg)
 
 ## Other References
 

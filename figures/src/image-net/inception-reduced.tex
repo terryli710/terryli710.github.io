@@ -1,0 +1,34 @@
+% image-net post, figure 7 (Szegedy et al. 2014, GoogLeNet, Fig. 2b): the
+% Inception module with dimension reductions. 1x1 convs shrink the channel
+% count before the 3x3 and 5x5 convs and after the max pool.
+% Pairs with inception-naive.tex: same columns, same rows, same bars.
+% Colour key shared across the post: conv fa, pooling fb, concat/output fd;
+% the 1x1 reduction convs are fa outlines, to set them apart from the convs
+% that do the module's work (the 1x1 branch on the left is one of those).
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig,
+    blk/.style={box=#1, minimum width=80pt, minimum height=21pt, inner sep=2pt, text height=1.6ex, text depth=.45ex},
+    red/.style={frame=fa, minimum width=80pt, minimum height=21pt, inner sep=2pt, text height=1.6ex, text depth=.45ex},
+    bar/.style={minimum width=350pt, minimum height=18pt, inner sep=2pt},
+  ]
+  % columns at x = 0, 90, 180, 270; the module spans -40 .. 310
+  \node[frame=soft, bar] (prev) at (135pt,0) {Previous layer};
+  \node[box=fd, bar] (cat) at (135pt,108.5pt) {Filter concatenation};
+  % lower row (y = 36) and upper row (y = 73); the lone 1x1 branch sits between
+  \node[blk=fa] (b1) at (0,54.5pt)     {$1\times1$ convolutions};
+  \node[red]    (r2) at (90pt,36pt)    {$1\times1$ convolutions};
+  \node[blk=fa] (b2) at (90pt,73pt)    {$3\times3$ convolutions};
+  \node[red]    (r3) at (180pt,36pt)   {$1\times1$ convolutions};
+  \node[blk=fa] (b3) at (180pt,73pt)   {$5\times5$ convolutions};
+  \node[blk=fb] (p4) at (270pt,36pt)   {$3\times3$ max pooling};
+  \node[red]    (b4) at (270pt,73pt)   {$1\times1$ convolutions};
+  \foreach \lo/\hi in {b1/b1, r2/b2, r3/b3, p4/b4} {
+    \draw[arr] (\lo |- prev.north) -- (\lo.south);
+    \draw[arr] (\hi.north) -- (\hi |- cat.south);
+  }
+  \foreach \lo/\hi in {r2/b2, r3/b3, p4/b4}
+    \draw[arr] (\lo.north) -- (\hi.south);
+\end{tikzpicture}
+\end{document}

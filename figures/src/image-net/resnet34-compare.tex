@@ -1,0 +1,113 @@
+% image-net post, figure 3: He et al. 2015 (ResNet), Fig. 3 - VGG-19, a
+% 34-layer plain net and its residual version. Repeated 3x3 convs of one
+% width are grouped into a single stage box; the short ticks on a box's
+% edges mark its individual layers, so every layer is still counted.
+% On the residual net each arc is one shortcut over two convs; dashed where
+% the stage's first conv halves the size and doubles the channels
+% (the paper: "dotted shortcuts increase dimensions").
+% Colour key shared across the post: conv fa, pooling fb, fully-connected fc.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm,
+    w/.style={->, line width=.5pt, draw=soft, >={Stealth[length=1.4mm,width=1.1mm]}},
+    sk/.style={->, line width=.55pt, draw=ink, >={Stealth[length=1.3mm,width=1.1mm]}},
+    txt/.style={font=\rmfamily\footnotesize, inner sep=0pt, align=center, text depth=0pt},
+    size/.style={font=\ttfamily\scriptsize, text=faint, inner sep=0pt},
+    title/.style={font=\rmfamily\small, inner sep=0pt, anchor=base west},
+  ]
+  \def\hh{6.2}      % half box height
+  \def\p{2.4}       % mm per layer
+    \def\gap{3.0}     % arrow gap between boxes
+  \def\sw{1.8}      % pool strip width
+  \newcommand{\fst}{{\ttfamily\scriptsize\color{soft}first /2}}
+  % ---------- helpers: \x is the running right edge, \y the row centre
+  \newcommand{\startrow}[2]{% #1 = y, #2 = title
+    \xdef\y{#1}\xdef\x{8}%
+    \node[title] at (0,{#1+\hh+3.2}) {#2};
+    \node[size, anchor=east] at (6.2,#1) {image};
+  }
+  % \stage[min width]{accent}{layers}{text}{output size}
+  \newcommand{\stage}[5][13]{%
+    \pgfmathsetmacro{\stW}{max(#1,\p*#3)}%
+    \pgfmathsetmacro{\xa}{\x+\gap}\pgfmathsetmacro{\xb}{\xa+\stW}%
+    \draw[w] (\x,\y) -- (\xa,\y);
+    \draw[tint=#2, rounded corners=1.5pt, line width=.6pt] (\xa,\y-\hh) rectangle (\xb,\y+\hh);
+    \ifnum#3>1
+      \pgfmathsetmacro{\lp}{\stW/#3}\pgfmathtruncatemacro{\nm}{#3-1}%
+      \foreach \k in {1,...,\nm} {
+        \draw[draw=#2, line width=.4pt] ({\xa+\k*\lp},\y+\hh) -- ++(0,-1.3);
+        \draw[draw=#2, line width=.4pt] ({\xa+\k*\lp},\y-\hh) -- ++(0,1.3);
+      }
+    \fi
+    \node[txt] at ({(\xa+\xb)/2},\y) {#4};
+    \node[size, anchor=north] at ({(\xa+\xb)/2},\y-\hh-1.4) {#5};
+    \xdef\stL{\xa}\xdef\stR{\xb}\xdef\x{\xb}%
+  }
+  % max pool /2, a narrow strip stuck to the box before it
+  \newcommand{\pool}[1]{%
+    \pgfmathsetmacro{\xa}{\x+.6}\pgfmathsetmacro{\xb}{\xa+\sw}%
+    \draw[tint=fb, rounded corners=.8pt, line width=.5pt] (\xa,\y-\hh) rectangle (\xb,\y+\hh);
+    \node[size, anchor=north] at ({(\xa+\xb)/2},\y-\hh-1.4) {#1};
+    \xdef\x{\xb}%
+  }
+  % shortcut arcs over the last stage: #1 = number of two-conv blocks, #2 = 1 if the first is a projection
+  \newcommand{\shortcuts}[2]{%
+    \pgfmathsetmacro{\bw}{(\stR-\stL)/#1}%
+    \foreach \k in {1,...,#1} {
+      \pgfmathsetmacro{\ua}{\stL+(\k-1)*\bw}\pgfmathsetmacro{\ub}{\stL+\k*\bw}%
+      \ifnum\k=1 \ifnum#2=1 \def\dsh{densely dashed}\else\def\dsh{solid}\fi \else\def\dsh{solid}\fi
+      \draw[sk, \dsh] (\ua+.25,\y+\hh) to[out=80, in=100, looseness=1.5] (\ub-.25,\y+\hh);
+    }
+  }
+
+  % ===================== 34-layer residual
+  \startrow{0}{34-layer residual}
+  \stage{fa}{1}{7×7 conv\\64, /2}{112}\pool{}
+  \stage{fa}{6}{3×3 conv\\64 ×6}{56}\shortcuts{3}{0}
+  \stage{fa}{8}{3×3 conv\\128 ×8\\\fst}{28}\shortcuts{4}{1}
+  \stage{fa}{12}{3×3 conv\\256 ×12\\\fst}{14}\shortcuts{6}{1}
+  \stage{fa}{6}{3×3 conv\\512 ×6\\\fst}{7}\shortcuts{3}{1}
+  \stage[10]{fb}{1}{avg\\pool}{1}
+  \stage[10]{fc}{1}{fc\\1000}{1}
+  \xdef\rowend{\x}
+
+  % ===================== 34-layer plain
+  \startrow{-27}{34-layer plain}
+  \stage{fa}{1}{7×7 conv\\64, /2}{112}\pool{}
+  \stage{fa}{6}{3×3 conv\\64 ×6}{56}
+  \stage{fa}{8}{3×3 conv\\128 ×8\\\fst}{28}
+  \stage{fa}{12}{3×3 conv\\256 ×12\\\fst}{14}
+  \stage{fa}{6}{3×3 conv\\512 ×6\\\fst}{7}
+  \stage[10]{fb}{1}{avg\\pool}{1}
+  \stage[10]{fc}{1}{fc\\1000}{1}
+
+  % ===================== VGG-19
+  \startrow{-54}{VGG-19}
+  \stage{fa}{2}{3×3 conv\\64 ×2}{224}\pool{}
+  \stage{fa}{2}{3×3 conv\\128 ×2}{112}\pool{}
+  \stage{fa}{4}{3×3 conv\\256 ×4}{56}\pool{}
+  \stage{fa}{4}{3×3 conv\\512 ×4}{28}\pool{}
+  \stage{fa}{4}{3×3 conv\\512 ×4}{14}\pool{7}
+  \stage[12]{fc}{2}{fc 4096\\×2}{1}
+  \stage[10]{fc}{1}{fc\\1000}{1}
+
+  % output-size caption, once, under the bottom row
+  \node[size, anchor=north east] at (6.2,-54-\hh-1.4) {output size};
+
+  % ===================== legend
+  \begin{scope}[shift={(9,-74)}, every node/.style={font=\rmfamily\footnotesize, anchor=west, text height=1.6ex, text depth=.4ex}]
+    \draw[tint=fa, rounded corners=.8pt, line width=.5pt] (0,-1.4) rectangle ++(4.2,2.8);
+    \draw[draw=fa, line width=.4pt] (2.1,1.4) -- ++(0,-.8) (2.1,-1.4) -- ++(0,.8);
+    \node at (5.2,0) {conv + ReLU, one tick per layer};
+    \draw[tint=fb, rounded corners=.6pt, line width=.5pt] (52,-1.4) rectangle ++(1.6,2.8);
+    \node at (54.6,0) {max pool, /2};
+    \draw[tint=fc, rounded corners=.8pt, line width=.5pt] (78,-1.4) rectangle ++(2.8,2.8);
+    \node at (81.8,0) {fully connected};
+    \draw[sk] (0,-6.6) to[out=80,in=100,looseness=1.5] (4.2,-6.6);
+    \node at (5.2,-5.6) {identity shortcut};
+    \draw[sk, densely dashed] (52,-6.6) to[out=80,in=100,looseness=1.5] (56.2,-6.6);
+    \node at (57.2,-5.6) {shortcut that increases dimensions (size /2, channels ×2)};
+  \end{scope}
+\end{tikzpicture}
+\end{document}
