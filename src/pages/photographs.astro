@@ -36,7 +36,7 @@ const size = reel.map((f) => dims(f.src));
       </div>
     </section>
 
-    <section class="dk-reel-wrap">
+    <section>
       <div class="dk-reel" data-reel>
         {
           reel.map((f, i) => (
@@ -79,7 +79,6 @@ const size = reel.map((f) => dims(f.src));
       <div class="dk-bar">
         <span class="frame" data-bar="frame">{first.frame}</span>
         <span class="exif" data-bar="place"><T t={first.place} /></span>
-        <span class="line"></span>
         <span class="nav">
           <button
             type="button"

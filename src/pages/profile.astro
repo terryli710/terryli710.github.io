@@ -26,14 +26,44 @@ import { srcset, SIZES } from "../utils/img";
 
 // The three frames shown beside About. Named by frame number so a reordered
 // reel does not silently change which photographs appear here.
+// Experience logos, inlined so they take the page ink — see `cv` in site.ts.
+const logos = import.meta.glob<string>("../assets/logos/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const logo = (name: string) => logos[`../assets/logos/${name}.svg`];
+
 const byNumber = (n: string) => reel.find((f) => f.frame === n) ?? reel[0];
 const wide = byNumber("6862");
 const pair = [byNumber("7125"), byNumber("3921")];
+
+// Photographs of the person, under the line that introduces him rather than
+// the work. These are not part of the camera set, so they live in public/img/
+// and not in frames.json. `portrait-a` is the same frame as the one up top.
+const mePhotos = [
+  {
+    src: "/img/portrait-b.jpg",
+    alt: t("Whipping cream in the kitchen", "在厨房打发奶油"),
+  },
+  {
+    src: "/img/portrait-c.jpg",
+    alt: t("Sitting with a cat at a cat café", "在猫咖啡馆，旁边坐着一只猫"),
+  },
+  {
+    src: "/img/portrait-d.jpg",
+    alt: t("In a wizard robe and scarf, holding a mug", "穿着巫师袍和围巾，拿着一个杯子"),
+  },
+  {
+    src: "/img/portrait-a.jpg",
+    alt: t("By Lake Tahoe with a film camera", "在太浩湖边，挂着一台胶片相机"),
+  },
+];
 ---
 
 <BaseLayout
   title={t("Profile · Yiheng Li", "履历 · 李易恒")}
-  description="Yiheng Li — deep learning research scientist: experience, education, and projects."
+  description="Yiheng Li - AI research scientist: experience, education, and projects."
 >
   <section class="pf-head">
     <div class="pf-portrait">
@@ -57,6 +87,7 @@ const pair = [byNumber("7125"), byNumber("3921")];
             <a
               class={"seal" in l && l.seal ? "is-seal" : undefined}
               href={l.href}
+              download={"seal" in l && l.seal ? "Yiheng-Li-Resume.pdf" : undefined}
               rel={IDENTITY_ICONS.has(l.icon) ? "me" : undefined}
             >
               <Icon name={l.icon} />
@@ -86,7 +117,12 @@ const pair = [byNumber("7125"), byNumber("3921")];
     {
       cv.map((c) => (
         <div class="pf-cv">
-          <span class="pf-when">{c.when}</span>
+          <div class="pf-side">
+            <span class="pf-when">
+              <T t={c.when} />
+            </span>
+            <span class="pf-logo" aria-hidden="true" set:html={logo(c.logo)} />
+          </div>
           <div>
             <h3>
               <T t={c.title} />
@@ -97,6 +133,13 @@ const pair = [byNumber("7125"), byNumber("3921")];
             <p class="body">
               <T t={c.body} />
             </p>
+          </div>
+          <div class="venue">
+            {c.links.map((v) => (
+              <a href={v.href}>
+                <T t={v.label} />
+              </a>
+            ))}
           </div>
         </div>
       ))
@@ -122,7 +165,9 @@ const pair = [byNumber("7125"), byNumber("3921")];
               <figure class="pf-plate">
                 <img
                   src={`/img/work/${w.figure.src}`}
-                  alt={t(w.figure.alt.en, w.figure.alt.zh)}
+                  alt={w.figure.alt.en}
+                  data-t-alt-en={w.figure.alt.en}
+                  data-t-alt-zh={w.figure.alt.zh}
                   style={w.figure.pos ? `object-position:${w.figure.pos}` : undefined}
                   loading="lazy"
                   decoding="async"
@@ -139,7 +184,7 @@ const pair = [byNumber("7125"), byNumber("3921")];
             {w.venues.map((v) =>
               v.href ? (
                 <a href={v.href}>
-                  <T t={v.label} /> ↗
+                  <T t={v.label} />
                 </a>
               ) : (
                 <span>
@@ -162,7 +207,7 @@ const pair = [byNumber("7125"), byNumber("3921")];
           {/* Linked only where the meeting publishes the abstract — see site.ts. */}
           {p.href ? (
             <a class="title" href={p.href}>
-              <T t={p.title} /> ↗
+              <T t={p.title} />
             </a>
           ) : (
             <span class="title">
@@ -177,7 +222,10 @@ const pair = [byNumber("7125"), byNumber("3921")];
     {
       edu.map((e) => (
         <div class="pf-edu">
-          <span class="pf-when">{e.when}</span>
+          <div class="pf-side">
+            <span class="pf-when">{e.when}</span>
+            <span class="pf-logo" data-logo={e.logo} aria-hidden="true" set:html={logo(e.logo)} />
+          </div>
           <div>
             <span class="school">
               <T t={e.school} />
@@ -238,6 +286,21 @@ const pair = [byNumber("7125"), byNumber("3921")];
   <main class="pf-about">
     <div class="prose">
       <p><T t={ui.profile.about1} /></p>
+
+      <div class="pf-me">
+        {
+          mePhotos.map((p) => (
+            <img
+              src={p.src}
+              alt={p.alt.en}
+              data-t-alt-en={p.alt.en}
+              data-t-alt-zh={p.alt.zh}
+              loading="lazy"
+              decoding="async"
+            />
+          ))
+        }
+      </div>
 
       <p class="made"><T t={ui.profile.made} /></p>
       <p><T t={ui.profile.made1} /></p>

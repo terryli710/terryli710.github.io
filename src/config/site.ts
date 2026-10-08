@@ -22,7 +22,7 @@ export const site = {
   /** Page <title>: English by default, swapped by the toggle. */
   name: t("Yiheng Li", "李易恒"),
   description:
-    "Yiheng Li — deep learning for MRI registration and quality control, statistics, and photographs.",
+    "Yiheng Li - foundation models for 3D medical imaging, notes, and photographs.",
   url: "https://terryli710.github.io",
   author: { zh: "李易恒", en: "Yiheng Li" },
 };
@@ -79,8 +79,19 @@ export const person = {
   sameAs: [me.github, me.linkedin, me.scholar, me.stanford, me.orcid].filter((u) => u.trim()),
 };
 
-// ── home · Research & news ──
-export const news = [
+// The OpenRefinery talk (2026-09-09). It covers the chest X-ray benchmark, the
+// lung VAE and the COVID-19 triage work, so those three link to it as well.
+const talk = "https://www.youtube.com/watch?v=Kz_LV64xKjE";
+
+// ── home · Research & projects ──
+// A row links to its own `href` when it has one, otherwise to /profile/.
+export const research: { year: string; title: L; venue: L; href?: string }[] = [
+  {
+    year: "2026",
+    title: t("AI for Biomedicine", "生物医学中的人工智能"),
+    venue: t("OPENREFINERY (TALK)", "OPENREFINERY（讲座）"),
+    href: talk,
+  },
   {
     year: "2025",
     title: t(
@@ -125,46 +136,106 @@ export const news = [
 
 // ── profile ──
 export const focus: L[] = [
-  t("Medical imaging", "医学影像"),
-  t("Image registration", "图像配准"),
-  t("Quality control", "质量控制"),
+  t("Foundation models", "基础模型"),
+  t("3D medical imaging", "三维医学影像"),
   t("Self-supervised learning", "自监督学习"),
+  t("Model evaluation", "模型评估"),
   t("Multimodal fusion", "多模态融合"),
-  t("LoRA / diffusion", "LoRA / 扩散模型"),
+  t("Multi-GPU training", "多 GPU 训练"),
 ];
 
+// `links` is the right-hand rail, the same as a Selected-work row's venues:
+// where the role lives online and what came out of it.
+// `logo` names a file in src/assets/logos/. Each is the organisation's own
+// vector mark, recoloured to `currentColor` (its white details carry class
+// `k`) so it follows the page ink in both modes rather than its brand colour.
 export const cv = [
   {
-    // Open-ended, not "present": `when` is one string in both languages.
-    when: "09/2023—",
-    title: t("Research Staff", "研究员"),
+    when: t("09/2023—Current", "09/2023—至今"),
+    title: t("Research Scientist, AI", "人工智能研究科学家"),
     org: t(
       "STANFORD MEDICINE · GEVAERT LAB, COMPUTATIONAL MEDICINE",
       "斯坦福医学院 · 计算医学部 GEVAERT 实验室",
     ),
+    logo: "stanford-medicine",
+    links: [
+      { label: t("GEVAERT LAB", "GEVAERT 实验室"), href: "https://med.stanford.edu/gevaertlab.html" },
+      { label: t("CXR BENCHMARK", "胸片基准评测"), href: "https://arxiv.org/abs/2505.16027" },
+      { label: t("LUNG VAE", "肺部病灶 VAE"), href: "https://doi.org/10.1016/j.crmeth.2024.100695" },
+      { label: t("TALK (2026)", "讲座（2026）"), href: talk },
+    ],
     body: t(
-      "Self-supervised foundation models for cancer imaging: a 3D β-VAE that learns lung-tumour morphology from unlabelled CT and transfers to nodal-stage and KRAS prediction; multi-modal COVID-19 triage from CT radiomics and clinical records; supervised pre-training for glaucoma detection on fundus photographs.",
-      "面向肿瘤影像的自监督基础模型：一个三维 β-VAE，从无标注 CT 中学习肺部肿瘤形态，并迁移到淋巴结分期与 KRAS 突变预测；结合 CT 影像组学与临床记录的多模态 COVID-19 分诊；以及用于眼底照片青光眼检测的有监督预训练。",
+      "A chest-CT foundation model for lung tumor analysis (first author, manuscript in preparation). Curated 16 public and internal CT collections into one re-runnable pipeline, pretrained ViT-L-class 3D encoders on 4 GPUs, and benchmarked 10 encoders on 48 downstream tasks in 5 families, under patient-level splits, repeated seeds, and Wilcoxon tests with multiple-testing correction. Also: a 3D β-VAE for lung-tumor morphology, a multinational chest X-ray benchmark (co-first author), and supervised pre-training for glaucoma detection.",
+      "一个面向肺部肿瘤分析的胸部 CT 基础模型（第一作者，论文准备中）。把 16 个公开与内部 CT 数据集整理进一条可重复运行的流水线，在 4 张 GPU 上预训练 ViT-L 级别的三维编码器，并在 5 类共 48 个下游任务上评测 10 个编码器，采用患者级划分、多次随机种子，以及带多重检验校正的 Wilcoxon 检验。另有：学习肺部肿瘤形态的三维 β-VAE、跨国胸片模型基准评测（共同第一作者），以及用于青光眼检测的有监督预训练。",
     ),
   },
   {
-    when: "08/2021—08/2023",
+    when: both("08/2021—08/2023"),
     title: t("Deep Learning Research Scientist", "深度学习研究科学家"),
     org: t("SUBTLE MEDICAL · MENLO PARK, CA", "SUBTLE MEDICAL · 加州门洛帕克"),
+    logo: "subtle-medical",
+    links: [
+      { label: both("SUBTLE MEDICAL"), href: "https://subtlemedical.com/" },
+      { label: both("ISMRM 2023"), href: "https://archive.ismrm.org/2023/4343.html" },
+      { label: both("ISMRM 2022"), href: "https://archive.ismrm.org/2022/1880.html" },
+      {
+        label: both("ASNR 2022"),
+        href: "https://www.asnr.org/wp-content/uploads/2024/09/ASNR22-Proceedings_09.17.24.pdf#page=260",
+      },
+    ],
     body: t(
       "Registration, registration QC, and self-supervised keypoint detection for 3D MRI. Four accepted meeting abstracts across ISMRM, ASNR and RSNA.",
       "三维 MRI 的配准、配准质量控制与自监督关键点检测。四篇会议摘要分别被 ISMRM、ASNR 与 RSNA 接收。",
     ),
   },
+  // Three labs, three entries: the dates differ. Full names throughout — a
+  // surname alone reads as shorthand between insiders, and this page is not
+  // written for them.
   {
-    when: "07/2020—07/2021",
+    when: both("09/2020—06/2021"),
     title: t("Research Assistant", "助理研究员"),
-    org: t("STANFORD UNIVERSITY · BMI", "斯坦福大学 · 生物医学信息学"),
-    // Three labs, named one at a time. Full names throughout — a surname alone
-    // reads as shorthand between insiders, and this page is not written for them.
+    org: t("STANFORD AIMI · CHAUDHARI LAB", "斯坦福 AIMI 中心 · CHAUDHARI 实验室"),
+    logo: "stanford-university",
+    links: [
+      { label: t("STANFORD AIMI", "斯坦福 AIMI"), href: "https://aimi.stanford.edu/" },
+      { label: t("DR. CHAUDHARI", "CHAUDHARI 教授"), href: "https://profiles.stanford.edu/akshay-chaudhari" },
+    ],
     body: t(
-      "Three labs alongside the MSc. In Dr. David Camarillo's lab: head-impact biomechanics and brain-strain modelling, which became five co-authored papers. In Dr. Olivier Gevaert's lab: multi-modal pre-training — SimCLR, BYOL, DINO — across pathology, CT and EHR. In Dr. Akshay Chaudhari's lab: a U-Net vertebral segmentation pipeline for the Opportunistic CT initiative.",
-      "硕士期间同时在三个实验室。David Camarillo 教授实验室：头部撞击生物力学与脑应变建模，最终有五篇合著论文。Olivier Gevaert 教授实验室：跨病理、CT 与电子病历的多模态预训练（SimCLR、BYOL、DINO）。Akshay Chaudhari 教授实验室：为 Opportunistic CT 项目搭建的 U-Net 椎体分割流水线。",
+      "With Dr. Akshay Chaudhari: designed, trained and evaluated a U-Net pipeline that segments vertebrae in sagittal CT, for the Opportunistic CT initiative.",
+      "跟随 Akshay Chaudhari 教授：为 Opportunistic CT 项目设计、训练并评估了一条在矢状位 CT 上分割椎体的 U-Net 流水线。",
+    ),
+  },
+  {
+    when: both("06/2020—06/2021"),
+    title: t("Research Assistant", "助理研究员"),
+    org: t(
+      "STANFORD UNIVERSITY · GEVAERT LAB, BIOMEDICAL INFORMATICS",
+      "斯坦福大学 · 生物医学信息学 GEVAERT 实验室",
+    ),
+    logo: "stanford-university",
+    links: [
+      { label: t("GEVAERT LAB", "GEVAERT 实验室"), href: "https://med.stanford.edu/gevaertlab.html" },
+    ],
+    body: t(
+      "With Dr. Olivier Gevaert: multi-modal pre-training (SimCLR, BYOL, DINO) across pathology, CT and EHR, to predict outcomes after PD-L1 treatment.",
+      "跟随 Olivier Gevaert 教授：跨病理、CT 与电子病历做多模态预训练（SimCLR、BYOL、DINO），用来预测 PD-L1 治疗后的结局。",
+    ),
+  },
+  {
+    when: both("01/2020—06/2021"),
+    title: t("Research Assistant", "助理研究员"),
+    org: t(
+      "STANFORD UNIVERSITY · CAMARILLO LAB, BIOENGINEERING",
+      "斯坦福大学 · 生物工程系 CAMARILLO 实验室",
+    ),
+    logo: "stanford-university",
+    links: [
+      { label: t("DR. CAMARILLO", "CAMARILLO 教授"), href: "https://profiles.stanford.edu/david-camarillo" },
+      { label: t("SUBTYPING (JSHS 2023)", "亚型划分（JSHS 2023）"), href: "https://doi.org/10.1016/j.jshs.2023.03.003" },
+    ],
+    body: t(
+      "With Dr. David Camarillo: head-impact biomechanics and brain-strain modelling with machine learning, which became five co-authored papers.",
+      "跟随 David Camarillo 教授：用机器学习研究头部撞击生物力学与脑应变建模，最终有五篇合著论文。",
     ),
   },
 ];
@@ -225,6 +296,7 @@ export const work: Work[] = [
     },
     venues: [
       { label: both("CELL REPORTS METHODS"), href: "https://doi.org/10.1016/j.crmeth.2024.100695" },
+      { label: t("TALK (2026)", "讲座（2026）"), href: talk },
     ],
   },
   {
@@ -252,8 +324,8 @@ export const work: Work[] = [
       "跨国数据集上的胸片诊断模型基准评测",
     ),
     note: t(
-      "Do vision–language foundation models actually generalise better than a plain CNN? Five of them (CheXzero, BioViL-T, MAVL, MedKLIP, PsPG) and three CNNs (DenseNet, ResNet, X-Raydar) put through 37 standardised classification tasks over six public datasets from the USA, Spain, India and Vietnam, plus three previously unreleased hospital datasets from China.",
-      "视觉—语言基础模型是否真的比普通 CNN 泛化得更好？把五个基础模型（CheXzero、BioViL-T、MAVL、MedKLIP、PsPG）与三个 CNN（DenseNet、ResNet、X-Raydar）放在 37 项标准化分类任务上评测，数据来自美国、西班牙、印度与越南的六个公开数据集，外加三个此前未公开的中国医院数据集。",
+      "Do vision–language foundation models actually generalise better than a plain CNN? Five of them (CheXzero, BioViL-T, MAVL, MedKLIP, PsPG) and three CNNs (DenseNet, ResNet, X-Raydar) put through 37 standardised classification tasks over six public datasets from the USA, Spain, India and Vietnam, plus three previously unreleased hospital datasets from China. Co-first author; submitted to The Lancet Digital Health.",
+      "视觉—语言基础模型是否真的比普通 CNN 泛化得更好？把五个基础模型（CheXzero、BioViL-T、MAVL、MedKLIP、PsPG）与三个 CNN（DenseNet、ResNet、X-Raydar）放在 37 项标准化分类任务上评测，数据来自美国、西班牙、印度与越南的六个公开数据集，外加三个此前未公开的中国医院数据集。共同第一作者；已投稿 The Lancet Digital Health。",
     ),
     stack: t("FOUNDATION MODELS · EXTERNAL VALIDATION", "基础模型 · 外部验证"),
     figure: {
@@ -267,6 +339,7 @@ export const work: Work[] = [
     },
     venues: [
       { label: t("ARXIV (PREPRINT)", "ARXIV（预印本）"), href: "https://arxiv.org/abs/2505.16027" },
+      { label: t("TALK (2026)", "讲座（2026）"), href: talk },
     ],
   },
   {
@@ -291,6 +364,7 @@ export const work: Work[] = [
     },
     venues: [
       { label: both("NPJ DIGITAL MEDICINE"), href: "https://doi.org/10.1038/s41746-021-00446-z" },
+      { label: t("TALK (2026)", "讲座（2026）"), href: talk },
     ],
   },
   {
@@ -426,20 +500,24 @@ export const pubs = [
   },
 ];
 
+// `logo` as in `cv` above.
 export const edu = [
   {
     when: "09/2019—06/2021",
     school: t("Stanford University", "斯坦福大学"),
+    logo: "stanford-university",
     degree: t("M.Sc. Biomedical Informatics", "生物医学信息学 理学硕士"),
   },
   {
     when: "09/2015—06/2019",
     school: t("Shanghai Jiao Tong University", "上海交通大学"),
+    logo: "shanghai-jiao-tong-university",
     degree: t("B.Sc. Resource and Environmental Science", "资源与环境科学 理学学士"),
   },
   {
     when: "01/2018—05/2018",
     school: t("University of California, Berkeley", "加州大学伯克利分校"),
+    logo: "uc-berkeley",
     degree: t("International Exchange Program", "国际交换项目"),
   },
 ];
@@ -453,8 +531,15 @@ export const skills = [
   {
     k: t("Imaging", "影像"),
     v: t(
-      "3D MRI, registration, segmentation, radiomics, DICOM / NIfTI pipelines",
-      "三维 MRI、配准、分割、影像组学、DICOM / NIfTI 流水线",
+      "3D CT and MRI, segmentation, registration, radiomics, DICOM / NIfTI pipelines",
+      "三维 CT 与 MRI、分割、配准、影像组学、DICOM / NIfTI 流水线",
+    ),
+  },
+  {
+    k: t("Training", "训练"),
+    v: t(
+      "Multi-GPU training (Lightning DDP), mixed precision, gradient checkpointing, SLURM",
+      "多 GPU 训练（Lightning DDP）、混合精度、梯度检查点、SLURM",
     ),
   },
   {
@@ -507,7 +592,7 @@ export const others = [
 
 // ── profile · buttons (label + monoline glyph path set) ──
 export const profileLinks = linked([
-  { label: t("RÉSUMÉ", "简历"), href: me.resume, icon: "resume", seal: true },
+  { label: t("DOWNLOAD RÉSUMÉ (PDF)", "下载简历（PDF）"), href: me.resume, icon: "resume", seal: true },
   { label: both("GITHUB"), href: me.github, icon: "github" },
   { label: t("LINKEDIN", "领英"), href: me.linkedin, icon: "linkedin" },
   { label: t("SCHOLAR", "谷歌学术"), href: me.scholar, icon: "scholar" },

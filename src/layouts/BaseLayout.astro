@@ -22,7 +22,7 @@ interface Props {
   chrome?: boolean;
   /** Draw the chrome over the hero photograph — the home page. */
   homeChrome?: boolean;
-  /** Home renders no footer: its last band is Research & news. */
+  /** Home renders no footer: its last band is Research & projects. */
   footer?: boolean;
 }
 
@@ -178,6 +178,22 @@ const identity = {
       });
 
       paint();
+
+      // ── links that leave the site ────────────────────────────────────────
+      // Each one ends in an ↗; hovering the link nudges the arrow and names where
+      // it goes, next to the arrow (see `.ext` in global.css). The host reads the
+      // same in both languages, so it is not translated. Links & contact and the
+      // profile buttons already name their site, and Links & contact has its own
+      // ↗ column, so they are left alone.
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((a) => {
+        if (a.host === location.host || a.closest(".hm-links, .pf-btns")) return;
+        const ext = document.createElement("span");
+        ext.className = "ext";
+        ext.innerHTML = '<span class="ar">↗</span><span class="host"></span>';
+        ext.lastElementChild!.textContent = a.hostname.replace(/^www\./, "");
+        // A home row is a grid; the mark belongs at the end of its title.
+        (a.querySelector(".title") ?? a).append(ext);
+      });
 
       // ── reading-progress rule ────────────────────────────────────────────
       const prog = document.getElementById("prog");

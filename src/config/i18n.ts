@@ -47,7 +47,7 @@ export const ui = {
     links: t("Links & contact", "链接与联系"),
     notes: t("Notes", "笔记"),
     photographs: t("Photographs", "摄影"),
-    news: t("Research & news", "研究与近况"),
+    research: t("Research & projects", "研究与项目"),
     toPhotographs: t("All photographs →", "全部摄影 →"),
     toWork: t("All work →", "全部工作 →"),
     /** "All 21 →" / "全部 21 篇 →" */
@@ -111,16 +111,16 @@ export const ui = {
     kicker: t("Profile", "履历"),
     portraitPlace: t("LAKE TAHOE", "太浩湖"),
     metaRole: t(
-      "Research Staff · Stanford University School of Medicine",
-      "医学深度学习研究员 · 斯坦福大学医学院",
+      "Research Scientist, AI · Stanford University School of Medicine",
+      "人工智能研究科学家 · 斯坦福大学医学院",
     ),
     metaPlace: t(
       "Division of Computational Medicine · Palo Alto, CA",
       "计算医学部 · 加州帕洛阿尔托",
     ),
     lead: t(
-      "I build self-supervised foundation models for cancer imaging — pretrained on unlabeled 3D scans, fused with pathology and clinical records, and held to the questions oncology actually asks: a tumor's genotype, how far it has spread, how it responds to treatment over time.",
-      "我做的是面向肿瘤影像的自监督基础模型——在无标注的三维影像上预训练，再与病理和临床数据融合，用来回答肿瘤学真正关心的问题：肿瘤的基因型、扩散到了哪一步、以及随时间如何响应治疗。",
+      "I build foundation models for 3D medical imaging. They are pretrained on unlabeled CT, tested across cohorts, scanners and sites, and aimed at the questions oncology asks: a tumor's genotype, how far it has spread, and how it responds to treatment over time. I also review for 9 journals and guest-lectured Stanford BMDS 221.",
+      "我做的是面向三维医学影像的基础模型：在无标注的 CT 上预训练，跨队列、跨扫描仪、跨医院做评估，用来回答肿瘤学关心的问题：肿瘤的基因型、扩散到了哪一步、以及随时间如何响应治疗。我也为 9 本期刊审稿，并在斯坦福 BMDS 221 做过客座讲课。",
     ),
     focus: t("Focus", "方向"),
     experience: t("Experience", "经历"),

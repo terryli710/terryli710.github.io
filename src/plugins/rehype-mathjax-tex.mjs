@@ -11,8 +11,8 @@
  *   display  <div class="po-eq"><span class="mr" data-tex="…" data-tex-display>
  *              <span class="n">(1)</span></div>
  *
- * `.po-eq` is the rule-topped, centred, horizontally scrollable band the canvas
- * uses for display equations, numbered in the right margin. The raw TeX stays
+ * `.po-eq` is the centred, horizontally scrollable band used for display
+ * equations, numbered in the right margin. The raw TeX stays
  * as the element's text so the page is still readable if the MathJax CDN never
  * answers; `setMath()` in PostLayout replaces it with typeset CHTML and marks
  * the node `data-tex-set`.

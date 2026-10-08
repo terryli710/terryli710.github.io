@@ -3,7 +3,7 @@
 //
 // A full-viewport photograph that is sharp at rest and develops (blurs, dims,
 // desaturates) as the content scrolls over it, then four flat index bands:
-// Links & contact, Research & news, Notes, Photographs. The work comes before
+// Links & contact, Research & projects, Notes, Photographs. The work comes before
 // the pictures — a reader who came here for the research should not have to
 // scroll past a contact sheet to reach it.
 //
@@ -20,7 +20,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Chrome from "../components/Chrome.astro";
 import Icon from "../components/Icon.astro";
 import T from "../components/T.astro";
-import { site, links, news } from "../config/site";
+import { site, links, research } from "../config/site";
 import { ui } from "../config/i18n";
 import { preview } from "../data/frames";
 import { readingTime, stamp } from "../utils/post";
@@ -35,7 +35,7 @@ const recent = posts.slice(0, 5);
 <BaseLayout title={site.name} chrome={false} footer={false}>
   <div class="hm-bg">
     <img id="hm-photo" src="/img/hero.jpg" alt="" fetchpriority="high" />
-    <div class="hm-vig"></div>
+    <div class="hm-vig" id="hm-vig"></div>
     <div class="hm-scrim" id="hm-scrim"></div>
   </div>
 
@@ -53,7 +53,6 @@ const recent = posts.slice(0, 5);
     <section class="hm-elsewhere">
       <p class="hm-rule">
         <span class="k"><T t={ui.home.links} /></span>
-        <span class="line"></span>
       </p>
       <div class="hm-links">
         {
@@ -73,15 +72,14 @@ const recent = posts.slice(0, 5);
       </div>
     </section>
 
-    <section class="hm-news">
+    <section class="hm-research">
       <p class="hm-rule">
-        <span class="k"><T t={ui.home.news} /></span>
-        <span class="line"></span>
+        <span class="k"><T t={ui.home.research} /></span>
         <a href="/profile/"><T t={ui.home.toWork} /></a>
       </p>
       {
-        news.map((w) => (
-          <a class="hm-row" href="/profile/">
+        research.map((w) => (
+          <a class="hm-row" href={w.href ?? "/profile/"}>
             <span class="date">{w.year}</span>
             <span class="title">
               <T t={w.title} />
@@ -97,7 +95,6 @@ const recent = posts.slice(0, 5);
     <section class="hm-notes">
       <p class="hm-rule">
         <span class="k"><T t={ui.home.notes} /></span>
-        <span class="line"></span>
         <a href="/writing/"><T t={ui.home.allNotes(posts.length)} /></a>
       </p>
       {
@@ -116,7 +113,6 @@ const recent = posts.slice(0, 5);
     <section class="hm-photos">
       <p class="hm-rule">
         <span class="k"><T t={ui.home.photographs} /></span>
-        <span class="line"></span>
         <a href="/photographs/"><T t={ui.home.toPhotographs} /></a>
       </p>
 
@@ -149,6 +145,7 @@ const recent = posts.slice(0, 5);
   const scene = document.querySelector(".scene") as HTMLElement;
   const photo = document.getElementById("hm-photo");
   const scrim = document.getElementById("hm-scrim");
+  const vig = document.getElementById("hm-vig");
   const cue = document.getElementById("hm-cue");
 
   function develop() {
@@ -163,10 +160,12 @@ const recent = posts.slice(0, 5);
       "px) saturate(" +
       (1 - e * 0.45).toFixed(3) +
       ")" +
-      (day ? "" : " brightness(" + (0.9 - e * 0.22).toFixed(3) + ") contrast(1.02)");
+      (day ? "" : " brightness(" + (0.9 - e * 0.06).toFixed(3) + ") contrast(1.02)");
     // The scrim never goes fully opaque: the photograph stays faintly readable
     // behind the index bands rather than disappearing under a flat ground.
-    if (scrim) scrim.style.opacity = (e * (day ? 0.82 : 0.68)).toFixed(3);
+    if (scrim) scrim.style.opacity = (e * (day ? 0.92 : 0.5)).toFixed(3);
+    // The vignette only frames the hero; past it, it just darkens the bands.
+    if (vig) vig.style.opacity = (1 - e).toFixed(3);
     if (cue) cue.style.opacity = Math.max(0, 1 - t * 4).toFixed(3);
   }
 

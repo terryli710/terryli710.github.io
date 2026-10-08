@@ -38,7 +38,10 @@ const entries = posts.map((p) => {
   return {
     slug: p.slug,
     title: p.data.title,
+    desc: p.data.description ?? "",
     year: String(p.data.date.getUTCFullYear()),
+    // Month and day only: the year is already the group's rail.
+    day: `${String(p.data.date.getUTCMonth() + 1).padStart(2, "0")}·${String(p.data.date.getUTCDate()).padStart(2, "0")}`,
     tags: p.data.tags ?? [],
     read: readingTime(p.body),
     fig: fig ? { src: fig.src, meta: caption(fig.alt) } : null,
@@ -68,6 +71,7 @@ const first = entries.find((e) => e.fig);
           autocomplete="off"
         />
       </label>
+      <span class="wr-count" id="wr-count">{entries.length} / {entries.length}</span>
     </div>
 
     <div class="wr-tags" id="wr-tags">
@@ -75,47 +79,46 @@ const first = entries.find((e) => e.fig);
         <T t={ui.writing.all} /> {entries.length}
       </button>
       {tags.map(([tag, n]) => <button type="button" data-tag={tag}>{tag} {n}</button>)}
-      <span class="spacer"></span>
-      <span class="wr-count" id="wr-count">{entries.length} / {entries.length}</span>
     </div>
 
     <div class="wr-body">
       <div class="wr-list" id="wr-list">
         {
           years.map((year) => (
-            <div data-year-group={year}>
+            <section class="wr-group" data-year-group={year}>
               <div class="wr-year">
                 <span class="y">{year}</span>
-                <span class="line" />
                 <span data-year-count>{entries.filter((e) => e.year === year).length}</span>
               </div>
-              {entries
-                .filter((e) => e.year === year)
-                .map((e) => (
-                  <a
-                    class="wr-item"
-                    href={`/posts/${e.slug}/`}
-                    data-tags={e.tags.join("|")}
-                    data-title={e.title.toLowerCase()}
-                    data-fig={e.fig?.src}
-                    data-fig-meta-en={e.fig?.meta.en}
-                    data-fig-meta-zh={e.fig?.meta.zh}
-                  >
-                    <span class="head">
+              <div class="wr-items">
+                {entries
+                  .filter((e) => e.year === year)
+                  .map((e) => (
+                    <a
+                      class="wr-item"
+                      href={`/posts/${e.slug}/`}
+                      data-tags={e.tags.join("|")}
+                      data-title={e.title.toLowerCase()}
+                      data-fig={e.fig?.src}
+                      data-fig-meta-en={e.fig?.meta.en}
+                      data-fig-meta-zh={e.fig?.meta.zh}
+                    >
                       <span class="title">{e.title}</span>
-                      <span class="read">
-                        <T t={ui.writing.min(e.read)} />
+                      {e.desc && <span class="desc">{e.desc}</span>}
+                      <span class="meta">
+                        <span>{e.day}</span>
+                        <span class="read">
+                          <T t={ui.writing.min(e.read)} />
+                        </span>
+                        {e.tags.map((t) => (
+                          <span class="tag">{t}</span>
+                        ))}
+                        {e.fig && <span class="frame">◼</span>}
                       </span>
-                    </span>
-                    <span class="meta">
-                      {e.tags.map((t) => (
-                        <span>{t}</span>
-                      ))}
-                      {e.fig && <span class="frame">◼</span>}
-                    </span>
-                  </a>
-                ))}
-            </div>
+                    </a>
+                  ))}
+              </div>
+            </section>
           ))
         }
       </div>

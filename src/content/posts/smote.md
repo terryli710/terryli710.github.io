@@ -54,5 +54,3 @@ XSmote, YSmote = oversample.fit_resample(X,Y)
  1. [ SMOTE for Imbalanced Classification with Python](https://machinelearningmastery.com/smote-oversampling-for-imbalanced-classification/)
  2. [SMOTE explained for noobs - Synthetic Minority Over-sampling TEchnique line by line](http://rikunert.com/SMOTE_explained)
  3. [Application of Synthetic Minority Over-sampling Technique (SMOTe) for Imbalanced Datasets](https://medium.com/towards-artificial-intelligence/application-of-synthetic-minority-over-sampling-technique-smote-for-imbalanced-data-sets-509ab55cfdaf)
-
----
