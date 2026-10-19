@@ -1,0 +1,36 @@
+% Research-workflow post: the pediatric fracture audit Susan Shelmerdine
+% presented at the IBIIS-AIMI seminar (public recording). Mean times after
+% the X-ray: ED final decision 68 min, AI output in PACS 83 min; 70% of ED
+% decisions were recorded before the AI output. Averages, not per patient.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm]
+  \def\s{1.2} % mm per minute
+  % axis
+  \draw[faint, line width=.6pt] (0,0) -- (100*\s,0);
+  \foreach \m in {0,20,40,60,80,100} {
+    \draw[faint, line width=.6pt] (\m*\s,0) -- (\m*\s,-1.5);
+    \node[lab, below] at (\m*\s,-1.5) {\m};
+  }
+  \node[lab, anchor=north] at (50*\s,-7) {MINUTES AFTER THE X-RAY (MEAN)};
+
+
+  % x-ray
+  \draw[ink, line width=.7pt] (0,0) -- (0,22);
+  \node[anchor=south west, font=\small, text=ink] at (1,22) {X-ray taken};
+
+  % ED decision
+  \draw[fd, line width=1.2pt] (68*\s,0) -- (68*\s,30);
+  \node[anchor=east, font=\small, text=ink, align=right] at (67*\s,27)
+    {ED staff record their\\final decision, 68 min};
+
+  % AI result
+  \draw[fa, line width=1.2pt] (83*\s,0) -- (83*\s,30);
+  \node[anchor=west, font=\small, text=ink, align=left] at (84*\s,27)
+    {AI result appears\\in PACS, 83 min};
+
+  \node[font=\footnotesize, text=soft, align=right, anchor=east, text width=46mm] (n) at (64*\s,11)
+    {70\% of ED decisions are recorded\\before the AI result arrives};
+\end{tikzpicture}
+\end{document}

@@ -42,6 +42,11 @@ FONT_URLS = {
     for w in ("Regular", "Medium", "Light")
 } | {
     "STIXTwoMath-Regular.ttf": "https://github.com/google/fonts/raw/main/ofl/stixtwomath/STIXTwoMath-Regular.ttf",
+    # For Chinese labels (the -zh figures): the static Noto Serif CJK SC, the
+    # face the site renders Chinese in (Noto Serif SC). Not in the preamble; a
+    # figure that needs it loads it itself, see build().
+    "NotoSerifCJKsc-Regular.otf":
+        "https://github.com/notofonts/noto-cjk/raw/main/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Regular.otf",
 }
 
 # sentinel (R,G,B) in preamble.tex -> CSS variable
@@ -153,7 +158,11 @@ def build(tex, preview_dir=None):
         tmp = Path(tmp)
         (tmp / "preamble.tex").write_text(
             (KIT / "preamble.tex").read_text().replace("FIGKITFONTS", str(FONTS)))
-        (tmp / "fig.tex").write_text(tex.read_text().replace("FIGKIT/preamble.tex", str(tmp / "preamble.tex")))
+        # FIGKITFONTS is resolved in the figure too, so a figure can load a font
+        # the preamble does not, e.g. a -zh figure's
+        #   \usepackage{xeCJK}\setCJKmainfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+        (tmp / "fig.tex").write_text(tex.read_text().replace("FIGKIT/preamble.tex", str(tmp / "preamble.tex"))
+                                     .replace("FIGKITFONTS", str(FONTS)))
         r = subprocess.run(["tectonic", "--chatter", "minimal", "fig.tex"], cwd=tmp, capture_output=True, text=True)
         if r.returncode:
             sys.exit(f"{tex}: tectonic failed\n{r.stdout[-3000:]}\n{r.stderr[-3000:]}")

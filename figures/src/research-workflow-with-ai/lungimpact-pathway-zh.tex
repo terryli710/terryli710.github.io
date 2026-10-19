@@ -1,0 +1,47 @@
+% Research-workflow post, Chinese labels: LungIMPACT (Woznitza et al., Nature
+% Medicine 2026, Table 2). Same geometry as lungimpact-pathway.tex. Medians
+% with AI prioritization off and on, by step. Each row has its own scale:
+% hours and days do not share an axis.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\usepackage{xeCJK}
+\setCJKmainfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+\setCJKsansfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+\setCJKmonofont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+% no stretch between CJK characters: a ragged or centered line would otherwise
+% be spread out letter by letter to fill the node width
+\xeCJKsetup{CJKglue={\hskip 0pt}}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm,
+    lbl/.style={anchor=east, font=\small, text=ink, align=right, text width=38mm},
+    val/.style={anchor=west, font=\footnotesize, text=ink},
+    off/.style={draw=soft, fill=soft, fill opacity=.22, draw opacity=1, line width=.6pt},
+    on/.style={draw=fa, fill=fa, fill opacity=.22, draw opacity=1, line width=.6pt},
+  ]
+  % row 1: X-ray to report, hours, 60 mm = 50 h
+  \def\h{1.2}
+  \node[lbl] at (-3,0) {胸片到出报告};
+  \draw[off] (0,1) rectangle (47*\h,4.6);   \node[val] at (47*\h+1.5,2.8) {47 小时};
+  \draw[on]  (0,-4.6) rectangle (34.1*\h,-1); \node[val] at (34.1*\h+1.5,-2.8) {34 小时};
+  % row 2: X-ray to CT, days, 60 mm = 55 d
+  \def\d{1.09}
+  \node[lbl] at (-3,-20) {胸片到 CT};
+  \draw[off] (0,-19) rectangle (53*\d,-15.4);  \node[val] at (53*\d+1.5,-17.2) {53 天};
+  \draw[on]  (0,-24.6) rectangle (53*\d,-21);  \node[val] at (53*\d+1.5,-22.8) {53 天};
+  % row 3: X-ray to lung cancer diagnosis, days, same scale as row 2
+  \node[lbl] at (-3,-40) {胸片到确诊肺癌};
+  \draw[off] (0,-39) rectangle (46*\d,-35.4);  \node[val] at (46*\d+1.5,-37.2) {46 天};
+  \draw[on]  (0,-44.6) rectangle (44*\d,-41);  \node[val] at (44*\d+1.5,-42.8) {44 天};
+
+  \draw[rule, line width=.5pt] (0,8) -- (0,-48);
+
+  % key
+  \begin{scope}[shift={(0,-56)}]
+    \draw[off] (0,-1.6) rectangle (6,1.6);
+    \node[anchor=west, font=\footnotesize, text=soft] at (8,0) {关闭优先排序};
+    \draw[on] (40,-1.6) rectangle (46,1.6);
+    \node[anchor=west, font=\footnotesize, text=soft] at (48,0) {开启优先排序};
+    \node[anchor=west, lab] at (0,-7) {中位数。小时和天用的是不同的刻度。};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

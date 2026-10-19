@@ -1,0 +1,44 @@
+% Research-workflow post, Chinese labels: the pediatric fracture audit Susan
+% Shelmerdine presented at the IBIIS-AIMI seminar (public recording). Same
+% geometry as fracture-timing.tex. Mean times after the X-ray: ED final
+% decision 68 min, AI output in PACS 83 min; 70% of ED decisions were recorded
+% before the AI output. Averages, not per patient.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\usepackage{xeCJK}
+\setCJKmainfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+\setCJKsansfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+\setCJKmonofont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+% no stretch between CJK characters: a ragged or centered line would otherwise
+% be spread out letter by letter to fill the node width
+\xeCJKsetup{CJKglue={\hskip 0pt}}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm]
+  \def\s{1.2} % mm per minute
+  % axis
+  \draw[faint, line width=.6pt] (0,0) -- (100*\s,0);
+  \foreach \m in {0,20,40,60,80,100} {
+    \draw[faint, line width=.6pt] (\m*\s,0) -- (\m*\s,-1.5);
+    \node[lab, below] at (\m*\s,-1.5) {\m};
+  }
+  \node[lab, anchor=north] at (50*\s,-7) {拍片后的分钟数（平均）};
+
+
+  % x-ray
+  \draw[ink, line width=.7pt] (0,0) -- (0,22);
+  \node[anchor=south west, font=\small, text=ink] at (1,22) {拍片};
+
+  % ED decision
+  \draw[fd, line width=1.2pt] (68*\s,0) -- (68*\s,30);
+  \node[anchor=east, font=\small, text=ink, align=right] at (67*\s,27)
+    {急诊医护记录\\最终决定，68 分钟};
+
+  % AI result
+  \draw[fa, line width=1.2pt] (83*\s,0) -- (83*\s,30);
+  \node[anchor=west, font=\small, text=ink, align=left] at (84*\s,27)
+    {AI 结果出现在\\PACS 里，83 分钟};
+
+  \node[font=\footnotesize, text=soft, align=right, anchor=east, text width=46mm] (n) at (64*\s,11)
+    {70\% 的急诊决定，\\在 AI 结果出来之前就记下了};
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,58 @@
+% Research-workflow post, Chinese labels: the research loop from the
+% OpenRefinery talk. Same geometry as research-loop.tex; skill names stay
+% English. Six stations, each run by a written procedure (skill names in mono
+% under the station); between stations, the decision that stays with the
+% researcher.
+\documentclass[tikz,border=3pt]{standalone}
+\input{FIGKIT/preamble.tex}
+\usepackage{xeCJK}
+\setCJKmainfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+\setCJKsansfont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+\setCJKmonofont{NotoSerifCJKsc-Regular.otf}[Path=FIGKITFONTS/]
+% no stretch between CJK characters: a ragged or centered line would otherwise
+% be spread out letter by letter to fill the node width
+\xeCJKsetup{CJKglue={\hskip 0pt}}
+\begin{document}
+\begin{tikzpicture}[fig, x=1mm, y=1mm,
+    st/.style={box=fa, minimum width=34mm, minimum height=12mm, inner sep=3pt},
+    sk/.style={font=\ttfamily\scriptsize, text=soft},
+    dec/.style={diamond, draw=fb, fill=paper, line width=.7pt, inner sep=0pt, minimum size=4.2mm},
+    q/.style={font=\footnotesize, text=ink, text width=27mm, align=center},
+  ]
+  \node[st] (D) at (-32, 36) {定义\\[-1pt]\textnormal{\ttfamily\scriptsize\color{soft} grilling, domain-modeling}};
+  \node[st] (P) at ( 32, 36) {规划\\[-1pt]\textnormal{\ttfamily\scriptsize\color{soft} exp-plan, compute-allocate}};
+  \node[st] (R) at ( 62,  0) {运行\\[-1pt]\textnormal{\ttfamily\scriptsize\color{soft} exp-launch, exp-status}};
+  \node[st] (G) at ( 32,-36) {汇总\\[-1pt]\textnormal{\ttfamily\scriptsize\color{soft} exp-report}};
+  \node[st] (E) at (-32,-36) {解释\\[-1pt]\textnormal{\ttfamily\scriptsize\color{soft} eli5}};
+  \node[st] (W) at (-62,  0) {写作\\[-1pt]\textnormal{\ttfamily\scriptsize\color{soft} scientific-figure}};
+
+  \draw[arr] (D) -- (P);
+  \draw[arr] (P) -- (R);
+  \draw[arr] (R) -- (G);
+  \draw[arr] (G) -- (E);
+  \draw[arr] (E) -- (W);
+  \draw[arr] (W) -- (D);
+
+  % decisions on each arrow, questions inside the ring
+  \node[dec] (d1) at (0, 36) {};
+  \node[q, text width=40mm, below=5mm of d1] {问题是这个吗？};
+  \node[dec] (d2) at (48.5, 16.5) {};
+  \node[q, anchor=east] at (43, 14) {这个计划值得\\花这些算力吗？};
+  \node[dec] (d3) at (48.5,-16.5) {};
+  \node[q, anchor=east] at (43,-14) {便宜的那步结果，\\值得再跑贵的吗？};
+  \node[dec] (d4) at (0,-36) {};
+  \node[q, text width=40mm, above=5mm of d4] {结果靠的是哪个比较？};
+  \node[dec] (d5) at (-48.5,-16.5) {};
+  \node[q, anchor=west] at (-43,-14) {这个结果决定什么？};
+  \node[dec] (d6) at (-48.5, 16.5) {};
+  \node[q, anchor=west] at (-43, 14) {下一个问题是什么？};
+
+  % key
+  \begin{scope}[shift={(-60,-54)}]
+    \node[box=fa, minimum width=6mm, minimum height=4mm, inner sep=0pt] at (0,0) {};
+    \node[anchor=west, font=\footnotesize, text=soft] at (4.5,0) {写好的流程，AI 照着做};
+    \node[dec] at (64,0) {};
+    \node[anchor=west, font=\footnotesize, text=soft] at (67.5,0) {我自己做的决定};
+  \end{scope}
+\end{tikzpicture}
+\end{document}
